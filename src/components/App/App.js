@@ -5,23 +5,19 @@ import './App.css';
 
 const App = () => {
   return (
-    <div className='App-menu'>
+    <div className='App'>
     <Container>
-      <Row className='App-text'>
-        <Col></Col>
+      <Row className='App-header'>
         <Col><h1>La oss kode!</h1></Col>
-        <Col></Col>
       </Row>
       
-      <Row className='App-buttons'>
-        <Col></Col>
-        <Col>
+      <Row className="App-buttons">
+        <Col xs lg="3">
           <Link to="/student"><Button variant="outline-light" size="lg" block>Jeg er en elev!</Button></Link>
         </Col>
-        <Col>
+        <Col xs lg="3">
         <Link to="/teacher"><Button variant="outline-light" size="lg" block>Jeg er en lærer!</Button></Link>
         </Col>
-        <Col></Col>
       </Row>  
     </Container>
     </div>
