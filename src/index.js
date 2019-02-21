@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-import Student from './components/Student';
-import Teacher from './components/Teacher';
-import App from './components/App';
+import Student from './components/Student/Student';
+import Teacher from './components/Teacher/Teacher';
+import App from './components/App/App';
 import './index.css';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 

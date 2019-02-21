@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
+import './Student.css';
 
 const Student = () => {
   return (
-      <div className="student">
+      <div className="Student">
         <h1>Velkommen elev!</h1>
       </div>
   )
