@@ -1,0 +1,14 @@
+.Student {
+    text-align: center;
+    background-color: #54d485;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-classPin{
+    background-color: #3c9b60 !important;
+    border-color:#54d485 !important;
+}
