@@ -1,8 +1,28 @@
 .signInPage {
-    display: flex;
-    background-color: rgb(230, 182, 95);
+    background-color: #f9c35e;
     min-height: 100vh;
+    display: flex;
     justify-content: center;
-    padding: 200px;
+    align-items: center;
 }
 
+.row {
+    padding: 5px;
+    text-align: center;
+}
+
+.title {
+    font-size: 24px;
+}
+
+.signInFrame {
+    padding: 40px 100px 40px 100px;
+    background-color: #e4b257;
+    height: fit-content;
+    width: 70%;
+}
+
+.btn-submit {
+    background-color: #E8871E !important;
+    border-color: #E8871E !important;
+}
