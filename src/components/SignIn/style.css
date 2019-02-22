@@ -26,3 +26,9 @@
     background-color: #E8871E !important;
     border-color: #E8871E !important;
 }
+
+.btn-submit:hover {
+    background-color: rgb(182, 105, 22) !important;
+    border-color: rgb(182, 105, 22) !important;
+    color:rgb(197, 197, 197) !important;
+}

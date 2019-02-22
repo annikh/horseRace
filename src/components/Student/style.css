@@ -10,5 +10,11 @@
 
 .btn-classPin{
     background-color: #3c9b60 !important;
-    border-color:#54d485 !important;
+    border-color:#3c9b60 !important;
+}
+
+.btn-classPin:hover {
+    background-color: rgb(49, 133, 82) !important;
+    border-color:rgb(49, 133, 82) !important;
+    color: rgb(197, 197, 197) !important;
 }
