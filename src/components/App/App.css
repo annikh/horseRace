@@ -1,4 +1,4 @@
-.App-menu { 
+.App { 
   text-align: center;
   background-color: #6c80ac;
   min-height: 100vh;
@@ -8,7 +8,11 @@
   justify-content: center;
 }
   
-.App-text {
+.App-header {
   color: white;
   margin-bottom: 35px;
+}
+
+.App-buttons {
+  justify-content: center;
 }
