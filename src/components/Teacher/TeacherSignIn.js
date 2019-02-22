@@ -34,20 +34,21 @@ export class TeacherSignIn extends SignIn {
           />
            </Form.Group>
           <Form.Group>
-          <a  onClick={() => super.changeState("forgotPassword")}>
+          <Button className="signIn" onClick={() => super.changeState("forgotPassword")}>
             Glemt Passord?
-          </a>
+          </Button>
         </Form.Group>
         <Form.Group>
-          <div className="flex items-center justify-between">
+          
             <Button onClick={() => super.signIn()} block>
               Logg inn
             </Button>
-            <p className="text-grey-dark text-xs">
-             Ikke registrert?{" "}
-              <a onClick={() => super.changeState("signUp")}>Opprett bruker </a>
+            </Form.Group>
+          <Form.Group>
+            <p>
+              Ikke registrert?{" "}
+              <Button  className="signIn" onClick={() => super.changeState("signUp")}>Opprett bruker </Button>
             </p>
-          </div>
         </Form.Group>
       </Form>
     );
