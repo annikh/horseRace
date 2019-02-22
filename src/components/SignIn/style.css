@@ -1,0 +1,8 @@
+.signInPage {
+    display: flex;
+    background-color: rgb(230, 182, 95);
+    min-height: 100vh;
+    justify-content: center;
+    padding: 200px;
+}
+
