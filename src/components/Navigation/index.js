@@ -1,23 +1,20 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import SignOutButton from '../SignOut';
+import { Nav } from 'react-bootstrap';
+import './style.css';
 
 import * as ROUTES from '../../constants/routes';
 
 const Navigation = () => (
-  <div>
-    <ul>
-      <li>
-        <Link to={ROUTES.LANDING}>Landing</Link>
-      </li>
-      <li>
-        <Link to={ROUTES.ACCOUNT}>Account</Link>
-      </li>
-      <li>
-        <SignOutButton />
-      </li>
-    </ul>
-  </div>
+  <Nav className="navbar">
+    <Nav.Item>
+      <Nav.Link>Profil</Nav.Link>
+    </Nav.Item>
+    <Nav.Item>
+      <SignOutButton />
+    </Nav.Item>
+  </Nav>
 );
 
 export default Navigation;
