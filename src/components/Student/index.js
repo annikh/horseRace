@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Form, Container, Row, Col } from 'react-bootstrap';
-import '../App/App.css';
+import './style.css';
 
 class Student extends Component {
 
@@ -9,7 +9,7 @@ class Student extends Component {
     this.state = {
       value: '',
       pinEntered: false,
-      buttonValue: 'Ok!',
+      buttonValue: 'Enter',
       placeholder: 'Skriv inn PIN'
     }
     this.handleEnterClassroomPin = this.handleEnterClassroomPin.bind(this);
@@ -43,23 +43,29 @@ class Student extends Component {
     event.preventDefault();
   }
 
+  onChange = event => {
+    this.setState({ [event.target.name]: event.target.value });
+  };
+
   render() {
+    const isInvalid = this.state.value === '';
+
     return (
-      <div className="App">
-        <div className="App-header">
-          <h1>Bli med klassen din og spill!</h1>
-        </div>
-        <Form className="App-button" onSubmit={this.handleSubmit}>
-          <Form.Row>
-          <Col md="auto">
-          <Form.Control placeholder={this.state.placeholder} value={this.state.value} onChange={this.handleChange}/>
-          </Col>
-          <Col>
-            <Button variant="outline-light" type="submit">{this.state.buttonValue}</Button>
-          </Col>
-          </Form.Row>
+        <Form className="Student" onSubmit={this.handleSubmit}>
+          <Row>
+            <Col>
+              <Form.Label><h2>Bli med klassen din og spill!</h2></Form.Label>
+            </Col>
+          </Row>
+          <Row>
+            <Col md="auto">
+              <Form.Control placeholder={this.state.placeholder} value={this.state.value} onChange={this.handleChange}/>
+            </Col>
+            <Col>
+              <Button className="btn-classPin" disabled={isInvalid} variant="outline-light" type="submit">{this.state.buttonValue}</Button>
+            </Col>
+          </Row>
         </Form>
-      </div>
     )
   }
 }

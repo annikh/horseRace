@@ -1,0 +1,34 @@
+.signInPage {
+    background-color: #f9c35e;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.row {
+    padding: 5px;
+    text-align: center;
+}
+
+.title {
+    font-size: 24px;
+}
+
+.signInFrame {
+    padding: 40px 100px 40px 100px;
+    background-color: #e4b257;
+    height: fit-content;
+    width: 70%;
+}
+
+.btn-submit {
+    background-color: #E8871E !important;
+    border-color: #E8871E !important;
+}
+
+.btn-submit:hover {
+    background-color: rgb(182, 105, 22) !important;
+    border-color: rgb(182, 105, 22) !important;
+    color:rgb(197, 197, 197) !important;
+}

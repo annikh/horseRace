@@ -1,0 +1,28 @@
+.signUpPage {
+    background-color: #f9c35e;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.row {
+    padding: 5px;
+    text-align: center;
+}
+
+.title {
+    font-size: 24px;
+}
+
+.signUpFrame {
+    padding: 40px 100px 40px 100px;
+    background-color: #e4b257;
+    height: fit-content;
+    width: 40%;
+}
+
+.btn-submit {
+    background-color: #E8871E !important;
+    border-color: #E8871E !important;
+}
