@@ -1,6 +1,6 @@
 .Student {
     text-align: center;
-    background-color: #54d485;
+    background-color: #4cc078;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -9,7 +9,7 @@
 }
 
 .btn-classPin{
-    background-color: #3c9b60 !important;
+    background-color: #348654 !important;
     border-color:#3c9b60 !important;
 }
 

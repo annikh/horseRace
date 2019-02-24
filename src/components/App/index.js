@@ -13,7 +13,7 @@ const App = () => {
       
       <Row className="App-buttons">
         <Col xs lg="3">
-         <Link to="/student" style={{ textDecoration: 'none' }}><Button className="btn-classPin" variant="outline-light" size="lg" block>Jeg er en elev!</Button></Link>
+         <Link to="/student" style={{ textDecoration: 'none' }}><Button className="btn-class" variant="outline-light" size="lg" block>Jeg er en elev!</Button></Link>
         </Col>
         <Col xs lg="3">
         <Link to="/teacher" style={{ textDecoration: 'none' }}><Button className="btn-submit" variant="outline-light" size="lg" block>Jeg er en lærer!</Button></Link>
