@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { withFirebase } from '../Firebase';
 import Navigation from '../Navigation';
+import Account from '../Account';
+import SignIn from '../SignIn';
 
 class Teacher extends Component {
 
@@ -8,7 +10,7 @@ class Teacher extends Component {
     super(props);
 
     this.state = {
-      authUser: null,
+      authUser: null
     };
   }
 
@@ -26,11 +28,13 @@ class Teacher extends Component {
     this.listener();
   }
 
+
+
   render() {
     return (
       <div>
         <Navigation authUser={this.state.authUser}/>
-        <div className="App"><h1>Velkommen lærer!</h1></div>
+        <div>{this.state.authUser ? <Account/> : <SignIn/>}</div>
       </div>
     );
   }
