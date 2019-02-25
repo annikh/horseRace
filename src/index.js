@@ -19,9 +19,9 @@ ReactDOM.render(
         <div>
             <Route exact path={ROUTES.LANDING} component={App} /> 
             <Route path={ROUTES.SIGN_UP} component={SignUpPage} />
-            <Route path={ROUTES.SIGN_IN} component={SignInPage} />
+            <Route path={ROUTES.SIGN_IN} component={Teacher} />
             <Route path={ROUTES.PASSWORD_FORGET} component={PasswordForgetPage} />
-            <Route path={ROUTES.ACCOUNT} component={AccountPage} />
+            <Route path={ROUTES.ACCOUNT} component={Teacher} />
             <Route path={ROUTES.TEACHER} component={Teacher} />
             <Route path={ROUTES.STUDENT} component={Student} />
         </div>

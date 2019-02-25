@@ -35,7 +35,7 @@ const withAuthentication = Component => {
       return (
         <AuthUserContext.Provider value={this.state.authUser}>
           <Component {...this.props} />
-          <div>{this.state.authUser ? <Account/> : <SignIn/>}</div> //Consider moving
+          <div>{this.state.authUser ? <Account/> : <SignIn/>}</div> {/*Consider moving*/}
         </AuthUserContext.Provider>
       );
     }
