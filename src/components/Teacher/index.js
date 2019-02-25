@@ -1,43 +1,9 @@
-import React, { Component } from 'react';
-import { withFirebase } from '../Firebase';
+import React from 'react';
 import Navigation from '../Navigation';
-import Account from '../Account';
-import SignIn from '../SignIn';
+import { withAuthentication } from '../Session';
 
-class Teacher extends Component {
+const Teacher = () => (
+  <Navigation/>
+)
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      authUser: null
-    };
-  }
-
-  componentDidMount() {
-    this.listener = this.props.firebase.auth.onAuthStateChanged(
-      authUser => {
-        authUser
-          ? this.setState({ authUser })
-          : this.setState({ authUser: null });
-      },
-    );
-  }
-
-  componentWillUnmount() {
-    this.listener();
-  }
-
-
-
-  render() {
-    return (
-      <div>
-        <Navigation authUser={this.state.authUser}/>
-        <div>{this.state.authUser ? <Account/> : <SignIn/>}</div>
-      </div>
-    );
-  }
-}
-
-export default withFirebase(Teacher);
+export default withAuthentication(Teacher);
