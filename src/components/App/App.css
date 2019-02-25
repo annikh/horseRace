@@ -16,3 +16,14 @@
 .App-buttons {
   justify-content: center;
 }
+
+.btn-class{
+  background-color: #4cc078 !important;
+  border-color:#4cc078 !important;
+}
+
+.btn-class:hover {
+  background-color: #3c9b60 !important;
+  border-color: #3c9b60 !important;
+  color: rgb(197, 197, 197) !important;
+}

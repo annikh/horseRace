@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
+import { Form, Button, Row, Col } from 'react-bootstrap';
 
 import { withFirebase } from '../Firebase';
 import * as ROUTES from '../../constants/routes';
 
+import './style.css'
+
 const SignUpPage = () => (
-  <div>
-    <h1>SignUp</h1>
-    <SignUpForm/>
-  </div>
+ 	<SignUpForm />
 );
 
 const INITIAL_STATE = {
@@ -63,40 +63,61 @@ class SignUpFormBase extends Component {
       username === '';
 
     return (
-      <form onSubmit={this.onSubmit}>
-        <input
-          name="username"
-          value={username}
-          onChange={this.onChange}
-          type="text"
-          placeholder="Full Name"
-        />
-        <input
-          name="email"
-          value={email}
-          onChange={this.onChange}
-          type="text"
-          placeholder="Email Address"
-        />
-        <input
-          name="passwordOne"
-          value={passwordOne}
-          onChange={this.onChange}
-          type="password"
-          placeholder="Password"
-        />
-        <input
-          name="passwordTwo"
-          value={passwordTwo}
-          onChange={this.onChange}
-          type="password"
-          placeholder="Confirm Password"
-        />
-        <button disabled={isInvalid} type="submit">Sign Up</button>
-
-        {error && <p>{error.message}</p>}
-
-      </form>
+      	<Form className="signUpPage" onSubmit={this.onSubmit}>
+		  <div className="signUpFrame">
+				<Row className="row">
+					<Col>
+						<Form.Label className="title">Registrer bruker</Form.Label>
+					</Col>
+				</Row>
+				<Row className="row">
+					<Col>
+						<Form.Control
+						name="username"
+						value={username}
+						onChange={this.onChange}
+						type="text"
+						placeholder="Full Name"
+						/>
+					</Col>
+					<Col>
+						<Form.Control
+						name="email"
+						value={email}
+						onChange={this.onChange}
+						type="text"
+						placeholder="Email Address"
+						/>
+					</Col>
+				</Row>
+				<Row className="row">
+					<Col>
+						<Form.Control
+						name="passwordOne"
+						value={passwordOne}
+						onChange={this.onChange}
+						type="password"
+						placeholder="Password"
+						/>
+					</Col>
+					<Col>
+						<Form.Control
+							name="passwordTwo"
+							value={passwordTwo}
+							onChange={this.onChange}
+							type="password"
+							placeholder="Confirm Password"
+						/>
+					</Col>
+				</Row>
+				<Row className="row">
+					<Col>
+						<Button className="btn-submit" disabled={isInvalid} type="submit" block>Sign Up</Button>
+					</Col>
+				</Row>
+				{error && <p>{error.message}</p>}
+			</div>
+      	</Form>
     );
   }
 }

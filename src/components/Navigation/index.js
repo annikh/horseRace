@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import SignOutButton from '../SignOut';
+import { Nav } from 'react-bootstrap';
+import './style.css';
 
 import * as ROUTES from '../../constants/routes';
 
@@ -9,17 +11,14 @@ const Navigation = ({ authUser }) => (
 );
 
 const NavigationAuth = () => (
-  <ul>
-    <li>
-      <Link to={ROUTES.LANDING}>Landing</Link>
-    </li>
-    <li>
-      <Link to={ROUTES.ACCOUNT}>Account</Link>
-    </li>
-    <li>
+  <Nav className="navbar">
+    <Nav.Item>
+      <Link to={ROUTES.ACCOUNT}>Profil</Link>
+    </Nav.Item>
+    <Nav.Item>
       <SignOutButton />
-    </li>
-  </ul>
+    </Nav.Item>
+  </Nav>
 );
 
 export default Navigation;

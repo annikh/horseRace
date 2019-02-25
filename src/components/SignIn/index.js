@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
-
 import { SignUpLink } from '../SignUp';
 import { withFirebase } from '../Firebase';
 import * as ROUTES from '../../constants/routes';
 
+import { Form, Button, Row, Col } from 'react-bootstrap'
+import './style.css'
+
 const SignInPage = () => (
-  <div>
-    <h1>SignIn</h1>
+    <div>
     <SignInForm />
     <SignUpLink />
   </div>
@@ -23,7 +24,6 @@ const INITIAL_STATE = {
 class SignInFormBase extends Component {
   constructor(props) {
     super(props);
-
     this.state = { ...INITIAL_STATE };
   }
 
@@ -53,27 +53,45 @@ class SignInFormBase extends Component {
     const isInvalid = password === '' || email === '';
 
     return (
-      <form onSubmit={this.onSubmit}>
-        <input
-          name="email"
-          value={email}
-          onChange={this.onChange}
-          type="text"
-          placeholder="Email Address"
-        />
-        <input
-          name="password"
-          value={password}
-          onChange={this.onChange}
-          type="password"
-          placeholder="Password"
-        />
-        <button disabled={isInvalid} type="submit">
-          Sign In
-        </button>
-
-        {error && <p>{error.message}</p>}
-      </form>
+      <Form className="signUpPage" onSubmit={this.onSubmit}>
+        <div className="signUpFrame">
+					<Row className="row">
+        		<Col>
+							<Form.Label className="title">Logg inn</Form.Label>
+						</Col>
+					</Row>
+					<Row className="row">
+						<Col>
+          		<Form.Control
+								name="email"
+								value={email}
+								onChange={this.onChange}
+								type="text"
+								placeholder="Email Address"
+							/>
+       			</Col>
+					</Row>
+					<Row className="row">
+						<Col>
+							<Form.Control
+								name="password"
+								value={password}
+								onChange={this.onChange}
+								type="password"
+								placeholder="Password"
+							/>
+           	</Col>
+					</Row>
+					<Row>
+						<Col>
+          		<Button className="btn-submit" disabled={isInvalid} type="submit" block>
+            		LOGG INN
+							</Button>
+          	</Col>
+					</Row>
+          {error && <p>{error.message}</p>}
+        </div>
+      </Form>
     );
   }
 }
