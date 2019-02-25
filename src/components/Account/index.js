@@ -1,11 +1,14 @@
 import React from 'react';
-import Navigation from '../Navigation';
 import './style.css';
+import { PasswordForgetForm } from '../PasswordForget';
+import PasswordChangeForm from '../PasswordChange';
 
 const Account = () => (
   <div>
     <div className="accountBody">
       <h1>Account</h1>
+      <PasswordForgetForm />
+      <PasswordChangeForm />
     </div>
   </div>
 );
