@@ -17,13 +17,13 @@ ReactDOM.render(
     <FirebaseContext.Provider value={new Firebase()}>
         <Router>
         <div>
-            <Route exact path={ROUTES.LANDING} component={App} />  {/* Remove exact if Title component should be displayed for all routes */}
+            <Route exact path={ROUTES.LANDING} component={App} /> 
             <Route path={ROUTES.SIGN_UP} component={SignUpPage} />
             <Route path={ROUTES.SIGN_IN} component={SignInPage} />
             <Route path={ROUTES.PASSWORD_FORGET} component={PasswordForgetPage} />
             <Route path={ROUTES.ACCOUNT} component={AccountPage} />
-            <Route exact path={ROUTES.TEACHER} component={Teacher} />
-            <Route exact path={ROUTES.STUDENT} component={Student} />
+            <Route path={ROUTES.TEACHER} component={Teacher} />
+            <Route path={ROUTES.STUDENT} component={Student} />
         </div>
         </Router>
     </FirebaseContext.Provider>
