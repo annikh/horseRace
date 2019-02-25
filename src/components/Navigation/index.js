@@ -20,7 +20,7 @@ const Navigation = () => (
 const NavigationAuth = () => (
   <Nav className="navbar">
     <Nav.Item>
-      <Link to={ROUTES.ACCOUNT}>Profil</Link>
+      <Link to={ROUTES.TEACHER}>Profil</Link>
     </Nav.Item>
     <Nav.Item>
       <SignOutButton />
