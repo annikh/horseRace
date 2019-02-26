@@ -13,6 +13,12 @@ import './index.css';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import * as ROUTES from './constants/routes';
 
+/* Add Font Awesome Icons */
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
+library.add(faUser);
+
 ReactDOM.render(
     <FirebaseContext.Provider value={new Firebase()}>
         <Router>

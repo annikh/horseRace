@@ -86,9 +86,14 @@ class SignInFormBase extends Component {
 					</Row>
 					<Row>
 						<Col>
-          		<Button className="btn-submit" disabled={isInvalid} type="submit" block>
+          		<Button className="btn-orange" disabled={isInvalid} type="submit" block>
             		LOGG INN
 							</Button>
+          	</Col>
+					</Row>
+          <Row>
+						<Col>
+          		<PasswordForgetLink />
           	</Col>
 					</Row>
           {error && <p>{error.message}</p>}

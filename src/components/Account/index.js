@@ -1,16 +1,26 @@
 import React from 'react';
-import './style.css';
-import { PasswordForgetForm } from '../PasswordForget';
 import PasswordChangeForm from '../PasswordChange';
+import { Col, Row, Container } from 'react-bootstrap';
+import './style.css';
 
 const Account = () => (
-  <div>
-    <div className="accountBody">
-      <h1>Account</h1>
-      <PasswordForgetForm />
-      <PasswordChangeForm />
-    </div>
-  </div>
+  <Container className="accountBody">
+    <Row>
+      <Col>
+        <h2>Innstillinger</h2>
+      </Col>
+      <Col>
+        <h2>Spill</h2>
+      </Col>
+    </Row>
+    <Row>
+      <Col>
+        <PasswordChangeForm />
+      </Col>
+      <Col>
+      </Col>
+    </Row>
+  </Container>
 );
 
 export default Account;
