@@ -3,5 +3,6 @@ export const SIGN_UP = '/signup';
 export const SIGN_IN = '/signin';
 export const ACCOUNT = '/account';
 export const PASSWORD_FORGET = '/pw-forget';
-export const TEACHER = '/teacher';
 export const STUDENT = '/student';
+export const TEACHER = '/teacher';
+export const CREATE_CLASSROOM = '/create-classroom';

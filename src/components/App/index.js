@@ -17,12 +17,11 @@ const App = () => {
          <Link to={ROUTES.STUDENT} style={{ textDecoration: 'none' }}><Button className="btn-class" variant="outline-light" size="lg" block>Jeg er en elev!</Button></Link>
         </Col>
         <Col xs lg="3">
-        <Link to={ROUTES.ACCOUNT} style={{ textDecoration: 'none' }}><Button className="btn-submit" variant="outline-light" size="lg" block>Jeg er en lærer!</Button></Link>
+        <Link to={ROUTES.TEACHER} style={{ textDecoration: 'none' }}><Button className="btn-submit" variant="outline-light" size="lg" block>Jeg er en lærer!</Button></Link>
         </Col>
       </Row>  
     </Container>
     </div>
-
   )
 }
 

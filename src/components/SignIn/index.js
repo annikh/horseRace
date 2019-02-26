@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
-import { SignUpLink } from '../SignUp';
 import { withFirebase } from '../Firebase';
 import * as ROUTES from '../../constants/routes';
-import { PasswordForgetLink } from '../PasswordForget';
 
 import { Form, Button, Row, Col } from 'react-bootstrap'
 import './style.css'
@@ -12,8 +10,6 @@ import './style.css'
 const SignInPage = () => (
     <div>
     <SignInForm />
-    <PasswordForgetLink />
-    <SignUpLink />
   </div>
 );
 

@@ -1,6 +1,4 @@
 import React from 'react';
-import Account from '../Account';
-import SignIn from '../SignIn';
 
 import AuthUserContext from './context';
 import { withFirebase } from '../Firebase';
@@ -16,26 +14,24 @@ const withAuthentication = Component => {
         };
       }
   
-      componentDidMount() {
-        this.listener = this.props.firebase.auth.onAuthStateChanged(
-          authUser => {
-            authUser
-              ? this.setState({ authUser })
-              : this.setState({ authUser: null });
-          },
-        );
-      }
+    componentDidMount() {
+      this.listener = this.props.firebase.auth.onAuthStateChanged(
+        authUser => {
+          authUser
+            ? this.setState({ authUser })
+            : this.setState({ authUser: null });
+        },
+      );
+    }
   
-      componentWillUnmount() {
-        this.listener();
-      }
-
+    componentWillUnmount() {
+      this.listener();
+    }
 
     render() {
       return (
         <AuthUserContext.Provider value={this.state.authUser}>
           <Component {...this.props} />
-          <div>{this.state.authUser ? <Account/> : <SignIn/>}</div> {/*Consider moving*/}
         </AuthUserContext.Provider>
       );
     }
