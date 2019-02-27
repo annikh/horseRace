@@ -13,7 +13,7 @@ const Navigation = ({match}) => (
       <div>
         <Nav className="navbar">
           <Nav.Item>
-            <Link to={match.url} className="link"><FontAwesomeIcon icon="user" color="black"/> {authUser.email}</Link>
+            <Link to={match.url} className="link"><FontAwesomeIcon icon="user" color="black"/>{authUser.email}</Link>
           </Nav.Item>
           <Nav.Item>
             <Link to={`${match.url}/create-classroom`} className="link">Klasserom</Link>
