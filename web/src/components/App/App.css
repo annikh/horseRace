@@ -42,12 +42,14 @@
 .btn-orange {
   background-color: #ff8c0f !important;
   border-color: #ff8c0f !important;
+  cursor: pointer;
 }
 
 .btn-orange:hover {
   background-color: rgb(182, 105, 22) !important;
   border-color: rgb(182, 105, 22) !important;
   color:rgb(197, 197, 197) !important;
+  cursor: pointer;
 }
 
 .btn-green {

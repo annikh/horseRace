@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withAuthorization } from '../Session';
-import { Container, Button, Form, Row, Col } from 'react-bootstrap';
+import { Container, Button, Form, Row, Col, ListGroup } from 'react-bootstrap';
 import axios from 'axios';
 import shortid from 'shortid';
 
@@ -76,10 +76,26 @@ class CreateClassroom extends Component {
 
       return (
         <Form onSubmit={this.handleSubmit}>
-            <Form.Label><h2>Opprett et klasserom</h2></Form.Label>
-            <Form.Label>Skriv inn fornavn på elevene i klassen din, skilles med linjeskift:</Form.Label>
-            <Form.Control as="textarea" rows="3" placeholder={"Navn1\nNavn2\nNavn3"} value={this.state.value} onChange={this.handleChange}/>
-            <Button disabled={isInvalid} className="btn-orange" type="submit">Opprett</Button>
+          <Row>
+            <Col>
+              <Form.Label><h2>Opprett et klasserom</h2></Form.Label>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <Form.Label>Skriv inn fornavn på elevene i klassen din, skilles med linjeskift:</Form.Label>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <Form.Control as="textarea" rows="3" placeholder={"Navn1\nNavn2\nNavn3"} value={this.state.value} onChange={this.handleChange}/>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <Button disabled={isInvalid} className="btn-orange" type="submit" block>Opprett</Button>
+            </Col>
+          </Row>
         </Form>
       )
     }
@@ -91,12 +107,12 @@ class CreateClassroom extends Component {
         <Container className="accountBody">
           <Row>
             <Col>
-              {this.createClassroomForm()}
-            </Col>
-            <Col>
-              <p>Klasserom: </p>
+              <h2>Dine klasserom</h2>
               {loading && <div>Loading ...</div>}
               <ClassroomList classrooms={classrooms} />
+            </Col>
+            <Col>
+              {this.createClassroomForm()}
             </Col>
           </Row>
         </Container>
@@ -107,15 +123,13 @@ class CreateClassroom extends Component {
 const condition = authUser => !!authUser;
 
 const ClassroomList = ({ classrooms }) => (
-    <ul>
+    <ListGroup  variant="flush">
       {classrooms.map(classroom => (
-        <li pin={classroom.pin}>
-          <span>
-            <strong>Pin:</strong> {classroom.pin}
-          </span>
-        </li>
+        <ListGroup.Item style={{textAlign: "left"}} action variant="warning" pin={classroom.pin}>
+          <strong>Pin:</strong> {classroom.pin} 
+        </ListGroup.Item>
       ))}
-    </ul>
+    </ListGroup>
 );
 
 export default withAuthorization(condition)(CreateClassroom);
