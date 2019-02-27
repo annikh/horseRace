@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { withAuthorization } from '../Session';
 import { Container, Button, Form, Row, Col } from 'react-bootstrap';
-
+import axios from 'axios';
+import shortid from 'shortid';
 
 class CreateClassroom extends Component {
     constructor(props) {
@@ -9,41 +10,80 @@ class CreateClassroom extends Component {
 
       this.state = {
         loading: false,
-        users: [],
+        classrooms: [],
         value: '',
       };
 
       this.createClassroomForm = this.createClassroomForm.bind(this);
       this.handleChange = this.handleChange.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
+      this.addClassroom = this.addClassroom.bind(this);
     }
     
     componentDidMount() {
-      this.setState({ loading: true });
+      return axios.get('https://us-central1-horse-race-232509.cloudfunctions.net/getClassrooms').then((response) => {
 
-      this.props.firebase.users().on('value', snapshot => {
-        const usersObject = snapshot.val();
+        const classrooms = Object.keys(response.data).map(key => ({
+          ...response.data[key],
+          id: key,
+        }));
+        console.log(classrooms);
+        this.setState({
+          classrooms: classrooms
+        })
+      })
+      // this.setState({ loading: true });
 
-        const usersList = Object.keys(usersObject).map(key => ({
-          ...usersObject[key],
-          uid: key,
-          }));
+      // this.props.firebase.users().on('value', snapshot => {
+      //   const usersObject = snapshot.val();
 
-          this.setState({
-          users: usersList,
-          loading: false,
-          });
-        });
+      //   const usersList = Object.keys(usersObject).map(key => ({
+      //     ...usersObject[key],
+      //     uid: key,
+      //     }));
+
+      //     this.setState({
+      //     users: usersList,
+      //     loading: false,
+      //     });
+      //   });
     }
     
     componentWillUnmount() {
       this.props.firebase.users().off();
     }
 
+    addClassroom() {
+      const newClassroomPin = shortid.generate();
+      while(!this.isValidPin(newClassroomPin)) {
+        newClassroomPin = shortid.generate();
+      }
+      return axios.post('https://us-central1-horse-race-232509.cloudfunctions.net/addClassroom', { pin: newClassroomPin, names: this.state.value }).then((response) => {
+        const classrooms = Object.keys(response.data).map(key => ({
+          ...response.data[key],
+          id: key,
+        }));
+        console.log(classrooms);
+        this.setState({
+          classrooms: classrooms
+        })
+      })
+    }
+
+    isValidPin(pin) {
+      for (var key in this.state.classrooms) {
+        console.log(this.state.classrooms[key].pin)
+        if (this.state.classrooms[key].pin === pin) {
+          return false;
+        }
+      }
+      return true;
+    }
+
     handleSubmit(event) {
-      //Send data til db, redirect til klasseromsoversikt
-      alert("Klasserom opprettet!");
       event.preventDefault();
+      this.addClassroom();
+      alert("Klasserom opprettet!");
     }
 
     handleChange(event) {
@@ -64,7 +104,7 @@ class CreateClassroom extends Component {
     }
     
     render() {
-      const { users, loading } = this.state;
+      const { classrooms, loading, value } = this.state;
 
       return (
         <Container className="accountBody">
@@ -73,9 +113,9 @@ class CreateClassroom extends Component {
               {this.createClassroomForm()}
             </Col>
             <Col>
-              <p>Brukere: </p>
+              <p>Klasserom: </p>
               {loading && <div>Loading ...</div>}
-              <UserList users={users} />
+              <ClassroomList classrooms={classrooms} />
             </Col>
           </Row>
         </Container>
@@ -85,18 +125,12 @@ class CreateClassroom extends Component {
 }
 const condition = authUser => !!authUser;
 
-const UserList = ({ users }) => (
+const ClassroomList = ({ classrooms }) => (
     <ul>
-      {users.map(user => (
-        <li key={user.uid}>
+      {classrooms.map(classroom => (
+        <li pin={classroom.pin}>
           <span>
-            <strong>ID:</strong> {user.uid}
-          </span>
-          <span>
-            <strong>E-Mail:</strong> {user.email}
-          </span>
-          <span>
-            <strong>Username:</strong> {user.username}
+            <strong>Pin:</strong> {classroom.pin}
           </span>
         </li>
       ))}
