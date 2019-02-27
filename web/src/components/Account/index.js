@@ -1,8 +1,10 @@
 import React from 'react';
+import { Col, Row, Container, Button } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+
 import PasswordChangeForm from '../PasswordChange';
 import { AuthUserContext, withAuthorization } from '../Session';
-
-import { Col, Row, Container } from 'react-bootstrap';
+import * as ROUTES from '../../constants/routes';
 import './style.css';
 
 const Account = () => (
@@ -15,6 +17,8 @@ const Account = () => (
         </Col>
         <Col>
           <h2>Spill</h2>
+          <p>Du har ingen spill ennå. Opprett et klasserom for å lage et.</p>
+          <Link to={ROUTES.TEACHER + ROUTES.CREATE_CLASSROOM} style={{ textDecoration: 'none' }}><Button className="btn-orange">Opprett et klasserom</Button></Link>
         </Col>
       </Row>
       <Row>
