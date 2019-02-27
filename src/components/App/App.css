@@ -27,3 +27,34 @@
   border-color: #3c9b60 !important;
   color: rgb(197, 197, 197) !important;
 }
+
+.btn-gray {
+  background-color: #696969 !important;
+  border-color:#696969 !important;
+}
+
+.btn-gray:hover {
+  background-color: #575757 !important;
+  border-color: #575757 !important;
+  color: rgb(197, 197, 197) !important;
+}
+
+.btn-orange {
+  background-color: #E8871E !important;
+  border-color: #E8871E !important;
+}
+
+.btn-orange:hover {
+  background-color: rgb(182, 105, 22) !important;
+  border-color: rgb(182, 105, 22) !important;
+  color:rgb(197, 197, 197) !important;
+}
+
+
+.link {
+  color: rgb(17, 113, 168);
+}
+
+.link:hover {
+  color: rgb(7, 80, 122);
+}

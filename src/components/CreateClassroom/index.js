@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { withAuthorization } from '../Session';
+import './style.css';
 
 class CreateClassroom extends Component {
     constructor(props) {
@@ -37,7 +38,7 @@ class CreateClassroom extends Component {
       const { users, loading } = this.state;
 
       return (
-        <div>
+        <div className="accountBody">
           <h1>Opprett et klasserom</h1>
           <p>Brukere: </p>
           {loading && <div>Loading ...</div>}

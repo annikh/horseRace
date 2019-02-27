@@ -1,21 +1,30 @@
 import React from 'react';
-import './style.css';
-import { PasswordForgetForm } from '../PasswordForget';
 import PasswordChangeForm from '../PasswordChange';
 import { AuthUserContext, withAuthorization } from '../Session';
+
+import { Col, Row, Container } from 'react-bootstrap';
+import './style.css';
 
 const Account = () => (
   <AuthUserContext.Consumer>
     {authUser => (
-      <div className="accountBody">
-        {/* <h1>Account: {authUser.email}</h1> */}
-        <h1>Account</h1>
-        <PasswordForgetForm />
-        <PasswordChangeForm />
-
-        <br/>
-        <h1>Dine klasserom:</h1>
-      </div>
+      <Container className="accountBody">
+      <Row>
+        <Col>
+          <h2>Innstillinger</h2>
+        </Col>
+        <Col>
+          <h2>Spill</h2>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <PasswordChangeForm />
+        </Col>
+        <Col>
+        </Col>
+      </Row>
+    </Container>
   )}
   </AuthUserContext.Consumer>
 );

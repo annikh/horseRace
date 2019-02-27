@@ -3,6 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 import { withFirebase } from '../Firebase';
 import * as ROUTES from '../../constants/routes';
+import { PasswordForgetLink } from '../PasswordForget';
 
 import { Form, Button, Row, Col } from 'react-bootstrap'
 import './style.css'
@@ -82,9 +83,14 @@ class SignInFormBase extends Component {
 					</Row>
 					<Row>
 						<Col>
-          		<Button className="btn-submit" disabled={isInvalid} type="submit" block>
+          		<Button className="btn-orange" disabled={isInvalid} type="submit" block>
             		LOGG INN
 							</Button>
+          	</Col>
+					</Row>
+          <Row>
+						<Col>
+          		<PasswordForgetLink />
           	</Col>
 					</Row>
           {error && <p>{error.message}</p>}
