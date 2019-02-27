@@ -32,25 +32,6 @@ class CreateClassroom extends Component {
           classrooms: classrooms
         })
       })
-      // this.setState({ loading: true });
-
-      // this.props.firebase.users().on('value', snapshot => {
-      //   const usersObject = snapshot.val();
-
-      //   const usersList = Object.keys(usersObject).map(key => ({
-      //     ...usersObject[key],
-      //     uid: key,
-      //     }));
-
-      //     this.setState({
-      //     users: usersList,
-      //     loading: false,
-      //     });
-      //   });
-    }
-    
-    componentWillUnmount() {
-      this.props.firebase.users().off();
     }
 
     addClassroom() {
@@ -135,8 +116,6 @@ const ClassroomList = ({ classrooms }) => (
         </li>
       ))}
     </ul>
-  );
-
-  
+);
 
 export default withAuthorization(condition)(CreateClassroom);
