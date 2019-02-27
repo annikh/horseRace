@@ -4,6 +4,7 @@ import { compose } from 'recompose';
 import { withFirebase } from '../Firebase';
 import * as ROUTES from '../../constants/routes';
 import { PasswordForgetLink } from '../PasswordForget';
+import { SignUpLink } from '../SignUp';
 
 import { Form, Button, Row, Col } from 'react-bootstrap'
 import './style.css'
@@ -81,6 +82,11 @@ class SignInFormBase extends Component {
 							/>
            	</Col>
 					</Row>
+          <Row>
+						<Col>
+          		<PasswordForgetLink />
+          	</Col>
+					</Row>
 					<Row>
 						<Col>
           		<Button className="btn-orange" disabled={isInvalid} type="submit" block>
@@ -90,7 +96,7 @@ class SignInFormBase extends Component {
 					</Row>
           <Row>
 						<Col>
-          		<PasswordForgetLink />
+          		<SignUpLink />
           	</Col>
 					</Row>
           {error && <p>{error.message}</p>}
@@ -104,6 +110,7 @@ const SignInForm = compose(
   withRouter,
   withFirebase,
 )(SignInFormBase);
+
 
 export default SignInPage;
 

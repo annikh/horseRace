@@ -40,8 +40,8 @@
 }
 
 .btn-orange {
-  background-color: #E8871E !important;
-  border-color: #E8871E !important;
+  background-color: #ff8c0f !important;
+  border-color: #ff8c0f !important;
 }
 
 .btn-orange:hover {
@@ -50,9 +50,23 @@
   color:rgb(197, 197, 197) !important;
 }
 
+.btn-green {
+  background-color: rgb(7, 80, 122) !important;
+  border-color: rgb(7, 80, 122) !important;
+}
+
+.btn-green:hover {
+  background-color: rgb(6, 67, 102) !important;
+  border-color: rgb(6, 67, 102) !important;
+  color:rgb(197, 197, 197) !important;
+}
+
 
 .link {
   color: rgb(17, 113, 168);
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }
 
 .link:hover {
