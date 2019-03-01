@@ -17,7 +17,7 @@ exports.addClassroom = functions.https.onRequest((req, res) => {
     }
     console.log(req.body)
     classroomDB.push(req.body);
-    getClassroomsFromDatabase(res);
+    getAllClassroomsFromDatabase(res);
   })
 })
 
@@ -28,11 +28,11 @@ exports.getClassrooms = functions.https.onRequest((req, res) => {
           message: 'Not allowed'
         })
       }
-      getClassroomsFromDatabase(res);
+      getAllClassroomsFromDatabase(res);
   })
 })
 
-const getClassroomsFromDatabase = (res) => {
+const getAllClassroomsFromDatabase = (res) => {
   let classrooms = [];
 
   return classroomDB.on('value', (snapshot) => {
@@ -40,10 +40,35 @@ const getClassroomsFromDatabase = (res) => {
           classrooms.push({
           id: classroom.key,
           pin: classroom.val().pin,
-          names: classroom.val().names
+          names: classroom.val().names,
+          user_email: classroom.val().user_email || ''
           });
       });
 
+  res.status(200).json(classrooms)
+  }, (error) => {
+      res.status(error.code).json({
+      message: `Something went wrong. ${error.message}`
+      })
+  })
+};
+
+const getClassroomsForTeacherFromDatabase = (req, res) => {
+  let classrooms = [];
+
+  return classroomDB.on('value', (snapshot) => {
+      snapshot.forEach((classroom) => {
+        const classroom_user_email = classroom.val().user_email;
+        console.log("DB val: " + classroom_user_email);
+        console.log("Req val: " + req.body.user_email);
+        if (classroom_user_email && classroom_user_email === req.body.user_email) {
+          classrooms.push({
+            id: classroom.key,
+            pin: classroom.val().pin,
+            names: classroom.val().names
+          });
+        }
+      });
   res.status(200).json(classrooms)
   }, (error) => {
       res.status(error.code).json({

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { withAuthorization } from '../Session';
+import { AuthUserContext, withAuthorization } from '../Session';
 import { Container, Button, Form, Row, Col, ListGroup } from 'react-bootstrap';
 import axios from 'axios';
 import shortid from 'shortid';
@@ -12,6 +12,7 @@ class CreateClassroom extends Component {
         loading: false,
         classrooms: [],
         value: '',
+        user_email: ''
       };
 
       this.createClassroomForm = this.createClassroomForm.bind(this);
@@ -39,7 +40,7 @@ class CreateClassroom extends Component {
       while(!this.isValidPin(newClassroomPin)) {
         newClassroomPin = shortid.generate();
       }
-      return axios.post('https://us-central1-horse-race-232509.cloudfunctions.net/addClassroom', { pin: newClassroomPin, names: this.state.value }).then((response) => {
+      return axios.post('https://us-central1-horse-race-232509.cloudfunctions.net/addClassroom', { pin: newClassroomPin, names: this.state.value, user_email: this.state.user_email }).then((response) => {
         const classrooms = Object.keys(response.data).map(key => ({
           ...response.data[key],
           id: key,
@@ -71,8 +72,9 @@ class CreateClassroom extends Component {
       this.setState({value: event.target.value});
     }
 
-    createClassroomForm = () => {
+    createClassroomForm = (user_email) => {
       const isInvalid = this.state.value === '';
+      this.state.user_email = user_email;
 
       return (
         <Form onSubmit={this.handleSubmit}>
@@ -104,21 +106,24 @@ class CreateClassroom extends Component {
       const { classrooms, loading, value } = this.state;
 
       return (
-        <Container className="accountBody">
-          <Row>
-            <Col>
-              <h2>Dine klasserom</h2>
-              {loading && <div>Loading ...</div>}
-              <ClassroomList classrooms={classrooms} />
-            </Col>
-            <Col>
-              {this.createClassroomForm()}
-            </Col>
-          </Row>
-        </Container>
+        <AuthUserContext.Consumer>
+        {authUser => (
+          <Container className="accountBody">
+            <Row>
+              <Col>
+                <h2>Dine klasserom</h2>
+                {loading && <div>Loading ...</div>}
+                <ClassroomList classrooms={classrooms} />
+              </Col>
+              <Col>
+                {this.createClassroomForm(authUser.email)}
+              </Col>
+            </Row>
+          </Container>
+        )}
+        </AuthUserContext.Consumer>
       )
     }
-
 }
 const condition = authUser => !!authUser;
 
