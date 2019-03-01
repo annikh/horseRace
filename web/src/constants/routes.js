@@ -5,3 +5,5 @@ export const PASSWORD_FORGET = '/pw-forget';
 export const STUDENT = '/student';
 export const TEACHER = '/teacher';
 export const CREATE_CLASSROOM = '/create-classroom';
+export const CREATE_GAME = '/create-game';
+export const GAME = '/game';

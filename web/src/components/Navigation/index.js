@@ -18,6 +18,9 @@ const Navigation = ({match}) => (
           <Nav.Item>
             <Link to={`${match.url}/create-classroom`} className="link">Klasserom</Link>
           </Nav.Item>
+           <Nav.Item>
+            <Link to={`${match.url}/create-game`} className="link">Spill</Link>
+          </Nav.Item>
           <Nav.Item>
             <SignOutButton />
           </Nav.Item>

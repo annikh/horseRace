@@ -42,7 +42,7 @@ class PasswordChangeForm extends Component {
       passwordOne !== passwordTwo || passwordOne === '';
 
     return (
-      <Form onSubmit={this.onSubmit}>
+      <Form onSubmit={this.onSubmit} style={{"width":"80%"}}>
       <Row>
         <Col>
           <Form.Control
@@ -67,7 +67,7 @@ class PasswordChangeForm extends Component {
       </Row>
       <Row>
         <Col>
-          <Button className="btn-orange" disabled={isInvalid} type="submit">
+          <Button className="btn-orange" disabled={isInvalid} type="submit" block>
             Reset Passord
           </Button>
         </Col>
