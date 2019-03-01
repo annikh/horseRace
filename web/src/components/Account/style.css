@@ -1,5 +1,5 @@
 .accountBody {
-    padding: 50px;
+    padding: 50px !important;
     background-color: #f9c35e;
     min-height: 100vh;
     min-width: 100%;

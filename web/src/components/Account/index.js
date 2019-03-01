@@ -38,19 +38,23 @@ class Account extends Component {
         <Container className="accountBody">
           <Row>
             <Col>
-              <h2>Innstillinger</h2>
+              <Row>
+                <h2>Innstillinger</h2>
+              </Row>
+              <Row>
+                <PasswordChangeForm />
+              </Row>
             </Col>
             <Col>
-              <h2>Spill</h2>
-              <GameList games={games}/>
-              <Link to={ROUTES.TEACHER + ROUTES.CREATE_GAME} style={{ textDecoration: 'none' }}><Button className="btn-orange">Opprett et spill</Button></Link>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <PasswordChangeForm />
-            </Col>
-            <Col>
+              <Row>
+                <h2>Dine spill</h2>
+              </Row>
+              <Row>
+                <GameList games={games}/>
+              </Row>
+              <Row>
+                <Link to={ROUTES.TEACHER + ROUTES.CREATE_GAME} style={{ textDecoration: 'none' }}><Button className="btn-orange">Opprett et spill</Button></Link>
+              </Row>
             </Col>
           </Row>
         </Container>
@@ -61,10 +65,15 @@ class Account extends Component {
 } 
 
 const GameList = ({ games }) => (
-    <ListGroup  variant="flush">
+    <ListGroup variant="flush" style={{"width":"80%"}}>
       {games.map(game => (
         <ListGroup.Item style={{textAlign: "left"}} action variant="warning" pin={game.pin}>
-          <strong>Pin:</strong> {game.pin} 
+          <Row>
+            <strong>Pin:</strong> <span>{game.pin} </span>
+          </Row>
+          <Row>
+            <strong>Dato:  </strong> {new Intl.DateTimeFormat('en-GB', { year: 'numeric', month: 'long', day: '2-digit'}).format(game.date)}
+          </Row>
         </ListGroup.Item>
       ))}
     </ListGroup>

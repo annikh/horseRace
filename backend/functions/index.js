@@ -61,7 +61,9 @@ exports.addGame = functions.https.onRequest((req, res) => {
       })
     }
     console.log("Add Game Backend: ", req.body)
-    gameDB.push(req.body);
+    const date = { date: new Date().getTime()}
+    const game = Object.assign(req.body, date)
+    gameDB.push(game);
     getGamesFromDatabase(res);
   })
 })
@@ -85,13 +87,14 @@ const getGamesFromDatabase = (res) => {
       snapshot.forEach((game) => {
           games.push({
           id: game.key,
+          pin: game.val().pin,
           classroom_id: game.val().classroom_id,
           user_id: game.val().user_id,
-          date: new Date()
+          date: game.val().date
           });
       });
 
-  res.status(200).json(classrooms)
+  res.status(200).json(games)
   }, (error) => {
       res.status(error.code).json({
       message: `Something went wrong. ${error.message}`
