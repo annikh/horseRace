@@ -12,7 +12,6 @@ class CreateClassroom extends Component {
         loading: false,
         classrooms: [],
         value: '',
-        user_id: ''
       };
 
       this.createClassroomForm = this.createClassroomForm.bind(this);
@@ -35,12 +34,12 @@ class CreateClassroom extends Component {
       })
     }
 
-    addClassroom() {
+    addClassroom(user_id) {
       const newClassroomPin = shortid.generate();
       while(!this.isValidPin(newClassroomPin)) {
         newClassroomPin = shortid.generate();
       }
-      return axios.post('https://us-central1-horse-race-232509.cloudfunctions.net/addClassroom', { pin: newClassroomPin, names: this.state.value, user_id: this.state.user_id }).then((response) => {
+      return axios.post('https://us-central1-horse-race-232509.cloudfunctions.net/addClassroom', { pin: newClassroomPin, names: this.state.value, user_id: user_id }).then((response) => {
         const classrooms = Object.keys(response.data).map(key => ({
           ...response.data[key],
           id: key,
@@ -62,9 +61,9 @@ class CreateClassroom extends Component {
       return true;
     }
 
-    handleSubmit(event) {
+    handleSubmit = uid => event => {
       event.preventDefault();
-      this.addClassroom();
+      this.addClassroom(uid);
       alert("Klasserom opprettet!");
     }
 
@@ -72,12 +71,11 @@ class CreateClassroom extends Component {
       this.setState({value: event.target.value});
     }
 
-    createClassroomForm = (user_id) => {
+    createClassroomForm = (uid) => {
       const isInvalid = this.state.value === '';
-      this.state.user_id = user_id;
 
       return (
-        <Form onSubmit={this.handleSubmit}>
+        <Form onSubmit={this.handleSubmit(uid)}>
           <Row>
             <Col>
               <Form.Label><h2>Opprett et klasserom</h2></Form.Label>
