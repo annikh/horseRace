@@ -124,8 +124,8 @@ const condition = authUser => !!authUser;
 
 const ClassroomList = ({ classrooms }) => (
     <ListGroup  variant="flush">
-      {classrooms.map(classroom => (
-        <ListGroup.Item style={{textAlign: "left"}} action variant="warning" pin={classroom.pin}>
+      {classrooms.map((classroom, i) => (
+        <ListGroup.Item key={i} style={{textAlign: "left"}} action variant="warning" pin={classroom.pin}>
           <strong>Pin:</strong> {classroom.pin} 
         </ListGroup.Item>
       ))}

@@ -66,8 +66,8 @@ class Account extends Component {
 
 const GameList = ({ games }) => (
     <ListGroup variant="flush" style={{"width":"80%"}}>
-      {games.map(game => (
-        <ListGroup.Item style={{textAlign: "left"}} action variant="warning" pin={game.pin}>
+      {games.map((game, i) => (
+        <ListGroup.Item key={i} style={{textAlign: "left"}} action variant="warning" pin={game.pin}>
           <Row>
             <strong>Pin:</strong> <span>{game.pin} </span>
           </Row>
