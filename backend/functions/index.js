@@ -17,7 +17,7 @@ exports.addClassroom = functions.https.onRequest((req, res) => {
     }
     console.log(req.body)
     classroomDB.push(req.body);
-    getAllClassroomsFromDatabase(res);
+    getClassroomsForTeacherFromDatabase(req, res);
   })
 })
 
@@ -28,7 +28,7 @@ exports.getClassrooms = functions.https.onRequest((req, res) => {
           message: 'Not allowed'
         })
       }
-      getAllClassroomsFromDatabase(res);
+      getClassroomsForTeacherFromDatabase(req, res);
   })
 })
 
