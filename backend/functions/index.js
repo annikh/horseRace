@@ -16,7 +16,9 @@ exports.addClassroom = functions.https.onRequest((req, res) => {
       })
     }
     console.log(req.body)
-    classroomDB.push(req.body);
+    const date = { date: new Date().getTime()}
+    const classroom = Object.assign(req.body, date)
+    classroomDB.push(classroom);
     getClassroomsForTeacherFromDatabase(req, res);
   })
 })
@@ -41,7 +43,8 @@ const getAllClassroomsFromDatabase = (res) => {
           id: classroom.key,
           pin: classroom.val().pin,
           names: classroom.val().names,
-          user_email: classroom.val().user_email || ''
+          user_email: classroom.val().user_email || '',
+          date: classroom.val().date
           });
       });
 
@@ -65,7 +68,8 @@ const getClassroomsForTeacherFromDatabase = (req, res) => {
           classrooms.push({
             id: classroom.key,
             pin: classroom.val().pin,
-            names: classroom.val().names
+            names: classroom.val().names,
+            date: classroom.val().date
           });
         }
       });
