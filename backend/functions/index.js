@@ -43,7 +43,7 @@ const getAllClassroomsFromDatabase = (res) => {
           id: classroom.key,
           pin: classroom.val().pin,
           names: classroom.val().names,
-          user_email: classroom.val().user_email || '',
+          user_id: classroom.val().user_id || '',
           date: classroom.val().date
           });
       });
@@ -61,10 +61,10 @@ const getClassroomsForTeacherFromDatabase = (req, res) => {
 
   return classroomDB.on('value', (snapshot) => {
       snapshot.forEach((classroom) => {
-        const classroom_user_email = classroom.val().user_email;
-        console.log("DB val: " + classroom_user_email);
-        console.log("Req val: " + req.body.user_email);
-        if (classroom_user_email && classroom_user_email === req.body.user_email) {
+        const classroom_user_id = classroom.val().user_id;
+        console.log("DB val: " + classroom_user_id);
+        console.log("Req val: " + req.body.user_id);
+        if (classroom_user_id && classroom_user_id === req.body.user_id) {
           classrooms.push({
             id: classroom.key,
             pin: classroom.val().pin,

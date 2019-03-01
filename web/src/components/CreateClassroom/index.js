@@ -12,7 +12,7 @@ class CreateClassroom extends Component {
         loading: false,
         classrooms: [],
         value: '',
-        user_email: ''
+        user_id: ''
       };
 
       this.createClassroomForm = this.createClassroomForm.bind(this);
@@ -40,7 +40,7 @@ class CreateClassroom extends Component {
       while(!this.isValidPin(newClassroomPin)) {
         newClassroomPin = shortid.generate();
       }
-      return axios.post('https://us-central1-horse-race-232509.cloudfunctions.net/addClassroom', { pin: newClassroomPin, names: this.state.value, user_email: this.state.user_email }).then((response) => {
+      return axios.post('https://us-central1-horse-race-232509.cloudfunctions.net/addClassroom', { pin: newClassroomPin, names: this.state.value, user_id: this.state.user_id }).then((response) => {
         const classrooms = Object.keys(response.data).map(key => ({
           ...response.data[key],
           id: key,
@@ -72,9 +72,9 @@ class CreateClassroom extends Component {
       this.setState({value: event.target.value});
     }
 
-    createClassroomForm = (user_email) => {
+    createClassroomForm = (user_id) => {
       const isInvalid = this.state.value === '';
-      this.state.user_email = user_email;
+      this.state.user_id = user_id;
 
       return (
         <Form onSubmit={this.handleSubmit}>
@@ -116,7 +116,7 @@ class CreateClassroom extends Component {
                 <ClassroomList classrooms={classrooms} />
               </Col>
               <Col>
-                {this.createClassroomForm(authUser.email)}
+                {this.createClassroomForm(authUser.uid)}
               </Col>
             </Row>
           </Container>
