@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { AuthUserContext, withAuthorization } from '../Session';
-import { Container, Button, Form, Row, Col, ListGroup} from 'react-bootstrap';
+import { Container, Button, Form, Row, Col, ListGroup } from 'react-bootstrap';
+import { Redirect } from 'react-router-dom'
+import * as ROUTES from '../../constants/routes';
 import axios from 'axios';
 import shortid from 'shortid';
 
@@ -11,11 +13,10 @@ class CreateGame extends Component {
       this.handleChange = this.handleChange.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
       this.addGame = this.addGame.bind(this);
-      this.getGames = this.getGames.bind(this);
-      this.getClassrooms = this.getClassrooms.bind(this);
       this.isValidPin = this.isValidPin.bind(this);
 
       this.state = {
+        doRedirect: false,
         loading: false,
         games: [],
         classrooms: [],
@@ -23,17 +24,12 @@ class CreateGame extends Component {
       };
     }
 
-    getGames() {
-        return axios.get('https://us-central1-horse-race-232509.cloudfunctions.net/getGames');
-    }
-
-    getClassrooms() {
-        return axios.get('https://us-central1-horse-race-232509.cloudfunctions.net/getClassrooms');
-    }
-    
     componentDidMount() {
-      axios.all([this.getGames(), this.getClassrooms()])
-      .then(axios.spread(function (gamesRes, classroomsRes) {
+      axios.all([
+        axios.get('https://us-central1-horse-race-232509.cloudfunctions.net/getGames'),
+        axios.get('https://us-central1-horse-race-232509.cloudfunctions.net/getClassrooms')
+      ])
+      .then(axios.spread((gamesRes, classroomsRes) => {
         const games = Object.keys(gamesRes.data).map(key => ({
           ...gamesRes.data[key],
           id: key,
@@ -42,7 +38,6 @@ class CreateGame extends Component {
           ...classroomsRes.data[key],
           id: key,
         }));
-        console.log(games, classrooms)
         this.setState({
           games: games,
           classrooms: classrooms
@@ -79,7 +74,7 @@ class CreateGame extends Component {
     handleSubmit(event) {
       event.preventDefault();
       this.addGame();
-      alert("Spill opprettet!");
+      this.setState({ doRedirect: true });
     }
 
     handleChange(event) {
@@ -100,15 +95,15 @@ class CreateGame extends Component {
                 </Col>
                 <Col>
                   <Form.Control as="select" onChange={this.handleChange}>
-                    {this.state.classrooms.map(classroom => (
-                          <option value={classroom.key}>{classroom}</option>
+                    {this.state.classrooms.map((classroom, i) => (
+                          <option key={i} value={classroom.key}>{classroom.pin}</option>
                     ))}
                   </Form.Control>
                 </Col>
                 </Row>
                 <Row>
                 <Col>
-                    <Button className="btn-orange" type="submit" block>Opprett spill!</Button>
+                   <Button className="btn-orange" type="submit" block>Opprett spill</Button>
                 </Col>
                 </Row>
             </Form>
@@ -122,8 +117,10 @@ class CreateGame extends Component {
         <AuthUserContext.Consumer>
           {authUser => (
             <Container className="accountBody">
+              { this.state.doRedirect && <Redirect to={ROUTES.TEACHER + ROUTES.GAME}/> }
               <Row>
                 <Col>
+                  <h2 style={{"textAlign":"left"}}>Dine spill:</h2>
                   <GameList games={games}/>
                 </Col>
                 <Col>
@@ -141,8 +138,8 @@ const condition = authUser => !!authUser;
 
 const GameList = ({ games }) => (
     <ListGroup variant="flush" style={{"width":"80%"}}>
-      {games.map(game => (
-        <ListGroup.Item style={{textAlign: "left"}} action variant="warning" pin={game.pin}>
+      {games.map((game, i) => (
+        <ListGroup.Item key={i} style={{textAlign: "left"}} action variant="warning" pin={game.pin}>
           <Row>
             <strong>Pin:</strong> <span>{game.pin} </span>
           </Row>
