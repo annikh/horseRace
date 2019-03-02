@@ -26,7 +26,7 @@ class CreateGame extends Component {
 
     componentDidMount() {
       axios.all([
-        axios.get('https://us-central1-horse-race-232509.cloudfunctions.net/getGames'),
+        axios.get('https://us-central1-horse-race-232509.cloudfunctions.net/getGamesForTeacherFromDatabase'),
         axios.get('https://us-central1-horse-race-232509.cloudfunctions.net/getClassrooms')
       ])
       .then(axios.spread((gamesRes, classroomsRes) => {
