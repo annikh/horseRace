@@ -98,22 +98,37 @@ exports.addGame = functions.https.onRequest((req, res) => {
 })
 
 
-exports.getGames = functions.https.onRequest((req, res) => {
+exports.getAllGames = functions.https.onRequest((req, res) => {
   return cors(req, res, () => {
       if(req.method !== 'GET') {
         return res.status(404).json({
           message: 'Not allowed'
         })
       }
-      getGamesFromDatabase(res);
+      getAllGamesFromDatabase(res);
   })
 })
 
-const getGamesFromDatabase = (res) => {
+exports.getGamesForTeacherFromDatabase = functions.https.onRequest((req, res) => {
+  return cors(req, res, () => {
+      if(req.method !== 'GET') {
+        return res.status(404).json({
+          message: 'Not allowed'
+        })
+      }
+      getGamesForTeacherFromDatabase(res);
+  })
+})
+
+const getGamesForTeacherFromDatabase = (req, res) => {
   let games = [];
 
   return gameDB.on('value', (snapshot) => {
       snapshot.forEach((game) => {
+        const game_user_id = game.val().user_id;
+        console.log("DB val: " + game_user_id);
+        console.log("Req val: " + req.body.user_id);
+        if (game_user_id && game_user_id === req.body.user_id){
           games.push({
           id: game.key,
           pin: game.val().pin,
@@ -121,8 +136,8 @@ const getGamesFromDatabase = (res) => {
           user_id: game.val().user_id,
           date: game.val().date
           });
+        }
       });
-
   res.status(200).json(games)
   }, (error) => {
       res.status(error.code).json({
