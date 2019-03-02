@@ -93,7 +93,7 @@ exports.addGame = functions.https.onRequest((req, res) => {
     const date = { date: new Date().getTime()}
     const game = Object.assign(req.body, date)
     gameDB.push(game);
-    getGamesFromDatabase(res);
+    getGamesForTeacherFromDatabase(req, res);
   })
 })
 
@@ -105,7 +105,7 @@ exports.getAllGames = functions.https.onRequest((req, res) => {
           message: 'Not allowed'
         })
       }
-      getAllGamesFromDatabase(res);
+      getAllGamesFromDatabase(req, res);
   })
 })
 
@@ -116,9 +116,30 @@ exports.getGamesForTeacherFromDatabase = functions.https.onRequest((req, res) =>
           message: 'Not allowed'
         })
       }
-      getGamesForTeacherFromDatabase(res);
+      getGamesForTeacherFromDatabase(req, res);
   })
 })
+
+const getAllGamesFromDatabase = (req, res) => {
+  let games = [];
+
+  return gameDB.on('value', (snapshot) => {
+    snapshot.forEach((game) => {
+        games.push({
+        id: game.key,
+        pin: game.val().pin,
+        classroom_id: game.val().classroom_id,
+        user_id: game.val().user_id,
+        date: game.val().date
+        });
+      });
+    res.status(200).json(games)
+    }, (error) => {
+        res.status(error.code).json({
+        message: `Something went wrong. ${error.message}`
+        })
+    })
+};
 
 const getGamesForTeacherFromDatabase = (req, res) => {
   let games = [];
