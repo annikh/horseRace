@@ -10,74 +10,23 @@ import './style.css';
 class Account extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      games: []
-    }
-  }
-
-  componentDidMount() {
-    return axios.get('https://us-central1-horse-race-232509.cloudfunctions.net/getGames').then((response) => {
-
-      const games = Object.keys(response.data).map(key => ({
-        ...response.data[key],
-        id: key,
-      }));
-      console.log("Account Component: ", games);
-      this.setState({
-        games: games
-      })
-    })
   }
 
   render() {
-    const { games } = this.state;
-
     return (
-      <AuthUserContext.Consumer>
-        {authUser => (
-        <Container className="accountBody">
+      <Container className="accountBody">
+        <Col>
           <Row>
-            <Col>
-              <Row>
-                <h2>Innstillinger</h2>
-              </Row>
-              <Row>
-                <PasswordChangeForm />
-              </Row>
-            </Col>
-            <Col>
-              <Row>
-                <h2>Dine spill</h2>
-              </Row>
-              <Row>
-                <GameList games={games}/>
-              </Row>
-              <Row>
-                <Link to={ROUTES.TEACHER + ROUTES.CREATE_GAME} style={{ textDecoration: 'none' }}><Button className="btn-orange">Opprett et spill</Button></Link>
-              </Row>
-            </Col>
+            <h2>Innstillinger</h2>
           </Row>
-        </Container>
-        )}
-      </AuthUserContext.Consumer>
+          <Row>
+            <PasswordChangeForm />
+          </Row>
+        </Col>
+      </Container>
     )
   }
 } 
-
-const GameList = ({ games }) => (
-    <ListGroup variant="flush" style={{"width":"80%"}}>
-      {games.map((game, i) => (
-        <ListGroup.Item key={i} style={{textAlign: "left"}} action variant="warning" pin={game.pin}>
-          <Row>
-            <strong>Pin:</strong> <span>{game.pin} </span>
-          </Row>
-          <Row>
-            <strong>Dato:  </strong> {new Intl.DateTimeFormat('en-GB', { year: 'numeric', month: 'long', day: '2-digit'}).format(game.date)}
-          </Row>
-        </ListGroup.Item>
-      ))}
-    </ListGroup>
-);
 
 const condition = authUser => !!authUser;
 

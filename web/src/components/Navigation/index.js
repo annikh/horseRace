@@ -13,13 +13,10 @@ const Navigation = ({match}) => (
       <div>
         <Nav className="navbar">
           <Nav.Item>
-            <Link to={match.url} className="link"><FontAwesomeIcon icon="user" color="black"/>{authUser.email}</Link>
+            <Link to={`${match.url}/account`} className="link"><FontAwesomeIcon icon="user" color="black"/>{authUser.email}</Link>
           </Nav.Item>
           <Nav.Item>
-            <Link to={`${match.url}/create-classroom`} className="link">Klasserom</Link>
-          </Nav.Item>
-           <Nav.Item>
-            <Link to={`${match.url}/create-game`} className="link">Spill</Link>
+            <Link to={match.url} className="link">Spill</Link>
           </Nav.Item>
           <Nav.Item>
             <SignOutButton />
