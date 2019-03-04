@@ -1,5 +1,6 @@
 import React from 'react';
 import { Container, Row, Button } from 'react-bootstrap';
+import { withAuthorization } from '../Session';
 
 const Game = () => {
     return (
@@ -13,5 +14,6 @@ const Game = () => {
         </Container>
     )
 }
+const condition = authUser => !!authUser;
 
-export default Game;
+export default withAuthorization(condition)(Game);

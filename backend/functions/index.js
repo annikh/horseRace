@@ -148,8 +148,8 @@ const getGamesForTeacherFromDatabase = (req, res) => {
       snapshot.forEach((game) => {
         const game_user_id = game.val().user_id;
         console.log("DB val: " + game_user_id);
-        console.log("Req val: " + req.body.user_id);
-        if (game_user_id && game_user_id === req.body.user_id){
+        console.log("Req val: " + req.query.user_id);
+        if (game_user_id && game_user_id === req.query.user_id){
           games.push({
           id: game.key,
           pin: game.val().pin,

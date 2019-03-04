@@ -50,10 +50,11 @@ class CreateGame extends Component {
 
     addGame() {
       let newGamePin = shortid.generate();
+      let authUser = this.context;
       while(!this.isValidPin(newGamePin)) {
         newGamePin = shortid.generate();
       }
-      return axios.post('https://us-central1-horse-race-232509.cloudfunctions.net/addGame', { pin: newGamePin, classroom_id: this.state.classroom_id, user_id: this.state.user_id }).then((response) => {
+      return axios.post('https://us-central1-horse-race-232509.cloudfunctions.net/addGame', { pin: newGamePin, classroom_id: this.state.classroom_id, user_id: authUser.uid }).then((response) => {
         const games = Object.keys(response.data).map(key => ({
           ...response.data[key],
           id: key,
