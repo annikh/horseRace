@@ -25,9 +25,11 @@ class CreateGame extends Component {
     }
 
     componentDidMount() {
+      let authUser = this.context;
+
       axios.all([
-        axios.get('https://us-central1-horse-race-232509.cloudfunctions.net/getGamesForTeacherFromDatabase'),
-        axios.get('https://us-central1-horse-race-232509.cloudfunctions.net/getClassrooms')
+        axios.get('https://us-central1-horse-race-232509.cloudfunctions.net/getGamesForTeacherFromDatabase', { params: {user_id: authUser.uid} }),
+        axios.get('https://us-central1-horse-race-232509.cloudfunctions.net/getClassrooms', { params: {user_id: authUser.uid} })
       ])
       .then(axios.spread((gamesRes, classroomsRes) => {
         const games = Object.keys(gamesRes.data).map(key => ({
@@ -43,6 +45,7 @@ class CreateGame extends Component {
           classrooms: classrooms
         })
       }))
+      console.log(authUser.uid);
     }
 
     addGame() {
@@ -83,30 +86,30 @@ class CreateGame extends Component {
 
     createGameForm = () => {
         return (
-            <Form onSubmit={this.handleSubmit}>
-                <Row>
-                <Col>
-                    <Form.Label><h2>Opprett et spill</h2></Form.Label>
-                </Col>
-                </Row>
-                <Row>
-                <Col>
-                    <Form.Label>Velg hvilket klasserom som skal delta i spillet:</Form.Label>
-                </Col>
-                <Col>
-                  <Form.Control as="select" onChange={this.handleChange}>
-                    {this.state.classrooms.map((classroom, i) => (
-                          <option key={i} value={classroom.key}>{classroom.pin}</option>
-                    ))}
-                  </Form.Control>
-                </Col>
-                </Row>
-                <Row>
-                <Col>
-                   <Button className="btn-orange" type="submit" block>Opprett spill</Button>
-                </Col>
-                </Row>
-            </Form>
+          <Form onSubmit={this.handleSubmit}>
+              <Row>
+              <Col>
+                  <Form.Label><h2>Opprett et spill</h2></Form.Label>
+              </Col>
+              </Row>
+              <Row>
+              <Col>
+                  <Form.Label>Velg hvilket klasserom som skal delta i spillet:</Form.Label>
+              </Col>
+              <Col>
+                <Form.Control as="select" onChange={this.handleChange}>
+                  {this.state.classrooms.map((classroom, i) => (
+                        <option key={i} value={classroom.key}>{classroom.pin}</option>
+                  ))}
+                </Form.Control>
+              </Col>
+              </Row>
+              <Row>
+              <Col>
+                  <Button className="btn-orange" type="submit" block>Opprett spill</Button>
+              </Col>
+              </Row>
+          </Form>
         )
     }
     
@@ -116,24 +119,26 @@ class CreateGame extends Component {
       return (
         <AuthUserContext.Consumer>
           {authUser => (
-            <Container className="accountBody">
-              { this.state.doRedirect && <Redirect to={ROUTES.TEACHER + ROUTES.GAME}/> }
-              <Row>
-                <Col>
-                  <h2 style={{"textAlign":"left"}}>Dine spill:</h2>
-                  <GameList games={games}/>
-                </Col>
-                <Col>
-                  {this.createGameForm()}
-                </Col>
-              </Row>
-            </Container>
+          <Container className="accountBody">
+            { this.state.doRedirect && <Redirect to={ROUTES.TEACHER + ROUTES.GAME}/> }
+            <Row>
+              <Col>
+                <h2 style={{"textAlign":"left"}}>Dine spill:</h2>
+                <GameList games={games}/>
+              </Col>
+              <Col>
+                {this.createGameForm()}
+              </Col>
+            </Row>
+          </Container>
           )}
         </AuthUserContext.Consumer>
       )
     }
 
 }
+CreateGame.contextType = AuthUserContext.Consumer;
+
 const condition = authUser => !!authUser;
 
 const GameList = ({ games }) => (

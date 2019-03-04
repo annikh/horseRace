@@ -63,8 +63,8 @@ const getClassroomsForTeacherFromDatabase = (req, res) => {
       snapshot.forEach((classroom) => {
         const classroom_user_id = classroom.val().user_id;
         console.log("DB val: " + classroom_user_id);
-        console.log("Req val: " + req.body.user_id);
-        if (classroom_user_id && classroom_user_id === req.body.user_id) {
+        console.log("Req query val: " + req.query.user_id);
+        if (classroom_user_id && classroom_user_id === req.query.user_id) {
           classrooms.push({
             id: classroom.key,
             pin: classroom.val().pin,
