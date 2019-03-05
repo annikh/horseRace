@@ -19,27 +19,13 @@ class CreateClassroom extends Component {
       this.handleSubmit = this.handleSubmit.bind(this);
       this.addClassroom = this.addClassroom.bind(this);
     }
-    
-    // componentDidMount() {
-    //   return axios.get('https://us-central1-horse-race-232509.cloudfunctions.net/getClassrooms').then((response) => {
-
-    //     const classrooms = Object.keys(response.data).map(key => ({
-    //       ...response.data[key],
-    //       id: key,
-    //     }));
-    //     console.log(classrooms);
-    //     this.setState({
-    //       classrooms: classrooms
-    //     })
-    //   })
-    // }
 
     addClassroom(user_id) {
-      const newClassroomPin = shortid.generate();
-      while(!this.isValidPin(newClassroomPin)) {
-        newClassroomPin = shortid.generate();
-      }
-      return axios.post('https://us-central1-horse-race-232509.cloudfunctions.net/addClassroom', { pin: newClassroomPin, names: this.state.value, user_id: user_id }).then((response) => {
+      // const newClassroomPin = shortid.generate();
+      // while(!this.isValidPin(newClassroomPin)) {
+      //   newClassroomPin = shortid.generate();
+      // }
+      return axios.post('https://us-central1-horse-race-232509.cloudfunctions.net/addClassroom', { names: this.state.value, user_id: user_id }).then((response) => {
         const classrooms = Object.keys(response.data).map(key => ({
           ...response.data[key],
           id: key,
@@ -51,15 +37,15 @@ class CreateClassroom extends Component {
       })
     }
 
-    isValidPin(pin) {
-      for (var key in this.state.classrooms) {
-        console.log(this.state.classrooms[key].pin)
-        if (this.state.classrooms[key].pin === pin) {
-          return false;
-        }
-      }
-      return true;
-    }
+    // isValidPin(pin) {
+    //   for (var key in this.state.classrooms) {
+    //     console.log(this.state.classrooms[key].pin)
+    //     if (this.state.classrooms[key].pin === pin) {
+    //       return false;
+    //     }
+    //   }
+    //   return true;
+    // }
 
     handleSubmit = uid => event => {
       event.preventDefault();
@@ -111,15 +97,5 @@ class CreateClassroom extends Component {
     }
 }
 const condition = authUser => !!authUser;
-
-// const ClassroomList = ({ classrooms }) => (
-//     <ListGroup  variant="flush">
-//       {classrooms.map((classroom, i) => (
-//         <ListGroup.Item key={i} style={{textAlign: "left"}} action variant="warning" pin={classroom.pin}>
-//           <strong>Pin:</strong> {classroom.pin} 
-//         </ListGroup.Item>
-//       ))}
-//     </ListGroup>
-// );
 
 export default withAuthorization(condition)(CreateClassroom);

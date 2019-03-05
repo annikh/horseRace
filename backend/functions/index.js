@@ -34,28 +34,6 @@ exports.getClassrooms = functions.https.onRequest((req, res) => {
   })
 })
 
-const getAllClassroomsFromDatabase = (res) => {
-  let classrooms = [];
-
-  return classroomDB.on('value', (snapshot) => {
-      snapshot.forEach((classroom) => {
-          classrooms.push({
-          id: classroom.key,
-          pin: classroom.val().pin,
-          names: classroom.val().names,
-          user_id: classroom.val().user_id || '',
-          date: classroom.val().date
-          });
-      });
-
-  res.status(200).json(classrooms)
-  }, (error) => {
-      res.status(error.code).json({
-      message: `Something went wrong. ${error.message}`
-      })
-  })
-};
-
 const getClassroomsForTeacherFromDatabase = (req, res) => {
   let classrooms = [];
 
@@ -67,7 +45,6 @@ const getClassroomsForTeacherFromDatabase = (req, res) => {
         if (classroom_user_id && classroom_user_id === req.query.user_id) {
           classrooms.push({
             id: classroom.key,
-            pin: classroom.val().pin,
             names: classroom.val().names,
             date: classroom.val().date
           });
