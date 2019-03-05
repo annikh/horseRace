@@ -5,6 +5,7 @@ import { Redirect } from 'react-router-dom'
 import * as ROUTES from '../../constants/routes';
 import axios from 'axios';
 import shortid from 'shortid';
+import CreateClassroom from '../CreateClassroom';
 
 class CreateGame extends Component {
     constructor(props) {
@@ -123,10 +124,13 @@ class CreateGame extends Component {
           <Row>
             <Col>
               <h2 style={{"textAlign":"left"}}>Dine spill:</h2>
-              <GameList games={games}/>
+              <DisplayGames games={games}/>
             </Col>
             <Col>
               {this.createGameForm()}
+              <Row>
+                <CreateClassroom/>
+              </Row>
             </Col>
           </Row>
         </Container>
@@ -134,9 +138,15 @@ class CreateGame extends Component {
     }
 
 }
-CreateGame.contextType = AuthUserContext.Consumer;
+CreateGame.contextType = AuthUserContext;
 
 const condition = authUser => !!authUser;
+
+const DisplayGames = ({ games }) => (
+  games !== [] ? <GameList games={games}/> : <NoGames />
+);
+
+const NoGames = () => "Du har ingen spill ennå";
 
 const GameList = ({ games }) => (
     <ListGroup variant="flush" style={{"width":"80%"}}>

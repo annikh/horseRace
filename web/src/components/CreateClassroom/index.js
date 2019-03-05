@@ -10,7 +10,7 @@ class CreateClassroom extends Component {
 
       this.state = {
         loading: false,
-        classrooms: [],
+        classrooms: this.props.classrooms,
         value: '',
       };
 
@@ -20,19 +20,19 @@ class CreateClassroom extends Component {
       this.addClassroom = this.addClassroom.bind(this);
     }
     
-    componentDidMount() {
-      return axios.get('https://us-central1-horse-race-232509.cloudfunctions.net/getClassrooms').then((response) => {
+    // componentDidMount() {
+    //   return axios.get('https://us-central1-horse-race-232509.cloudfunctions.net/getClassrooms').then((response) => {
 
-        const classrooms = Object.keys(response.data).map(key => ({
-          ...response.data[key],
-          id: key,
-        }));
-        console.log(classrooms);
-        this.setState({
-          classrooms: classrooms
-        })
-      })
-    }
+    //     const classrooms = Object.keys(response.data).map(key => ({
+    //       ...response.data[key],
+    //       id: key,
+    //     }));
+    //     console.log(classrooms);
+    //     this.setState({
+    //       classrooms: classrooms
+    //     })
+    //   })
+    // }
 
     addClassroom(user_id) {
       const newClassroomPin = shortid.generate();
@@ -78,7 +78,7 @@ class CreateClassroom extends Component {
         <Form onSubmit={this.handleSubmit(uid)}>
           <Row>
             <Col>
-              <Form.Label><h2>Opprett et klasserom</h2></Form.Label>
+              <Form.Label><h2 >Opprett et klasserom</h2></Form.Label>
             </Col>
           </Row>
           <Row>
@@ -101,23 +101,10 @@ class CreateClassroom extends Component {
     }
     
     render() {
-      const { classrooms, loading, value } = this.state;
-
       return (
         <AuthUserContext.Consumer>
         {authUser => (
-          <Container className="accountBody">
-            <Row>
-              <Col>
-                <h2>Dine klasserom</h2>
-                {loading && <div>Loading ...</div>}
-                <ClassroomList classrooms={classrooms} />
-              </Col>
-              <Col>
-                {this.createClassroomForm(authUser.uid)}
-              </Col>
-            </Row>
-          </Container>
+          this.createClassroomForm(authUser.uid)
         )}
         </AuthUserContext.Consumer>
       )
@@ -125,14 +112,14 @@ class CreateClassroom extends Component {
 }
 const condition = authUser => !!authUser;
 
-const ClassroomList = ({ classrooms }) => (
-    <ListGroup  variant="flush">
-      {classrooms.map((classroom, i) => (
-        <ListGroup.Item key={i} style={{textAlign: "left"}} action variant="warning" pin={classroom.pin}>
-          <strong>Pin:</strong> {classroom.pin} 
-        </ListGroup.Item>
-      ))}
-    </ListGroup>
-);
+// const ClassroomList = ({ classrooms }) => (
+//     <ListGroup  variant="flush">
+//       {classrooms.map((classroom, i) => (
+//         <ListGroup.Item key={i} style={{textAlign: "left"}} action variant="warning" pin={classroom.pin}>
+//           <strong>Pin:</strong> {classroom.pin} 
+//         </ListGroup.Item>
+//       ))}
+//     </ListGroup>
+// );
 
 export default withAuthorization(condition)(CreateClassroom);
