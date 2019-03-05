@@ -11,21 +11,19 @@ class CreateClassroom extends Component {
       this.state = {
         loading: false,
         classrooms: this.props.classrooms,
-        value: '',
+        classname_value: '',
+        names_value: '',
       };
 
       this.createClassroomForm = this.createClassroomForm.bind(this);
-      this.handleChange = this.handleChange.bind(this);
+      this.handleClassNameChange = this.handleClassNameChange.bind(this);
+      this.handleNamesChange = this.handleNamesChange.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
       this.addClassroom = this.addClassroom.bind(this);
     }
 
     addClassroom(user_id) {
-      // const newClassroomPin = shortid.generate();
-      // while(!this.isValidPin(newClassroomPin)) {
-      //   newClassroomPin = shortid.generate();
-      // }
-      return axios.post('https://us-central1-horse-race-232509.cloudfunctions.net/addClassroom', { names: this.state.value, user_id: user_id }).then((response) => {
+      return axios.post('https://us-central1-horse-race-232509.cloudfunctions.net/addClassroom', { classroom_name: this.state.classname_value, names: this.state.names_value, user_id: user_id }).then((response) => {
         const classrooms = Object.keys(response.data).map(key => ({
           ...response.data[key],
           id: key,
@@ -36,25 +34,18 @@ class CreateClassroom extends Component {
         })
       })
     }
-
-    // isValidPin(pin) {
-    //   for (var key in this.state.classrooms) {
-    //     console.log(this.state.classrooms[key].pin)
-    //     if (this.state.classrooms[key].pin === pin) {
-    //       return false;
-    //     }
-    //   }
-    //   return true;
-    // }
-
     handleSubmit = uid => event => {
       event.preventDefault();
       this.addClassroom(uid);
       alert("Klasserom opprettet!");
     }
 
-    handleChange(event) {
-      this.setState({value: event.target.value});
+    handleClassNameChange(event) {
+      this.setState({classname_value: event.target.value});
+    }
+
+    handleNamesChange(event) {
+      this.setState({names_value: event.target.value});
     }
 
     createClassroomForm = (uid) => {
@@ -74,7 +65,10 @@ class CreateClassroom extends Component {
           </Row>
           <Row>
             <Col>
-              <Form.Control as="textarea" rows="3" placeholder={"Navn1\nNavn2\nNavn3"} value={this.state.value} onChange={this.handleChange}/>
+              <Form.Control placeholder={"Skriv inn navn på klassen"} value={this.state.classname_value} onChange={this.handleClassNameChange}/>
+            </Col>
+            <Col>
+              <Form.Control as="textarea" rows="3" placeholder={"Navn1\nNavn2\nNavn3"} value={this.state.names_value} onChange={this.handleNamesChange}/>
             </Col>
           </Row>
           <Row>

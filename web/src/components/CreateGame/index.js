@@ -101,7 +101,7 @@ class CreateGame extends Component {
             <Col>
               <Form.Control as="select" onChange={this.handleChange}>
                 {this.state.classrooms.map((classroom, i) => (
-                      <option key={i} value={classroom.key}>{classroom.pin}</option>
+                      <option key={i} value={classroom.key}>{classroom.classroom_name}</option>
                 ))}
               </Form.Control>
             </Col>
@@ -123,7 +123,6 @@ class CreateGame extends Component {
           { this.state.doRedirect && <Redirect to={ROUTES.TEACHER + ROUTES.GAME}/> }
           <Row>
             <Col>
-              <h2 style={{"textAlign":"left"}}>Dine spill:</h2>
               <DisplayGames games={games}/>
             </Col>
             <Col>
@@ -143,10 +142,13 @@ CreateGame.contextType = AuthUserContext;
 const condition = authUser => !!authUser;
 
 const DisplayGames = ({ games }) => (
-  games !== [] ? <GameList games={games}/> : <NoGames />
+  <div>
+    <h2 style={{"textAlign":"left"}}>Dine spill:</h2>
+    {(Object.entries(games).length === 0 && games.constructor === Object) ? <GameList games={games}/> : <NoGames /> }
+  </div>
 );
 
-const NoGames = () => "Du har ingen spill ennå";
+const NoGames = () => <p style={{"textAlign":"left"}}>Du har ingen spill ennå</p>;
 
 const GameList = ({ games }) => (
     <ListGroup variant="flush" style={{"width":"80%"}}>
