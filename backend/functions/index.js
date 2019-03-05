@@ -19,7 +19,7 @@ exports.addClassroom = functions.https.onRequest((req, res) => {
     const date = { date: new Date().getTime()}
     const classroom = Object.assign(req.body, date)
     classroomDB.push(classroom);
-    getClassroomsForTeacherFromDatabase(req, res);
+    getClassroomsForTeacherFromDatabase(req.body, res);
   })
 })
 
@@ -30,21 +30,22 @@ exports.getClassrooms = functions.https.onRequest((req, res) => {
           message: 'Not allowed'
         })
       }
-      getClassroomsForTeacherFromDatabase(req, res);
+      getClassroomsForTeacherFromDatabase(req.query, res);
   })
 })
 
-const getClassroomsForTeacherFromDatabase = (req, res) => {
+const getClassroomsForTeacherFromDatabase = (reqClassrooms, res) => {
   let classrooms = [];
 
   return classroomDB.on('value', (snapshot) => {
       snapshot.forEach((classroom) => {
         const classroom_user_id = classroom.val().user_id;
         console.log("DB val: " + classroom_user_id);
-        console.log("Req query val: " + req.query.user_id);
-        if (classroom_user_id && classroom_user_id === req.query.user_id) {
+        console.log("Req val: " + reqClassrooms.user_id);
+        if (classroom_user_id && classroom_user_id === reqClassrooms.user_id) {
           classrooms.push({
             id: classroom.key,
+            classroom_name: classroom.val().classroom_name,
             names: classroom.val().names,
             date: classroom.val().date
           });
@@ -70,7 +71,7 @@ exports.addGame = functions.https.onRequest((req, res) => {
     const date = { date: new Date().getTime()}
     const game = Object.assign(req.body, date)
     gameDB.push(game);
-    getGamesForTeacherFromDatabase(req, res);
+    getGamesForTeacherFromDatabase(req.body, res);
   })
 })
 
@@ -82,7 +83,7 @@ exports.getAllGames = functions.https.onRequest((req, res) => {
           message: 'Not allowed'
         })
       }
-      getAllGamesFromDatabase(req, res);
+      getAllGamesFromDatabase(res);
   })
 })
 
@@ -93,11 +94,11 @@ exports.getGamesForTeacherFromDatabase = functions.https.onRequest((req, res) =>
           message: 'Not allowed'
         })
       }
-      getGamesForTeacherFromDatabase(req, res);
+      getGamesForTeacherFromDatabase(req.query, res);
   })
 })
 
-const getAllGamesFromDatabase = (req, res) => {
+const getAllGamesFromDatabase = (res) => {
   let games = [];
 
   return gameDB.on('value', (snapshot) => {
@@ -118,15 +119,15 @@ const getAllGamesFromDatabase = (req, res) => {
     })
 };
 
-const getGamesForTeacherFromDatabase = (req, res) => {
+const getGamesForTeacherFromDatabase = (reqGame, res) => {
   let games = [];
 
   return gameDB.on('value', (snapshot) => {
       snapshot.forEach((game) => {
         const game_user_id = game.val().user_id;
         console.log("DB val: " + game_user_id);
-        console.log("Req val: " + req.query.user_id);
-        if (game_user_id && game_user_id === req.query.user_id){
+        console.log("Req val: " + reqGame.user_id);
+        if (game_user_id && game_user_id === reqGame.user_id){
           games.push({
           id: game.key,
           pin: game.val().pin,
