@@ -5,6 +5,7 @@ import { Redirect } from 'react-router-dom'
 import * as ROUTES from '../../constants/routes';
 import axios from 'axios';
 import shortid from 'shortid';
+import CreateClassroom from '../CreateClassroom';
 
 class CreateGame extends Component {
     constructor(props) {
@@ -25,9 +26,11 @@ class CreateGame extends Component {
     }
 
     componentDidMount() {
+      let authUser = this.context;
+
       axios.all([
-        axios.get('https://us-central1-horse-race-232509.cloudfunctions.net/getGamesForTeacherFromDatabase'),
-        axios.get('https://us-central1-horse-race-232509.cloudfunctions.net/getClassrooms')
+        axios.get('https://us-central1-horse-race-232509.cloudfunctions.net/getGamesForTeacherFromDatabase', { params: {user_id: authUser.uid} }),
+        axios.get('https://us-central1-horse-race-232509.cloudfunctions.net/getClassrooms', { params: {user_id: authUser.uid} })
       ])
       .then(axios.spread((gamesRes, classroomsRes) => {
         const games = Object.keys(gamesRes.data).map(key => ({
@@ -43,14 +46,16 @@ class CreateGame extends Component {
           classrooms: classrooms
         })
       }))
+      console.log(authUser.uid);
     }
 
     addGame() {
       let newGamePin = shortid.generate();
+      let authUser = this.context;
       while(!this.isValidPin(newGamePin)) {
         newGamePin = shortid.generate();
       }
-      return axios.post('https://us-central1-horse-race-232509.cloudfunctions.net/addGame', { pin: newGamePin, classroom_id: this.state.classroom_id, user_id: this.state.user_id }).then((response) => {
+      return axios.post('https://us-central1-horse-race-232509.cloudfunctions.net/addGame', { pin: newGamePin, classroom_id: this.state.classroom_id, user_id: authUser.uid }).then((response) => {
         const games = Object.keys(response.data).map(key => ({
           ...response.data[key],
           id: key,
@@ -83,30 +88,30 @@ class CreateGame extends Component {
 
     createGameForm = () => {
         return (
-            <Form onSubmit={this.handleSubmit}>
-                <Row>
-                <Col>
-                    <Form.Label><h2>Opprett et spill</h2></Form.Label>
-                </Col>
-                </Row>
-                <Row>
-                <Col>
-                    <Form.Label>Velg hvilket klasserom som skal delta i spillet:</Form.Label>
-                </Col>
-                <Col>
-                  <Form.Control as="select" onChange={this.handleChange}>
-                    {this.state.classrooms.map((classroom, i) => (
-                          <option key={i} value={classroom.key}>{classroom.pin}</option>
-                    ))}
-                  </Form.Control>
-                </Col>
-                </Row>
-                <Row>
-                <Col>
-                   <Button className="btn-orange" type="submit" block>Opprett spill</Button>
-                </Col>
-                </Row>
-            </Form>
+          <Form onSubmit={this.handleSubmit}>
+            <Row>
+            <Col>
+                <Form.Label><h2>Opprett et spill</h2></Form.Label>
+            </Col>
+            </Row>
+            <Row>
+            <Col>
+                <Form.Label>Velg hvilket klasserom som skal delta i spillet:</Form.Label>
+            </Col>
+            <Col>
+              <Form.Control as="select" onChange={this.handleChange}>
+                {this.state.classrooms.map((classroom, i) => (
+                      <option key={i} value={classroom.key}>{classroom.classroom_name}</option>
+                ))}
+              </Form.Control>
+            </Col>
+            </Row>
+            <Row>
+            <Col>
+                <Button className="btn-orange" type="submit" block>Opprett spill</Button>
+            </Col>
+            </Row>
+          </Form>
         )
     }
     
@@ -114,27 +119,36 @@ class CreateGame extends Component {
       const { games } = this.state;
       
       return (
-        <AuthUserContext.Consumer>
-          {authUser => (
-            <Container className="accountBody">
-              { this.state.doRedirect && <Redirect to={ROUTES.TEACHER + ROUTES.GAME}/> }
+        <Container className="accountBody">
+          { this.state.doRedirect && <Redirect to={ROUTES.TEACHER + ROUTES.GAME}/> }
+          <Row>
+            <Col>
+              <DisplayGames games={games}/>
+            </Col>
+            <Col>
+              {this.createGameForm()}
               <Row>
-                <Col>
-                  <h2 style={{"textAlign":"left"}}>Dine spill:</h2>
-                  <GameList games={games}/>
-                </Col>
-                <Col>
-                  {this.createGameForm()}
-                </Col>
+                <CreateClassroom/>
               </Row>
-            </Container>
-          )}
-        </AuthUserContext.Consumer>
+            </Col>
+          </Row>
+        </Container>
       )
     }
 
 }
+CreateGame.contextType = AuthUserContext;
+
 const condition = authUser => !!authUser;
+
+const DisplayGames = ({ games }) => (
+  <div>
+    <h2 style={{"textAlign":"left"}}>Dine spill:</h2>
+    {(Object.entries(games).length === 0 && games.constructor === Object) ? <GameList games={games}/> : <NoGames /> }
+  </div>
+);
+
+const NoGames = () => <p style={{"textAlign":"left"}}>Du har ingen spill ennå</p>;
 
 const GameList = ({ games }) => (
     <ListGroup variant="flush" style={{"width":"80%"}}>
