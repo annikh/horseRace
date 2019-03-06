@@ -100,6 +100,7 @@ class CreateGame extends Component {
             </Col>
             <Col>
               <Form.Control as="select" onChange={this.handleChange}>
+                <option>Velg...</option>
                 {this.state.classrooms.map((classroom, i) => (
                       <option key={i} value={classroom.key}>{classroom.classroom_name}</option>
                 ))}
@@ -144,7 +145,7 @@ const condition = authUser => !!authUser;
 const DisplayGames = ({ games }) => (
   <div>
     <h2 style={{"textAlign":"left"}}>Dine spill:</h2>
-    {(Object.entries(games).length === 0 && games.constructor === Object) ? <GameList games={games}/> : <NoGames /> }
+    {(Object.entries(games).length === 0 && games.constructor === Object) ? <NoGames /> : <GameList games={games}/> }
   </div>
 );
 
