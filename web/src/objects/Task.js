@@ -1,15 +1,15 @@
 class Task {
-    constructor(id, type, solution, hintUsed) {
-        this.id = id;
-        this.type = type; 
-        this.solution = solution;
-        this.hintUsed = hintUsed;
-    }
-    
-    constructor(type) {
+    constructor(text, concept, difficulty) {
         this.id = '';
-        this.type = type;
-        this.solution = '';
-        this.hintUsed = false;
+        this.text = text;
+        this.concept = concept;
+        this.difficulty = difficulty;
+    }
+
+    constructor(id, text, concept, difficulty) {
+        this.id = id;
+        this.text = text;
+        this.concept = concept;
+        this.difficulty = difficulty;
     }
 }
