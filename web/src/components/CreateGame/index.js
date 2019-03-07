@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { AuthUserContext, withAuthorization } from '../Session';
 import { Container, Button, Form, Row, Col, ListGroup } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom'
+import Game from '../../objects/Game'
 import * as ROUTES from '../../constants/routes';
 import axios from 'axios';
 import shortid from 'shortid';
@@ -15,6 +16,7 @@ class CreateGame extends Component {
       this.handleSubmit = this.handleSubmit.bind(this);
       this.addGame = this.addGame.bind(this);
       this.isValidPin = this.isValidPin.bind(this);
+      this.getClassroomNames = this.getClassroomNames.bind(this);
 
       this.state = {
         doRedirect: false,
@@ -51,11 +53,25 @@ class CreateGame extends Component {
 
     addGame() {
       let newGamePin = shortid.generate();
-      let authUser = this.context;
       while(!this.isValidPin(newGamePin)) {
         newGamePin = shortid.generate();
       }
-      return axios.post('https://us-central1-horse-race-232509.cloudfunctions.net/addGame', { pin: newGamePin, classroom_id: this.state.classroom_id, user_id: authUser.uid }).then((response) => {
+      let authUser = this.context;
+      const classroomNames = this.getClassroomNames(this.state.classroom_id)
+      let scoreboard = []
+      classroomNames.map( function(name) {
+        let newPlayer = {
+          name: name,
+          points: 0,
+          tasks: []
+        }
+        scoreboard.push(newPlayer)
+      })
+      
+      const game = new Game(null, newGamePin, authUser.uid, this.state.classroom_id, null, scoreboard)
+      console.log(this.state.classrooms)
+      console.log(game)
+      return axios.post('https://us-central1-horse-race-232509.cloudfunctions.net/addGame',  game ).then((response) => {
         const games = Object.keys(response.data).map(key => ({
           ...response.data[key],
           id: key,
@@ -64,6 +80,11 @@ class CreateGame extends Component {
           games: games
         })
       })
+    }
+
+    getClassroomNames(classroomID){
+      const classroom = this.state.classrooms.map(classroom => classroom.classroom_id == classroomID)
+      return classroom.names.split("/n")
     }
 
     isValidPin(pin) {
