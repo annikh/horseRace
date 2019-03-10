@@ -3,6 +3,7 @@ import { AuthUserContext, withAuthorization } from '../Session';
 import { Container, Button, Form, Row, Col, ListGroup } from 'react-bootstrap';
 import axios from 'axios';
 import shortid from 'shortid';
+import Classroom from '../../objects/Classroom';
 
 class CreateClassroom extends Component {
     constructor(props) {
@@ -23,7 +24,9 @@ class CreateClassroom extends Component {
     }
 
     addClassroom(user_id) {
-      return axios.post('https://us-central1-horse-race-232509.cloudfunctions.net/addClassroom', { classroom_name: this.state.classname_value, names: this.state.names_value, user_id: user_id }).then((response) => {
+      const classroom = new Classroom(null, this.state.classname_value, null, this.state.names_value, user_id);
+      console.log(classroom);
+      return axios.post('https://us-central1-horse-race-232509.cloudfunctions.net/addClassroom', { classroom }).then((response) => {
         const classrooms = Object.keys(response.data).map(key => ({
           ...response.data[key],
           id: key,

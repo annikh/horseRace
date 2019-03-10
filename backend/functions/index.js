@@ -17,9 +17,10 @@ exports.addClassroom = functions.https.onRequest((req, res) => {
     }
     console.log(req.body)
     const date = { date: new Date().getTime()}
-    const classroom = Object.assign(req.body, date)
+    const classroom = req.body;
+    classroom.date = date;
     classroomDB.push(classroom);
-    getClassroomsForTeacherFromDatabase(req.body, res);
+    getClassroomsForTeacherFromDatabase(classroom, res);
   })
 })
 
@@ -58,7 +59,6 @@ const getClassroomsForTeacherFromDatabase = (reqClassrooms, res) => {
       })
   })
 };
-
 
 exports.addGame = functions.https.onRequest((req, res) => {
   return cors(req, res, () => {
