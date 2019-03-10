@@ -33,5 +33,9 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {
+    "prettier": "^1.16.4",
+    "pretty-quick": "^1.10.0"
+  }
 }
