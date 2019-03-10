@@ -57,7 +57,6 @@ class CreateGame extends Component {
           });
         })
       );
-    console.log(authUser.uid);
   }
 
   addGame() {
