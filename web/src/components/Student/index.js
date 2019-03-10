@@ -1,29 +1,43 @@
 import React, { Component } from "react";
 import { Button, Form, Row, Col } from "react-bootstrap";
+import axios from "axios";
 import "./style.css";
 
 class Student extends Component {
   constructor(props) {
     super(props);
+    this.handleEnterClassroomPin = this.handleEnterClassroomPin.bind(this);
+    this.handleEnterStudentName = this.handleEnterStudentName.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.pinInput = this.pinInput.bind(this);
+    this.namesDropDown = this.namesDropDown.bind(this);
+
     this.state = {
+      game: {},
       value: "",
       pinEntered: false,
       buttonValue: "Enter",
       placeholder: "Skriv inn PIN"
     };
-    this.handleEnterClassroomPin = this.handleEnterClassroomPin.bind(this);
-    this.handleEnterStudentName = this.handleEnterStudentName.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleChange = this.handleChange.bind(this);
   }
 
   handleEnterClassroomPin() {
-    this.setState({
-      pinEntered: true,
-      buttonValue: "Bli med!",
-      placeholder: "Skriv inn navnet ditt",
-      value: ""
-    });
+    axios
+      .GET(
+        "https://us-central1-horse-race-232509.cloudfunctions.net/getGameById",
+        this.state.value
+      )
+      .then(response => {
+        const game = Object.key(response.data);
+        this.setState({
+          game: game,
+          pinEntered: true,
+          buttonValue: "Bli med!",
+          value: ""
+        });
+      });
+    console.log(this.state.game);
   }
 
   handleEnterStudentName() {
@@ -43,8 +57,29 @@ class Student extends Component {
     event.preventDefault();
   }
 
-  onChange = event => {
-    this.setState({ [event.target.name]: event.target.value });
+  pinInput = () => {
+    return (
+      <Col md="auto">
+        <Form.Control
+          placeholder="Skriv inn navnet ditt"
+          value={this.state.value}
+          onChange={this.handleChange}
+        />
+      </Col>
+    );
+  };
+
+  namesDropDown = () => {
+    return (
+      <Form.Control as="select" onChange={this.handleChange}>
+        <option>Velg...</option>
+        {this.state.game.scoreboard.map((player, i) => (
+          <option key={i} value={player.name}>
+            {player.name}
+          </option>
+        ))}
+      </Form.Control>
+    );
   };
 
   render() {
@@ -60,13 +95,9 @@ class Student extends Component {
           </Col>
         </Row>
         <Row>
-          <Col md="auto">
-            <Form.Control
-              placeholder={this.state.placeholder}
-              value={this.state.value}
-              onChange={this.handleChange}
-            />
-          </Col>
+          {this.state.pinEntered === false
+            ? this.pinInput()
+            : this.namesDropDown()}
           <Col>
             <Button
               className="btn-classPin"
