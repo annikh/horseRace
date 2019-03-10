@@ -133,7 +133,7 @@ exports.getGameById = functions.https.onRequest((req, res) => {
 });
 
 const getGameByIdFromDatabase = (reqGame, res) => {
-  let game = {};
+  let matched_game = {};
   return gameDB.on(
     "value",
     snapshot => {
@@ -142,7 +142,7 @@ const getGameByIdFromDatabase = (reqGame, res) => {
         console.log("DB val: " + game_pin);
         console.log("Req val: " + reqGame.pin);
         if (game_pin && game_pin === reqGame.pin) {
-          game = {
+          matched_game = {
             id: game.key,
             pin: game.val().pin,
             classroom_id: game.val().classroom_id,
@@ -152,7 +152,8 @@ const getGameByIdFromDatabase = (reqGame, res) => {
           };
         }
       });
-      res.status(200).json(game);
+      console.log(matched_game);
+      res.status(200).json(matched_game);
     },
     error => {
       res.status(error.code).json({
