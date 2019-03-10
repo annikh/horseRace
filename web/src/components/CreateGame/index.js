@@ -37,7 +37,7 @@ class CreateGame extends Component {
           { params: { user_id: authUser.uid } }
         ),
         axios.get(
-          "https://us-central1-horse-race-232509.cloudfunctions.net/getClassrooms",
+          "https://us-central1-horse-race-232509.cloudfunctions.net/getClassroomsForTeacherFromDatabase",
           { params: { user_id: authUser.uid } }
         )
       ])
@@ -85,8 +85,7 @@ class CreateGame extends Component {
       null,
       scoreboard
     );
-    console.log(this.state.classrooms);
-    console.log(game);
+
     return axios
       .post(
         "https://us-central1-horse-race-232509.cloudfunctions.net/addGame",
@@ -103,11 +102,13 @@ class CreateGame extends Component {
       });
   }
 
-  getClassroomNames(classroomID) {
-    const classroom = this.state.classrooms.map(
-      classroom => classroom.classroom_id == classroomID
+  getClassroomNames(classroomName) {
+    const classroom = this.state.classrooms.find(
+      classroom => classroom.classroom_name === classroomName
     );
-    return classroom.names.split("/n");
+    let names = [];
+    classroom.names.split(/\n/).map(name => names.push(name));
+    return names;
   }
 
   isValidPin(pin) {
