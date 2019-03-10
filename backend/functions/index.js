@@ -120,3 +120,44 @@ const getGamesForTeacherFromDatabase = (reqGame, res) => {
     }
   );
 };
+
+exports.getGameById = functions.https.onRequest((req, res) => {
+  return cors(req, res, () => {
+    if (req.method !== "GET") {
+      return res.status(404).json({
+        message: "Not allowed"
+      });
+    }
+    getGameByIdFromDatabase(req.query, res);
+  });
+});
+
+const getGameByIdFromDatabase = (reqGame, res) => {
+  let game = {};
+  return gameDB.on(
+    "value",
+    snapshot => {
+      snapshot.forEach(game => {
+        const game_pin = game.val().pin;
+        console.log("DB val: " + game_pin);
+        console.log("Req val: " + reqGame.pin);
+        if (game_pin && game_pin === reqGame.pin) {
+          game = {
+            id: game.key,
+            pin: game.val().pin,
+            classroom_id: game.val().classroom_id,
+            user_id: game.val().user_id,
+            date: game.val().date,
+            scoreboard: game.val().scoreboard
+          };
+        }
+      });
+      res.status(200).json(game);
+    },
+    error => {
+      res.status(error.code).json({
+        message: `Something went wrong. ${error.message}`
+      });
+    }
+  );
+};
