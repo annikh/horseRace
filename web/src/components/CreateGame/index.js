@@ -221,15 +221,22 @@ const GameList = ({ games }) => (
         pin={game.pin}
       >
         <Row>
-          <strong>Pin:</strong> <span>{game.pin} </span>
+          <Col>
+            <strong>Klasse:</strong>
+          </Col>
+          <Col>{game.classroom_id}</Col>
         </Row>
         <Row>
-          <strong>Dato: </strong>{" "}
-          {new Intl.DateTimeFormat("en-GB", {
-            year: "numeric",
-            month: "long",
-            day: "2-digit"
-          }).format(game.date)}
+          <Col>
+            <strong>Dato: </strong>
+          </Col>
+          <Col>
+            {new Intl.DateTimeFormat("en-GB", {
+              year: "numeric",
+              month: "long",
+              day: "2-digit"
+            }).format(game.date)}
+          </Col>
         </Row>
       </ListGroup.Item>
     ))}

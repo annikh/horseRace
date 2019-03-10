@@ -1,18 +1,21 @@
-import React from 'react';
-import { Container, Row, Button } from 'react-bootstrap';
-import { withAuthorization } from '../Session';
+import React, { Component } from "react";
+import { Container, Row, Button } from "react-bootstrap";
+import { withAuthorization } from "../Session";
 
-const Game = () => {
+class Game extends Component {
+  constructor(props) {
+    super(props);
+  }
+  render() {
     return (
-        <Container className="accountBody">
-            <Row>
-                Her skal det være et spill
-            </Row>
-            <Row>
-                <Button className="btn-orange">Start Spill!</Button>
-            </Row>
-        </Container>
-    )
+      <Container className="accountBody">
+        <Row>Her skal det være et spill</Row>
+        <Row>
+          <Button className="btn-orange">Start Spill!</Button>
+        </Row>
+      </Container>
+    );
+  }
 }
 const condition = authUser => !!authUser;
 
