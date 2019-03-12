@@ -6,6 +6,7 @@ import Teacher from "./components/Teacher";
 import App from "./components/App";
 import SignUpPage from "./components/SignUp";
 import SignInPage from "./components/SignIn";
+import StudentGame from "./components/StudentGame";
 import PasswordForgetPage from "./components/PasswordForget";
 import Firebase, { FirebaseContext } from "./components/Firebase";
 import "./index.css";
@@ -25,8 +26,13 @@ ReactDOM.render(
         <Route path={ROUTES.SIGN_UP} component={SignUpPage} />
         <Route path={ROUTES.SIGN_IN} component={SignInPage} />
         <Route path={ROUTES.PASSWORD_FORGET} component={PasswordForgetPage} />
-        <Route path={ROUTES.STUDENT} component={Student} />
+        <Route exact path={ROUTES.STUDENT} component={Student} />
         <Route path={ROUTES.TEACHER} component={Teacher} />
+        <Route
+          exact
+          path={ROUTES.STUDENT + ROUTES.STUDENT_GAME + "/:user"}
+          component={StudentGame}
+        />
       </div>
     </Router>
   </FirebaseContext.Provider>,
