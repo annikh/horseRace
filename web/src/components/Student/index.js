@@ -17,27 +17,26 @@ class Student extends Component {
       game: {},
       value: "",
       pinEntered: false,
-      buttonValue: "Enter",
-      placeholder: "Skriv inn PIN"
+      buttonValue: "Enter"
     };
   }
 
   handleEnterClassroomPin() {
     axios
-      .GET(
+      .get(
         "https://us-central1-horse-race-232509.cloudfunctions.net/getGameById",
-        this.state.value
+        { params: { pin: this.state.value } }
       )
       .then(response => {
-        const game = Object.key(response.data);
         this.setState({
-          game: game,
+          game: response.data,
           pinEntered: true,
-          buttonValue: "Bli med!",
-          value: ""
+          buttonValue: "Bli med!"
         });
+      })
+      .catch(function(error) {
+        console.log(error);
       });
-    console.log(this.state.game);
   }
 
   handleEnterStudentName() {
@@ -61,7 +60,7 @@ class Student extends Component {
     return (
       <Col md="auto">
         <Form.Control
-          placeholder="Skriv inn navnet ditt"
+          placeholder="Skriv inn PIN"
           value={this.state.value}
           onChange={this.handleChange}
         />
@@ -70,6 +69,7 @@ class Student extends Component {
   };
 
   namesDropDown = () => {
+    console.log(this.state.game);
     return (
       <Form.Control as="select" onChange={this.handleChange}>
         <option>Velg...</option>
@@ -83,8 +83,6 @@ class Student extends Component {
   };
 
   render() {
-    const isInvalid = this.state.value === "";
-
     return (
       <Form className="Student" onSubmit={this.handleSubmit}>
         <Row>
@@ -101,7 +99,6 @@ class Student extends Component {
           <Col>
             <Button
               className="btn-classPin"
-              disabled={isInvalid}
               variant="outline-light"
               type="submit"
             >
