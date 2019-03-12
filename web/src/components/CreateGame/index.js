@@ -67,7 +67,7 @@ class CreateGame extends Component {
     let authUser = this.context;
     const classroomNames = this.getClassroomNames(this.state.classroom_id);
     let scoreboard = [];
-    classroomNames.map(function(name) {
+    classroomNames.forEach(function(name) {
       let newPlayer = {
         name: name,
         points: 0,

@@ -1,20 +1,28 @@
-.Student {
-    text-align: center;
-    background-color: #4cc078;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+.student {
+  text-align: center;
+  background-color: #4cc078;
+  min-height: 100vh;
+  min-width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
-.btn-classPin{
-    background-color: #348654 !important;
-    border-color:#3c9b60 !important;
+.studentGame {
+  background-color: #4cc078;
+  min-height: 100vh;
+  min-width: 100%;
+  padding: 20px;
+}
+
+.btn-classPin {
+  background-color: #348654 !important;
+  border-color: #3c9b60 !important;
 }
 
 .btn-classPin:hover {
-    background-color: rgb(49, 133, 82) !important;
-    border-color:rgb(49, 133, 82) !important;
-    color: rgb(197, 197, 197) !important;
+  background-color: rgb(49, 133, 82) !important;
+  border-color: rgb(49, 133, 82) !important;
+  color: rgb(197, 197, 197) !important;
 }
