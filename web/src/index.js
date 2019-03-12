@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Student from './components/Student';
 import Teacher from './components/Teacher'; 
 import App from './components/App';
+import Editor from './components/Editor';
 import SignUpPage from './components/SignUp';
 import SignInPage from './components/SignIn';
 import PasswordForgetPage from './components/PasswordForget';
@@ -28,6 +29,7 @@ ReactDOM.render(
             <Route path={ROUTES.PASSWORD_FORGET} component={PasswordForgetPage} />
             <Route path={ROUTES.STUDENT} component={Student} />
             <Route path={ROUTES.TEACHER} component={Teacher} />
+            <Route path={'/editor'} component={Editor} />
         </div>
         </Router>
     </FirebaseContext.Provider>
