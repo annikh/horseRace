@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { Button, Form, Row, Col } from "react-bootstrap";
+import * as ROUTES from "../../constants/routes";
+import { Redirect } from "react-router-dom";
 import axios from "axios";
 import "./style.css";
 
@@ -17,7 +19,8 @@ class Student extends Component {
       game: {},
       value: "",
       pinEntered: false,
-      buttonValue: "Enter"
+      buttonValue: "Enter",
+      gameEntered: false
     };
   }
 
@@ -40,9 +43,9 @@ class Student extends Component {
   }
 
   handleEnterStudentName() {
-    const name = this.state.value;
-    alert("Gratulerer " + name + ", du er inne!");
-    //Redirect to classroom
+    this.setState({
+      gameEntered: true
+    });
   }
 
   handleChange(event) {
@@ -69,22 +72,23 @@ class Student extends Component {
   };
 
   namesDropDown = () => {
-    console.log(this.state.game);
     return (
-      <Form.Control as="select" onChange={this.handleChange}>
-        <option>Velg...</option>
-        {this.state.game.scoreboard.map((player, i) => (
-          <option key={i} value={player.name}>
-            {player.name}
-          </option>
-        ))}
-      </Form.Control>
+      <Col md="auto">
+        <Form.Control as="select" onChange={this.handleChange}>
+          <option>Hva heter du?</option>
+          {this.state.game.scoreboard.map((player, i) => (
+            <option key={i} value={player.name}>
+              {player.name}
+            </option>
+          ))}
+        </Form.Control>
+      </Col>
     );
   };
 
   render() {
-    return (
-      <Form className="Student" onSubmit={this.handleSubmit}>
+    return this.state.game !== null && this.state.gameEntered === false ? (
+      <Form className="student" onSubmit={this.handleSubmit}>
         <Row>
           <Col>
             <Form.Label>
@@ -107,6 +111,14 @@ class Student extends Component {
           </Col>
         </Row>
       </Form>
+    ) : (
+      <Redirect
+        to={{
+          pathname:
+            ROUTES.STUDENT + ROUTES.STUDENT_GAME + "/" + this.state.value,
+          state: { game: this.state.game, player: this.state.value }
+        }}
+      />
     );
   }
 }

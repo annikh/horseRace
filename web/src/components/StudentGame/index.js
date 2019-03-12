@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Container, Row, Button } from "react-bootstrap";
+import { Row, Nav } from "react-bootstrap";
 
 class StudentGame extends Component {
   constructor(props) {
@@ -14,16 +14,22 @@ class StudentGame extends Component {
   }
 
   render() {
-    const { game, player } = this.props.location;
+    const { game, player } = this.props.location.state;
     return (
-      <Container className="studentGame">
-        <Row>Hei, {player}</Row>
+      <div className="studentGame">
+        <Nav className="justify-content-center">
+          <Nav.Item>
+            <h3>Hei, {player}</h3>
+          </Nav.Item>
+        </Nav>
         {this.state.gameStarted === false ? (
-          <Row>Venter på at spillet skal starte..</Row>
+          <Row style={{ justifyContent: "center" }}>
+            Venter på at spillet skal starte..
+          </Row>
         ) : (
-          <Row> Her skal spillet komme</Row>
+          <div> Her skal spillet komme</div>
         )}
-      </Container>
+      </div>
     );
   }
 }
