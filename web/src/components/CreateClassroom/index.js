@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import { AuthUserContext, withAuthorization } from "../Session";
-import { Container, Button, Form, Row, Col, ListGroup } from "react-bootstrap";
+import { Button, Form, Row, Col } from "react-bootstrap";
 import axios from "axios";
-import shortid from "shortid";
 import Classroom from "../../objects/Classroom";
 
 class CreateClassroom extends Component {

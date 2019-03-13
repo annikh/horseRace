@@ -3,9 +3,6 @@ import { Container, Row, Button } from "react-bootstrap";
 import { withAuthorization } from "../Session";
 
 class Game extends Component {
-  constructor(props) {
-    super(props);
-  }
   render() {
     return (
       <Container className="accountBody">

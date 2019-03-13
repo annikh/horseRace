@@ -1,72 +1,125 @@
-import React, { Component } from 'react';
-import { Button, Form, Row, Col } from 'react-bootstrap';
-import './style.css';
+import React, { Component } from "react";
+import { Button, Form, Row, Col } from "react-bootstrap";
+import * as ROUTES from "../../constants/routes";
+import { Redirect } from "react-router-dom";
+import axios from "axios";
+import "./style.css";
 
 class Student extends Component {
-
-  constructor() {
-    super();
-    this.state = {
-      value: '',
-      pinEntered: false,
-      buttonValue: 'Enter',
-      placeholder: 'Skriv inn PIN'
-    }
+  constructor(props) {
+    super(props);
     this.handleEnterClassroomPin = this.handleEnterClassroomPin.bind(this);
     this.handleEnterStudentName = this.handleEnterStudentName.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.pinInput = this.pinInput.bind(this);
+    this.namesDropDown = this.namesDropDown.bind(this);
+
+    this.state = {
+      game: {},
+      value: "",
+      pinEntered: false,
+      buttonValue: "Enter",
+      gameEntered: false
+    };
   }
-  
+
   handleEnterClassroomPin() {
-    const pin = this.state.value;
-    this.setState({
-      pinEntered: true,
-      buttonValue: 'Bli med!',
-      placeholder:'Skriv inn navnet ditt',
-      value: ''
-    })
+    axios
+      .get(
+        "https://us-central1-horse-race-232509.cloudfunctions.net/getGameById",
+        { params: { pin: this.state.value } }
+      )
+      .then(response => {
+        this.setState({
+          game: response.data,
+          pinEntered: true,
+          buttonValue: "Bli med!"
+        });
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
   }
 
   handleEnterStudentName() {
-    const name = this.state.value;
-    alert('Gratulerer ' + name + ', du er inne!');
-    //Redirect to classroom
+    this.setState({
+      gameEntered: true
+    });
   }
 
   handleChange(event) {
-    this.setState({value: event.target.value});
+    this.setState({ value: event.target.value });
   }
 
   handleSubmit(event) {
-    this.state.pinEntered ? this.handleEnterStudentName() : this.handleEnterClassroomPin();
+    this.state.pinEntered
+      ? this.handleEnterStudentName()
+      : this.handleEnterClassroomPin();
     event.preventDefault();
   }
 
-  onChange = event => {
-    this.setState({ [event.target.name]: event.target.value });
+  pinInput = () => {
+    return (
+      <Col md="auto">
+        <Form.Control
+          placeholder="Skriv inn PIN"
+          value={this.state.value}
+          onChange={this.handleChange}
+        />
+      </Col>
+    );
+  };
+
+  namesDropDown = () => {
+    return (
+      <Col md="auto">
+        <Form.Control as="select" onChange={this.handleChange}>
+          <option>Hva heter du?</option>
+          {this.state.game.scoreboard.map((player, i) => (
+            <option key={i} value={player.name}>
+              {player.name}
+            </option>
+          ))}
+        </Form.Control>
+      </Col>
+    );
   };
 
   render() {
-    const isInvalid = this.state.value === '';
-
-    return (
-        <Form className="Student" onSubmit={this.handleSubmit}>
-          <Row>
-            <Col>
-              <Form.Label><h2>Bli med klassen din og spill!</h2></Form.Label>
-            </Col>
-          </Row>
-          <Row>
-            <Col md="auto">
-              <Form.Control placeholder={this.state.placeholder} value={this.state.value} onChange={this.handleChange}/>
-            </Col>
-            <Col>
-              <Button className="btn-classPin" disabled={isInvalid} variant="outline-light" type="submit">{this.state.buttonValue}</Button>
-            </Col>
-          </Row>
-        </Form>
-    )
+    return this.state.game !== null && this.state.gameEntered === false ? (
+      <Form className="student" onSubmit={this.handleSubmit}>
+        <Row>
+          <Col>
+            <Form.Label>
+              <h2>Bli med klassen din og spill!</h2>
+            </Form.Label>
+          </Col>
+        </Row>
+        <Row>
+          {this.state.pinEntered === false
+            ? this.pinInput()
+            : this.namesDropDown()}
+          <Col>
+            <Button
+              className="btn-classPin"
+              variant="outline-light"
+              type="submit"
+            >
+              {this.state.buttonValue}
+            </Button>
+          </Col>
+        </Row>
+      </Form>
+    ) : (
+      <Redirect
+        to={{
+          pathname:
+            ROUTES.STUDENT + ROUTES.STUDENT_GAME + "/" + this.state.value,
+          state: { game: this.state.game, player: this.state.value }
+        }}
+      />
+    );
   }
 }
 

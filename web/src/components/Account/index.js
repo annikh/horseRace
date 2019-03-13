@@ -1,17 +1,10 @@
-import React, { Component } from 'react';
-import { Col, Row, Container, Button, ListGroup } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import axios from 'axios';
-import PasswordChangeForm from '../PasswordChange';
-import { AuthUserContext, withAuthorization } from '../Session';
-import * as ROUTES from '../../constants/routes';
-import './style.css';
+import React, { Component } from "react";
+import { Col, Row, Container } from "react-bootstrap";
+import PasswordChangeForm from "../PasswordChange";
+import { withAuthorization } from "../Session";
+import "./style.css";
 
 class Account extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return (
       <Container className="accountBody">
@@ -24,9 +17,9 @@ class Account extends Component {
           </Row>
         </Col>
       </Container>
-    )
+    );
   }
-} 
+}
 
 const condition = authUser => !!authUser;
 
