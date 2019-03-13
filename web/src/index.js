@@ -7,6 +7,7 @@ import "./index.css";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import * as ROUTES from "./constants/routes";
 import App from "./components/App";
+import Firebase, { FirebaseContext } from "./components/Firebase";
 /* Add Font Awesome Icons */
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faUser } from "@fortawesome/free-solid-svg-icons";

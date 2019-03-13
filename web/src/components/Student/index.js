@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Button, Form, Row, Col } from "react-bootstrap";
-import { withCookies } from "react-cookie";
 import { Redirect } from "react-router-dom";
+
 import axios from "axios";
 import * as ROUTES from "../../constants/routes";
 import "./style.css";
@@ -124,4 +124,4 @@ class Student extends Component {
   }
 }
 
-export default withCookies(Student);
+export default Student;
