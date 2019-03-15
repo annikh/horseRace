@@ -7,6 +7,9 @@ import * as ROUTES from "../../constants/routes";
 import axios from "axios";
 import shortid from "shortid";
 import CreateClassroom from "../CreateClassroom";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { fetchGamesByTeacher, fetchClassroomsByTeacher } from "../../actions";
 
 class CreateGame extends Component {
   constructor(props) {
@@ -29,34 +32,8 @@ class CreateGame extends Component {
 
   componentDidMount() {
     let authUser = this.context;
-
-    axios
-      .all([
-        axios.get(
-          "https://us-central1-horse-race-232509.cloudfunctions.net/getGamesForTeacherFromDatabase",
-          { params: { user_id: authUser.uid } }
-        ),
-        axios.get(
-          "https://us-central1-horse-race-232509.cloudfunctions.net/getClassroomsForTeacherFromDatabase",
-          { params: { user_id: authUser.uid } }
-        )
-      ])
-      .then(
-        axios.spread((gamesRes, classroomsRes) => {
-          const games = Object.keys(gamesRes.data).map(key => ({
-            ...gamesRes.data[key],
-            id: key
-          }));
-          const classrooms = Object.keys(classroomsRes.data).map(key => ({
-            ...classroomsRes.data[key],
-            id: key
-          }));
-          this.setState({
-            games: games,
-            classrooms: classrooms
-          });
-        })
-      );
+    this.props.fetchGamesByTeacher(authUser.user_id);
+    this.props.fetchClassroomsByTeacher(authUser.user_id);
   }
 
   addGame() {
@@ -84,21 +61,6 @@ class CreateGame extends Component {
       null,
       scoreboard
     );
-
-    return axios
-      .post(
-        "https://us-central1-horse-race-232509.cloudfunctions.net/addGame",
-        game
-      )
-      .then(response => {
-        const games = Object.keys(response.data).map(key => ({
-          ...response.data[key],
-          id: key
-        }));
-        this.setState({
-          games: games
-        });
-      });
   }
 
   getClassroomNames(classroomName) {
@@ -243,4 +205,20 @@ const GameList = ({ games }) => (
   </ListGroup>
 );
 
-export default withAuthorization(condition)(CreateGame);
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    fetchGamesByTeacher: () => dispatch(fetchGamesByTeacher(ownProps.user_id)),
+    fetchClassroomsByTeacher: () =>
+      dispatch(fetchClassroomsByTeacher(ownProps.user_id))
+  };
+};
+
+const mapStateToProps = state => ({
+  games: state.games,
+  classrooms: state.games
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withAuthorization(condition)(CreateGame));
