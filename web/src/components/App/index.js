@@ -1,8 +1,6 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
-import { Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Route } from "react-router-dom";
 import { withCookies } from "react-cookie";
-import { Button, Container, Row, Col } from "react-bootstrap";
 import * as ROUTES from "../../constants/routes";
 import "./App.css";
 // COMPONENTS
@@ -17,8 +15,8 @@ import PasswordForgetPage from "../../components/PasswordForget";
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <Switch>
+      <BrowserRouter>
+        <div>
           <Route
             exact
             path={ROUTES.LANDING}
@@ -50,8 +48,8 @@ class App extends Component {
             path={ROUTES.STUDENT + ROUTES.STUDENT_GAME + "/:user"}
             render={() => <StudentGame cookies={this.props.cookies} />}
           />
-        </Switch>
-      </div>
+        </div>
+      </BrowserRouter>
     );
   }
 }

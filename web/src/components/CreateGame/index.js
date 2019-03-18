@@ -4,10 +4,8 @@ import { Container, Button, Form, Row, Col, ListGroup } from "react-bootstrap";
 import { Redirect } from "react-router-dom";
 import Game from "../../objects/Game";
 import * as ROUTES from "../../constants/routes";
-import axios from "axios";
 import shortid from "shortid";
 import CreateClassroom from "../CreateClassroom";
-import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { fetchGamesByTeacher, fetchClassroomsByTeacher } from "../../actions";
 
