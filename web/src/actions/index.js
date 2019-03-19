@@ -1,5 +1,6 @@
 import {
   ADD_GAME,
+  ADD_CLASSROOM,
   FETCH_GAMES_BY_TEACHER,
   FETCH_CLASSROOMS_BY_TEACHER
 } from "./types";
@@ -8,7 +9,7 @@ import axios from "axios";
 const apiURL = "https://us-central1-horse-race-232509.cloudfunctions.net/";
 
 export function addGame(game) {
-  return function(dispatch) {
+  return dispatch => {
     axios
       .post(`${apiURL}/addGame`, game)
       .then(response => {
@@ -24,6 +25,26 @@ const addGameSuccess = game => {
   return {
     type: ADD_GAME,
     game
+  };
+};
+
+export function addClassroom(classroom) {
+  return dispatch => {
+    axios
+      .post(`${apiURL}/addClassroom`, classroom)
+      .then(response => {
+        dispatch(addClassroomSuccess(response.data));
+      })
+      .catch(error => {
+        throw error;
+      });
+  };
+}
+
+const addClassroomSuccess = classroom => {
+  return {
+    type: ADD_CLASSROOM,
+    classroom
   };
 };
 

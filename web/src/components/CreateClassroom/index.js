@@ -3,6 +3,8 @@ import { AuthUserContext, withAuthorization } from "../Session";
 import { Button, Form, Row, Col } from "react-bootstrap";
 import axios from "axios";
 import Classroom from "../../objects/Classroom";
+import { addClassroom } from "../../actions";
+import { connect } from "react-redux";
 
 class CreateClassroom extends Component {
   constructor(props) {
@@ -10,7 +12,6 @@ class CreateClassroom extends Component {
 
     this.state = {
       loading: false,
-      classrooms: this.props.classrooms,
       classname_value: "",
       names_value: ""
     };
@@ -30,20 +31,7 @@ class CreateClassroom extends Component {
       this.state.names_value,
       user_id
     );
-    return axios
-      .post(
-        "https://us-central1-horse-race-232509.cloudfunctions.net/addClassroom",
-        classroom
-      )
-      .then(response => {
-        const classrooms = Object.keys(response.data).map(key => ({
-          ...response.data[key],
-          id: key
-        }));
-        this.setState({
-          classrooms: classrooms
-        });
-      });
+    this.props.addClassroom(classroom);
   }
   handleSubmit = uid => event => {
     event.preventDefault();
@@ -123,4 +111,13 @@ class CreateClassroom extends Component {
 }
 const condition = authUser => !!authUser;
 
-export default withAuthorization(condition)(CreateClassroom);
+const mapDispatchToProps = dispatch => {
+  return {
+    addClassroom: classroom => dispatch(addClassroom(classroom))
+  };
+};
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(withAuthorization(condition)(CreateClassroom));

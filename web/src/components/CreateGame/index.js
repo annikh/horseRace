@@ -7,7 +7,11 @@ import * as ROUTES from "../../constants/routes";
 import shortid from "shortid";
 import CreateClassroom from "../CreateClassroom";
 import { connect } from "react-redux";
-import { fetchGamesByTeacher, fetchClassroomsByTeacher } from "../../actions";
+import {
+  fetchGamesByTeacher,
+  fetchClassroomsByTeacher,
+  addGame
+} from "../../actions";
 
 class CreateGame extends Component {
   constructor(props) {
@@ -28,7 +32,6 @@ class CreateGame extends Component {
 
   componentDidMount() {
     let authUser = this.context;
-    console.log(authUser.uid);
     this.props.fetchGamesByTeacher(authUser.uid);
     this.props.fetchClassroomsByTeacher(authUser.uid);
   }
@@ -49,7 +52,6 @@ class CreateGame extends Component {
       };
       scoreboard.push(newPlayer);
     });
-
     const game = new Game(
       null,
       newGamePin,
@@ -58,6 +60,7 @@ class CreateGame extends Component {
       null,
       scoreboard
     );
+    this.props.addGame(game);
   }
 
   getClassroomNames(classroomName) {
@@ -206,7 +209,8 @@ const mapDispatchToProps = dispatch => {
   return {
     fetchGamesByTeacher: user_id => dispatch(fetchGamesByTeacher(user_id)),
     fetchClassroomsByTeacher: user_id =>
-      dispatch(fetchClassroomsByTeacher(user_id))
+      dispatch(fetchClassroomsByTeacher(user_id)),
+    addGame: game => dispatch(addGame(game))
   };
 };
 
