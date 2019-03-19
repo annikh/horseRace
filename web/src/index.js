@@ -6,8 +6,9 @@ import App from "./components/App";
 import Firebase, { FirebaseContext } from "./components/Firebase";
 /* Add Redux */
 import { Provider } from "react-redux";
-import { createStore } from "redux";
-import app from "./reducers";
+import { createStore, applyMiddleware } from "redux";
+import rootReducer from "./reducers";
+import thunk from "redux-thunk";
 /* Add Cookies */
 import { CookiesProvider } from "react-cookie";
 /* Add Font Awesome Icons */
@@ -15,7 +16,7 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 library.add(faUser);
 
-const store = createStore(app);
+const store = createStore(rootReducer, applyMiddleware(thunk));
 
 ReactDOM.render(
   <Provider store={store}>

@@ -22,16 +22,15 @@ class CreateGame extends Component {
     this.state = {
       doRedirect: false,
       loading: false,
-      games: [],
-      classrooms: [],
       classroom_id: ""
     };
   }
 
   componentDidMount() {
     let authUser = this.context;
-    this.props.fetchGamesByTeacher(authUser.user_id);
-    this.props.fetchClassroomsByTeacher(authUser.user_id);
+    console.log(authUser.uid);
+    this.props.fetchGamesByTeacher(authUser.uid);
+    this.props.fetchClassroomsByTeacher(authUser.uid);
   }
 
   addGame() {
@@ -62,7 +61,7 @@ class CreateGame extends Component {
   }
 
   getClassroomNames(classroomName) {
-    const classroom = this.state.classrooms.find(
+    const classroom = this.props.classrooms.find(
       classroom => classroom.classroom_name === classroomName
     );
     let names = [];
@@ -71,9 +70,9 @@ class CreateGame extends Component {
   }
 
   isValidPin(pin) {
-    for (var key in this.state.games) {
-      console.log(this.state.games[key].pin);
-      if (this.state.games[key].pin === pin) {
+    for (var key in this.props.games) {
+      console.log(this.props.games[key].pin);
+      if (this.props.games[key].pin === pin) {
         return false;
       }
     }
@@ -109,7 +108,7 @@ class CreateGame extends Component {
           <Col>
             <Form.Control as="select" onChange={this.handleChange}>
               <option>Velg...</option>
-              {this.state.classrooms.map((classroom, i) => (
+              {this.props.classrooms.map((classroom, i) => (
                 <option key={i} value={classroom.key}>
                   {classroom.classroom_name}
                 </option>
@@ -129,7 +128,7 @@ class CreateGame extends Component {
   };
 
   render() {
-    const { games } = this.state;
+    const games = this.props.games;
 
     return (
       <Container className="accountBody">
@@ -203,18 +202,20 @@ const GameList = ({ games }) => (
   </ListGroup>
 );
 
-const mapDispatchToProps = (dispatch, ownProps) => {
+const mapDispatchToProps = dispatch => {
   return {
-    fetchGamesByTeacher: () => dispatch(fetchGamesByTeacher(ownProps.user_id)),
-    fetchClassroomsByTeacher: () =>
-      dispatch(fetchClassroomsByTeacher(ownProps.user_id))
+    fetchGamesByTeacher: user_id => dispatch(fetchGamesByTeacher(user_id)),
+    fetchClassroomsByTeacher: user_id =>
+      dispatch(fetchClassroomsByTeacher(user_id))
   };
 };
 
-const mapStateToProps = state => ({
-  games: state.games,
-  classrooms: state.games
-});
+const mapStateToProps = state => {
+  return {
+    games: state.games,
+    classrooms: state.classrooms
+  };
+};
 
 export default connect(
   mapStateToProps,

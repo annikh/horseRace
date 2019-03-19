@@ -7,9 +7,9 @@ import axios from "axios";
 
 const apiURL = "https://us-central1-horse-race-232509.cloudfunctions.net/";
 
-export const addGame = ({ game }) => {
-  return dispatch => {
-    return axios
+export function addGame(game) {
+  return function(dispatch) {
+    axios
       .post(`${apiURL}/addGame`, game)
       .then(response => {
         dispatch(addGameSuccess(response.data));
@@ -18,18 +18,18 @@ export const addGame = ({ game }) => {
         throw error;
       });
   };
-};
+}
 
-export const addGameSuccess = game => {
+const addGameSuccess = game => {
   return {
     type: ADD_GAME,
     game
   };
 };
 
-export const fetchGamesByTeacher = userID => {
+export function fetchGamesByTeacher(userID) {
   return dispatch => {
-    return axios
+    axios
       .get(`${apiURL}/getGamesForTeacherFromDatabase`, {
         params: { user_id: userID }
       })
@@ -40,18 +40,18 @@ export const fetchGamesByTeacher = userID => {
         throw error;
       });
   };
-};
+}
 
-export const fetchGamesByTeacherSuccess = games => {
+const fetchGamesByTeacherSuccess = games => {
   return {
     type: FETCH_GAMES_BY_TEACHER,
     games
   };
 };
 
-export const fetchClassroomsByTeacher = userID => {
-  return dispatch => {
-    return axios
+export function fetchClassroomsByTeacher(userID) {
+  return function(dispatch) {
+    axios
       .get(`${apiURL}/getClassroomsForTeacherFromDatabase`, {
         params: { user_id: userID }
       })
@@ -62,9 +62,9 @@ export const fetchClassroomsByTeacher = userID => {
         throw error;
       });
   };
-};
+}
 
-export const fetchClassroomsByTeacherSuccess = classrooms => {
+const fetchClassroomsByTeacherSuccess = classrooms => {
   return {
     type: FETCH_CLASSROOMS_BY_TEACHER,
     classrooms
