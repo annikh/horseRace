@@ -17,32 +17,16 @@ class App extends Component {
     return (
       <BrowserRouter>
         <div>
-          <Route
-            exact
-            path={ROUTES.LANDING}
-            render={() => <Home cookies={this.props.cookies} />}
-          />
-          <Route
-            path={ROUTES.SIGN_UP}
-            render={() => <SignUpPage cookies={this.props.cookies} />}
-          />
-          <Route
-            path={ROUTES.SIGN_IN}
-            render={() => <SignInPage cookies={this.props.cookies} />}
-          />
-          <Route
-            path={ROUTES.PASSWORD_FORGET}
-            render={() => <PasswordForgetPage cookies={this.props.cookies} />}
-          />
+          <Route exact path={ROUTES.LANDING} component={Home} />
+          <Route path={ROUTES.SIGN_UP} component={SignUpPage} />
+          <Route path={ROUTES.SIGN_IN} component={SignInPage} />
+          <Route path={ROUTES.PASSWORD_FORGET} component={PasswordForgetPage} />
           <Route
             exact
             path={ROUTES.STUDENT}
             render={() => <Student cookies={this.props.cookies} />}
           />
-          <Route
-            path={ROUTES.TEACHER}
-            render={() => <Teacher cookies={this.props.cookies} />}
-          />
+          <Route path={ROUTES.TEACHER} component={Teacher} />
           <Route
             exact
             path={ROUTES.STUDENT + ROUTES.STUDENT_GAME + "/:user"}

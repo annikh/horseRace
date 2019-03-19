@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import { Button, Form, Row, Col } from "react-bootstrap";
 import { Redirect } from "react-router-dom";
-
+import { connect } from "react-redux";
 import axios from "axios";
 import * as ROUTES from "../../constants/routes";
+import { fetchGameById } from "../../actions";
 import "./style.css";
 
 class Student extends Component {
@@ -17,7 +18,6 @@ class Student extends Component {
     this.namesDropDown = this.namesDropDown.bind(this);
 
     this.state = {
-      game: {},
       value: "",
       pinEntered: false,
       buttonValue: "Enter",
@@ -26,21 +26,10 @@ class Student extends Component {
   }
 
   handleEnterClassroomPin() {
-    axios
-      .get(
-        "https://us-central1-horse-race-232509.cloudfunctions.net/getGameById",
-        { params: { pin: this.state.value } }
-      )
-      .then(response => {
-        this.setState({
-          game: response.data,
-          pinEntered: true,
-          buttonValue: "Bli med!"
-        });
-      })
-      .catch(function(error) {
-        console.log(error);
-      });
+    this.props.fetchGameById(this.state.value);
+    this.setState({
+      pinEntered: true
+    });
   }
 
   handleEnterStudentName() {
@@ -77,7 +66,7 @@ class Student extends Component {
       <Col md="auto">
         <Form.Control as="select" onChange={this.handleChange}>
           <option>Hva heter du?</option>
-          {this.state.game.scoreboard.map((player, i) => (
+          {this.props.currentGame.scoreboard.map((player, i) => (
             <option key={i} value={player.name}>
               {player.name}
             </option>
@@ -88,7 +77,9 @@ class Student extends Component {
   };
 
   render() {
-    return this.state.game !== null && this.state.gameEntered === false ? (
+    console.log(this.props.currentGame);
+    return this.props.currentGame.game !== null &&
+      this.state.gameEntered === false ? (
       <Form className="student" onSubmit={this.handleSubmit}>
         <Row>
           <Col>
@@ -124,4 +115,20 @@ class Student extends Component {
   }
 }
 
-export default Student;
+const mapStateToProps = (state, ownProps) => {
+  return {
+    currentGame: state.currentGame,
+    cookies: ownProps.cookies
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    fetchGameById: game_pin => dispatch(fetchGameById(game_pin))
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Student);

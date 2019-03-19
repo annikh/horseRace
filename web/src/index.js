@@ -19,12 +19,12 @@ library.add(faUser);
 const store = createStore(rootReducer, applyMiddleware(thunk));
 
 ReactDOM.render(
-  <Provider store={store}>
-    <FirebaseContext.Provider value={new Firebase()}>
-      <CookiesProvider>
+  <CookiesProvider>
+    <Provider store={store}>
+      <FirebaseContext.Provider value={new Firebase()}>
         <App />
-      </CookiesProvider>
-    </FirebaseContext.Provider>
-  </Provider>,
+      </FirebaseContext.Provider>
+    </Provider>
+  </CookiesProvider>,
   document.getElementById("root")
 );

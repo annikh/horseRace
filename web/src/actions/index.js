@@ -1,6 +1,7 @@
 import {
   ADD_GAME,
   ADD_CLASSROOM,
+  FETCH_GAME_BY_ID,
   FETCH_GAMES_BY_TEACHER,
   FETCH_CLASSROOMS_BY_TEACHER
 } from "./types";
@@ -67,6 +68,28 @@ const fetchGamesByTeacherSuccess = games => {
   return {
     type: FETCH_GAMES_BY_TEACHER,
     games
+  };
+};
+
+export function fetchGameById(game_pin) {
+  return dispatch => {
+    axios
+      .get(`${apiURL}/getGameById`, {
+        params: { pin: game_pin }
+      })
+      .then(response => {
+        dispatch(fetchGameByIdSuccess(response.data));
+      })
+      .catch(error => {
+        throw error;
+      });
+  };
+}
+
+const fetchGameByIdSuccess = game => {
+  return {
+    type: FETCH_GAME_BY_ID,
+    game
   };
 };
 
