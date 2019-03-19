@@ -4,9 +4,14 @@ import { Container, Button, Form, Row, Col, ListGroup } from "react-bootstrap";
 import { Redirect } from "react-router-dom";
 import Game from "../../objects/Game";
 import * as ROUTES from "../../constants/routes";
-import axios from "axios";
 import shortid from "shortid";
 import CreateClassroom from "../CreateClassroom";
+import { connect } from "react-redux";
+import {
+  fetchGamesByTeacher,
+  fetchClassroomsByTeacher,
+  addGame
+} from "../../actions";
 
 class CreateGame extends Component {
   constructor(props) {
@@ -21,42 +26,14 @@ class CreateGame extends Component {
     this.state = {
       doRedirect: false,
       loading: false,
-      games: [],
-      classrooms: [],
       classroom_id: ""
     };
   }
 
   componentDidMount() {
     let authUser = this.context;
-
-    axios
-      .all([
-        axios.get(
-          "https://us-central1-horse-race-232509.cloudfunctions.net/getGamesForTeacherFromDatabase",
-          { params: { user_id: authUser.uid } }
-        ),
-        axios.get(
-          "https://us-central1-horse-race-232509.cloudfunctions.net/getClassroomsForTeacherFromDatabase",
-          { params: { user_id: authUser.uid } }
-        )
-      ])
-      .then(
-        axios.spread((gamesRes, classroomsRes) => {
-          const games = Object.keys(gamesRes.data).map(key => ({
-            ...gamesRes.data[key],
-            id: key
-          }));
-          const classrooms = Object.keys(classroomsRes.data).map(key => ({
-            ...classroomsRes.data[key],
-            id: key
-          }));
-          this.setState({
-            games: games,
-            classrooms: classrooms
-          });
-        })
-      );
+    this.props.fetchGamesByTeacher(authUser.uid);
+    this.props.fetchClassroomsByTeacher(authUser.uid);
   }
 
   addGame() {
@@ -75,7 +52,6 @@ class CreateGame extends Component {
       };
       scoreboard.push(newPlayer);
     });
-
     const game = new Game(
       null,
       newGamePin,
@@ -84,25 +60,11 @@ class CreateGame extends Component {
       null,
       scoreboard
     );
-
-    return axios
-      .post(
-        "https://us-central1-horse-race-232509.cloudfunctions.net/addGame",
-        game
-      )
-      .then(response => {
-        const games = Object.keys(response.data).map(key => ({
-          ...response.data[key],
-          id: key
-        }));
-        this.setState({
-          games: games
-        });
-      });
+    this.props.addGame(game);
   }
 
   getClassroomNames(classroomName) {
-    const classroom = this.state.classrooms.find(
+    const classroom = this.props.classrooms.find(
       classroom => classroom.classroom_name === classroomName
     );
     let names = [];
@@ -111,9 +73,9 @@ class CreateGame extends Component {
   }
 
   isValidPin(pin) {
-    for (var key in this.state.games) {
-      console.log(this.state.games[key].pin);
-      if (this.state.games[key].pin === pin) {
+    for (var key in this.props.games) {
+      console.log(this.props.games[key].pin);
+      if (this.props.games[key].pin === pin) {
         return false;
       }
     }
@@ -149,7 +111,7 @@ class CreateGame extends Component {
           <Col>
             <Form.Control as="select" onChange={this.handleChange}>
               <option>Velg...</option>
-              {this.state.classrooms.map((classroom, i) => (
+              {this.props.classrooms.map((classroom, i) => (
                 <option key={i} value={classroom.key}>
                   {classroom.classroom_name}
                 </option>
@@ -169,7 +131,7 @@ class CreateGame extends Component {
   };
 
   render() {
-    const { games } = this.state;
+    const games = this.props.games;
 
     return (
       <Container className="accountBody">
@@ -243,4 +205,23 @@ const GameList = ({ games }) => (
   </ListGroup>
 );
 
-export default withAuthorization(condition)(CreateGame);
+const mapDispatchToProps = dispatch => {
+  return {
+    fetchGamesByTeacher: user_id => dispatch(fetchGamesByTeacher(user_id)),
+    fetchClassroomsByTeacher: user_id =>
+      dispatch(fetchClassroomsByTeacher(user_id)),
+    addGame: game => dispatch(addGame(game))
+  };
+};
+
+const mapStateToProps = state => {
+  return {
+    games: state.games,
+    classrooms: state.classrooms
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withAuthorization(condition)(CreateGame));
