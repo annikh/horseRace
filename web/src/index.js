@@ -7,6 +7,7 @@ import App from "./components/App";
 import SignUpPage from "./components/SignUp";
 import SignInPage from "./components/SignIn";
 import StudentGame from "./components/StudentGame";
+import Editor from './components/Editor';
 import PasswordForgetPage from "./components/PasswordForget";
 import Firebase, { FirebaseContext } from "./components/Firebase";
 import "./index.css";
@@ -28,6 +29,7 @@ ReactDOM.render(
         <Route path={ROUTES.PASSWORD_FORGET} component={PasswordForgetPage} />
         <Route exact path={ROUTES.STUDENT} component={Student} />
         <Route path={ROUTES.TEACHER} component={Teacher} />
+        <Route path={'/editor'} component={Editor} />
         <Route
           exact
           path={ROUTES.STUDENT + ROUTES.STUDENT_GAME + "/:user"}
