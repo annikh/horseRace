@@ -22,7 +22,6 @@ class App extends Component {
           <Route path={ROUTES.SIGN_IN} component={SignInPage} />
           <Route path={ROUTES.PASSWORD_FORGET} component={PasswordForgetPage} />
           <Route
-            exact
             path={ROUTES.STUDENT}
             render={() => <Student cookies={this.props.cookies} />}
           />

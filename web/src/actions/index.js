@@ -3,7 +3,8 @@ import {
   ADD_CLASSROOM,
   FETCH_GAME_BY_ID,
   FETCH_GAMES_BY_TEACHER,
-  FETCH_CLASSROOMS_BY_TEACHER
+  FETCH_CLASSROOMS_BY_TEACHER,
+  REMOVE_CURRENT_GAME
 } from "./types";
 import axios from "axios";
 
@@ -112,5 +113,11 @@ const fetchClassroomsByTeacherSuccess = classrooms => {
   return {
     type: FETCH_CLASSROOMS_BY_TEACHER,
     classrooms
+  };
+};
+
+export const removeCurrentGame = () => {
+  return {
+    type: REMOVE_CURRENT_GAME
   };
 };

@@ -1,10 +1,15 @@
 import React, { Component } from "react";
-import { Row, Nav } from "react-bootstrap";
+import { Row, Nav, Button } from "react-bootstrap";
+import * as ROUTES from "../../constants/routes";
+import { Redirect } from "react-router-dom";
+import { connect } from "react-redux";
+import { removeCurrentGame } from "../../actions";
 
 class StudentGame extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      exitGame: false,
       gameStarted: false,
       player: {
         tasks: [],
@@ -13,13 +18,31 @@ class StudentGame extends Component {
     };
   }
 
+  exitGame = () => {
+    this.props.cookies.remove("name");
+    this.props.removeCurrentGame();
+    this.setState({
+      exitGame: true
+    });
+  };
+
   render() {
-    const { game, player } = this.props.location.state;
     return (
       <div className="studentGame">
         <Nav className="justify-content-center">
           <Nav.Item>
-            <h3>Hei, {player}</h3>
+            {this.state.exitGame ? (
+              <Redirect
+                to={{
+                  pathname: ROUTES.STUDENT
+                }}
+              />
+            ) : (
+              <Button onClick={this.exitGame}>Avslutt spill</Button>
+            )}
+          </Nav.Item>
+          <Nav.Item>
+            <h3>Hei, </h3>
           </Nav.Item>
         </Nav>
         {this.state.gameStarted === false ? (
@@ -34,4 +57,20 @@ class StudentGame extends Component {
   }
 }
 
-export default StudentGame;
+const mapStateToProps = (state, ownProps) => {
+  return {
+    currentGame: state.currentGame,
+    cookies: ownProps.cookies
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    removeCurrentGame: () => dispatch(removeCurrentGame())
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(StudentGame);
