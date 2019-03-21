@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import AceEditor from 'react-ace';
 import { Button } from 'react-bootstrap';
+import axios from 'axios';
 
 import 'brace/mode/python';
 import 'brace/theme/monokai';
@@ -11,11 +12,37 @@ class Editor extends Component {
         super(props, context);
         
         this.onChange = this.onChange.bind(this);
+        this.runCode = this.runCode.bind(this);
+
+        this.state = {
+            aceEditorValue: '# Enter your code here.',
+            output: ''
+        }
     }
     
-    onChange(newValue) {
-      console.log('change', newValue);
+    // onChange(newValue) {
+    //   console.log('change', newValue);
+    // }
+
+    onChange(value) {
+        this.setState({ aceEditorValue: value });
     }
+
+    runCode(event) {
+        event.preventDefault();
+        const data = {
+          answer: this.state.aceEditorValue
+        }
+
+        axios.get('http://python-eval-server.appspot.com/run', { params: { code: this.state.aceEditorValue } })
+        .then( response => {
+          console.log(response)
+          this.setState({output: response.data})
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    } 
 
     render() {
         return(
@@ -31,7 +58,7 @@ class Editor extends Component {
                 showPrintMargin={true}
                 showGutter={true}
                 highlightActiveLine={true}
-                value={'print "Hello World" '}
+                value={this.state.aceEditorValue}
                 setOptions={{
                 enableBasicAutocompletion: true,
                 enableLiveAutocompletion: true,
@@ -39,7 +66,10 @@ class Editor extends Component {
                 showLineNumbers: true,
                 tabSize: 2,
                 }}/>
-                <Button bsStyle="primary" bsSize="small">Run Code</Button>
+                <Button bsStyle="primary" bsSize="small" onClick={this.runCode}>Run Code</Button>
+                <br/><br/>
+
+                <p>output: {this.state.output}</p>
             </div>
         )
     }
