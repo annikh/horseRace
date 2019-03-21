@@ -11,6 +11,7 @@ import SignUpPage from "../../components/SignUp";
 import SignInPage from "../../components/SignIn";
 import StudentGame from "../../components/StudentGame";
 import PasswordForgetPage from "../../components/PasswordForget";
+import Editor from "../../components/Editor";
 
 class App extends Component {
   render() {
@@ -47,6 +48,10 @@ class App extends Component {
             exact
             path={ROUTES.STUDENT + ROUTES.STUDENT_GAME + "/:user"}
             render={() => <StudentGame cookies={this.props.cookies} />}
+          />
+          <Route
+            path={'/editor'}
+            render={() => <Editor cookies={this.props.cookies} />}
           />
         </div>
       </BrowserRouter>

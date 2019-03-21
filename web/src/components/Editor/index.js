@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import AceEditor from 'react-ace';
-import brace from 'brace';
+import { Button } from 'react-bootstrap';
 
 import 'brace/mode/python';
 import 'brace/theme/monokai';
@@ -39,6 +39,7 @@ class Editor extends Component {
                 showLineNumbers: true,
                 tabSize: 2,
                 }}/>
+                <Button bsStyle="primary" bsSize="small">Run Code</Button>
             </div>
         )
     }
