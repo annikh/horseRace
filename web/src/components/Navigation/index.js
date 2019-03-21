@@ -1,28 +1,31 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import SignOutButton from '../SignOut';
-import { Nav } from 'react-bootstrap';
-import { AuthUserContext, withAuthorization } from '../Session';
+import React from "react";
+import { Link } from "react-router-dom";
+import SignOutButton from "../SignOut";
+import { Nav } from "react-bootstrap";
+import { AuthUserContext, withAuthorization } from "../Session";
+import * as ROUTES from "../../constants/routes";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import "./style.css";
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import './style.css';
-
-const Navigation = ({match}) => (
+const Navigation = () => (
   <AuthUserContext.Consumer>
     {authUser => (
-      <div>
-        <Nav className="navbar">
-          <Nav.Item>
-            <Link to={`${match.url}/account`} className="link"><FontAwesomeIcon icon="user" color="black"/>{authUser.email}</Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Link to={match.url} className="link">Spill</Link>
-          </Nav.Item>
-          <Nav.Item>
-            <SignOutButton />
-          </Nav.Item>
-        </Nav>
-      </div>
+      <Nav className="navbar">
+        <Nav.Item>
+          <Link to={ROUTES.TEACHER + ROUTES.ACCOUNT} className="link">
+            <FontAwesomeIcon icon="user" color="black" />
+            {authUser.email}
+          </Link>
+        </Nav.Item>
+        <Nav.Item>
+          <Link to={ROUTES.TEACHER + ROUTES.CREATE_GAME} className="link">
+            Spill
+          </Link>
+        </Nav.Item>
+        <Nav.Item>
+          <SignOutButton />
+        </Nav.Item>
+      </Nav>
     )}
   </AuthUserContext.Consumer>
 );
