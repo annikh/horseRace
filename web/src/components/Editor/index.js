@@ -26,9 +26,6 @@ class Editor extends Component {
 
     runCode(event) {
         event.preventDefault();
-        const data = {
-          answer: this.state.aceEditorValue
-        }
 
         axios.get('http://python-eval-server.appspot.com/run', { params: { code: this.state.aceEditorValue } })
         .then( response => {
