@@ -27,6 +27,8 @@ class StudentGame extends Component {
   };
 
   render() {
+    this.props.cookies.remove("name");
+    console.log(this.props.cookies.getAll());
     return (
       <div className="studentGame">
         <Nav className="justify-content-center">

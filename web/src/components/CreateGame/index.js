@@ -42,23 +42,15 @@ class CreateGame extends Component {
       newGamePin = shortid.generate();
     }
     let authUser = this.context;
-    const classroomNames = this.getClassroomNames(this.state.classroom_id);
-    let scoreboard = [];
-    classroomNames.forEach(function(name) {
-      let newPlayer = {
-        name: name,
-        points: 0,
-        tasks: []
-      };
-      scoreboard.push(newPlayer);
-    });
+    const names = this.getClassroomNames(this.state.classroom_id);
     const game = new Game(
       null,
       newGamePin,
       authUser.uid,
       this.state.classroom_id,
       null,
-      scoreboard
+      names,
+      null
     );
     this.props.addGame(game);
   }
@@ -67,9 +59,7 @@ class CreateGame extends Component {
     const classroom = this.props.classrooms.find(
       classroom => classroom.classroom_name === classroomName
     );
-    let names = [];
-    classroom.names.split(/\n/).map(name => names.push(name));
-    return names;
+    return classroom.names;
   }
 
   isValidPin(pin) {

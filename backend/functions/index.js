@@ -148,11 +148,11 @@ const getGameByIdFromDatabase = (reqGame, res) => {
             classroom_id: game.val().classroom_id,
             user_id: game.val().user_id,
             date: game.val().date,
+            names: game.val().names,
             scoreboard: game.val().scoreboard
           };
         }
       });
-      console.log(matched_game);
       res.status(200).json(matched_game);
     },
     error => {
@@ -162,3 +162,34 @@ const getGameByIdFromDatabase = (reqGame, res) => {
     }
   );
 };
+
+// CURRENT GAME UPDATES
+exports.addPlayerToGame = functions.https.onRequest((req, res) => {
+  return cors(req, res, () => {
+    if (req.method !== "POST") {
+      return res.status(401).json({
+        message: "Not allowed"
+      });
+    }
+    const active_player = req.body[1];
+    const game_id = req.body[0];
+
+    //remove player from name list
+    const oldNames = gameDB.child(game_id).child("names/");
+    console.log("old:", oldNames);
+    let newNames = [];
+    oldNames.forEach(name => {
+      if (name !== active_player) {
+        newNames.push(name);
+      }
+    });
+    console.log("new", newNames);
+    gameDB.child(game_id + "/names").set(newNames);
+
+    //add player to game
+    gameDB.child(game_id + "/scoreboard/" + active_player).set({
+      points: 0,
+      tasks: []
+    });
+  });
+});

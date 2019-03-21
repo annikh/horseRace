@@ -3,7 +3,7 @@ import { Button, Form, Row, Col } from "react-bootstrap";
 import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import * as ROUTES from "../../constants/routes";
-import { fetchGameById } from "../../actions";
+import { fetchGameById, addPlayerToGame } from "../../actions";
 import "./style.css";
 
 class Student extends Component {
@@ -31,12 +31,11 @@ class Student extends Component {
 
   handleEnterStudentName() {
     const { cookies } = this.props;
-    cookies.set("name", this.state.value);
-    this.forceUpdate();
+    const name = this.state.value;
+    this.props.addPlayerToGame([this.props.currentGame.id, name]);
   }
 
   handleChange(event) {
-    console.log("handleChange");
     this.setState({ value: event.target.value });
   }
 
@@ -63,12 +62,11 @@ class Student extends Component {
       <Col md="auto">
         <Form.Control as="select" onChange={this.handleChange}>
           <option>Hva heter du?</option>
-          {this.props.currentGame !== null &&
-            this.props.currentGame.scoreboard.map((player, i) => (
-              <option key={i} value={player.name}>
-                {player.name}
-              </option>
-            ))}
+          {this.props.currentGame.names.map((player, i) => (
+            <option key={i} value={player}>
+              {player}
+            </option>
+          ))}
         </Form.Control>
       </Col>
     );
@@ -77,8 +75,6 @@ class Student extends Component {
   render() {
     const { cookies } = this.props;
     const cookie = cookies.getAll();
-    console.log("cookie", cookie);
-    console.log("currentgame:", this.props.currentGame);
     return Object.entries(cookie).length === 0 ? (
       <Form className="student" onSubmit={this.handleSubmit}>
         <Row>
@@ -89,7 +85,8 @@ class Student extends Component {
           </Col>
         </Row>
         <Row>
-          {this.props.currentGame === null
+          {this.props.currentGame === null ||
+          this.props.currentClassroom === null
             ? this.pinInput()
             : this.namesDropDown()}
           <Col>
@@ -123,7 +120,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchGameById: game_pin => dispatch(fetchGameById(game_pin))
+    fetchGameById: game_pin => dispatch(fetchGameById(game_pin)),
+    addPlayerToGame: user => dispatch(addPlayerToGame(user))
   };
 };
 

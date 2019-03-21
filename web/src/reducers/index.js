@@ -1,6 +1,7 @@
 import {
   ADD_GAME,
   ADD_CLASSROOM,
+  ADD_PLAYER_TO_GAME,
   FETCH_GAME_BY_ID,
   FETCH_CLASSROOMS_BY_TEACHER,
   FETCH_GAMES_BY_TEACHER,
@@ -19,8 +20,16 @@ function rootReducer(state = initialState, action) {
       return { ...state, games: [...state.games, action.game] };
     case ADD_CLASSROOM:
       return { ...state, classrooms: [...state.classrooms, action.classroom] };
+    case ADD_PLAYER_TO_GAME:
+      return {
+        ...state,
+        currentGame: {
+          scoreboard: [...state.currentGame.scoreboard, action.user]
+        }
+      };
     case FETCH_GAME_BY_ID:
       return { ...state, currentGame: action.game };
+
     case FETCH_GAMES_BY_TEACHER:
       return { ...state, games: action.games };
     case FETCH_CLASSROOMS_BY_TEACHER:

@@ -23,11 +23,13 @@ class CreateClassroom extends Component {
   }
 
   addClassroom(user_id) {
+    let names = [];
+    this.state.names_value.split(/\n/).map(name => names.push(name));
     const classroom = new Classroom(
       null,
       this.state.classname_value,
       null,
-      this.state.names_value,
+      names,
       user_id
     );
     this.props.addClassroom(classroom);

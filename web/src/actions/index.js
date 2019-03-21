@@ -1,6 +1,7 @@
 import {
   ADD_GAME,
   ADD_CLASSROOM,
+  ADD_PLAYER_TO_GAME,
   FETCH_GAME_BY_ID,
   FETCH_GAMES_BY_TEACHER,
   FETCH_CLASSROOMS_BY_TEACHER,
@@ -47,6 +48,27 @@ const addClassroomSuccess = classroom => {
   return {
     type: ADD_CLASSROOM,
     classroom
+  };
+};
+
+export function addPlayerToGame(player) {
+  console.log(player);
+  return dispatch => {
+    axios
+      .post(`${apiURL}/addPlayerToGame`, player)
+      .then(response => {
+        dispatch(addPlayerToGameSuccess(response.data));
+      })
+      .catch(error => {
+        throw error;
+      });
+  };
+}
+
+const addPlayerToGameSuccess = player => {
+  return {
+    type: ADD_PLAYER_TO_GAME,
+    player
   };
 };
 
