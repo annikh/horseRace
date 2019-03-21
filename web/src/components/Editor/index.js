@@ -19,10 +19,6 @@ class Editor extends Component {
             output: ''
         }
     }
-    
-    // onChange(newValue) {
-    //   console.log('change', newValue);
-    // }
 
     onChange(value) {
         this.setState({ aceEditorValue: value });
