@@ -24,4 +24,5 @@ Activate the virtual environment
 Run the server
 ### `python main.py`
 
+You should now be able to reach the server on port 5000
 
