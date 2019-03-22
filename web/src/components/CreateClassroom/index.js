@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { AuthUserContext, withAuthorization } from "../Session";
 import { Button, Form, Row, Col } from "react-bootstrap";
-import axios from "axios";
 import Classroom from "../../objects/Classroom";
 import { addClassroom } from "../../actions";
 import { connect } from "react-redux";
