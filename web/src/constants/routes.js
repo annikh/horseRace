@@ -6,5 +6,4 @@ export const STUDENT = "/student";
 export const TEACHER = "/teacher";
 export const ACCOUNT = "/account";
 export const CREATE_GAME = "/create-game";
-export const GAME = "/game";
 export const STUDENT_GAME = "/game";
