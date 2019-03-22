@@ -18,7 +18,6 @@ const Teacher = () => (
       component={CreateGame}
     />
     <Route path={teacherURL + ROUTES.ACCOUNT} component={Account} />
-    <Route path={teacherURL + ROUTES.GAME} component={Game} />
   </div>
 );
 

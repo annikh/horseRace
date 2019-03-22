@@ -24,7 +24,6 @@ class CreateGame extends Component {
     this.getClassroomNames = this.getClassroomNames.bind(this);
 
     this.state = {
-      doRedirect: false,
       loading: false,
       classroom_id: ""
     };
@@ -85,7 +84,7 @@ class CreateGame extends Component {
   handleSubmit(event) {
     event.preventDefault();
     this.addGame();
-    this.setState({ doRedirect: true });
+    alert("Spill opprettet!");
   }
 
   handleChange(event) {
@@ -135,9 +134,6 @@ class CreateGame extends Component {
 
     return (
       <Container className="accountBody">
-        {this.state.doRedirect && (
-          <Redirect to={ROUTES.TEACHER + ROUTES.GAME} />
-        )}
         <Row>
           <Col>
             <DisplayGames games={games} />

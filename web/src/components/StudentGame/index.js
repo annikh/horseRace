@@ -1,5 +1,14 @@
 import React, { Component } from "react";
-import { Row, Nav } from "react-bootstrap";
+import {
+  Row,
+  Navbar,
+  Form,
+  FormControl,
+  Button,
+  Container,
+  Spinner
+} from "react-bootstrap";
+import Game from "../../components/Game";
 
 class StudentGame extends Component {
   constructor(props) {
@@ -13,23 +22,34 @@ class StudentGame extends Component {
     };
   }
 
+  guessPicture(picture) {
+    //sjekk mot redux store currentGame -> Solution ->
+    // ELLER hent fra en egen gameID: solution tabell, sjekk om den er lik
+    // hvis riktig , sett currentGame til "isFinished"
+  }
+
   render() {
     const { game, player } = this.props.location.state;
     return (
-      <div className="studentGame">
-        <Nav className="justify-content-center">
-          <Nav.Item>
-            <h3>Hei, {player}</h3>
-          </Nav.Item>
-        </Nav>
+      <Container className="studentGame">
+        <Navbar className="navbar-game" fixed="top">
+          <Navbar.Brand className="mr-auto" variant="primary">
+            GAME
+          </Navbar.Brand>
+          <Form inline>
+            <FormControl type="text" placeholder="Search" className="mr-sm-2" />
+            <Button variant="outline-light">Gjett motiv</Button>
+          </Form>
+        </Navbar>
         {this.state.gameStarted === false ? (
           <Row style={{ justifyContent: "center" }}>
-            Venter på at spillet skal starte..
+            <Spinner animation="border" variant="info" /> Venter på at spillet
+            skal starte..
           </Row>
         ) : (
-          <div> Her skal spillet komme</div>
+          <Game game={game} player={player} />
         )}
-      </div>
+      </Container>
     );
   }
 }

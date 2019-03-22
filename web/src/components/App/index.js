@@ -5,6 +5,7 @@ import * as ROUTES from "../../constants/routes";
 import "./App.css";
 // COMPONENTS
 import Home from "../../components/Home";
+import Game from "../../components/Game";
 import Student from "../../components/Student";
 import Teacher from "../../components/Teacher";
 import SignUpPage from "../../components/SignUp";
