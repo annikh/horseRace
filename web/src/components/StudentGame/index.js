@@ -5,8 +5,7 @@ import {
   Form,
   FormControl,
   Button,
-  Container,
-  Spinner
+  Container
 } from "react-bootstrap";
 import Game from "../../components/Game";
 
@@ -43,8 +42,7 @@ class StudentGame extends Component {
         </Navbar>
         {this.state.gameStarted === false ? (
           <Row style={{ justifyContent: "center" }}>
-            <Spinner animation="border" variant="info" /> Venter på at spillet
-            skal starte..
+            Venter på at spillet skal starte..
           </Row>
         ) : (
           <Game game={game} player={player} />
