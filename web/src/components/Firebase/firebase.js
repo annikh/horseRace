@@ -47,8 +47,8 @@ class Firebase {
   };
 
   // *** Classroom API ***
-  classroom = classroom_id => {
-    return this.db.ref("classrooms/").child(classroom_id);
+  addClassroom = classroom_name => {
+    return this.db.ref("classrooms/").child(classroom_name);
   };
   classrooms = () => {
     return this.db.ref("classrooms");

@@ -1,6 +1,5 @@
 class Classroom {
-  constructor(classroom_name, date, names, user_id) {
-    this.classroom_name = classroom_name;
+  constructor(date, names, user_id) {
     this.date = date;
     this.names = names;
     this.user_id = user_id;

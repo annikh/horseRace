@@ -1,39 +1,38 @@
 import React, { Component } from "react";
 import { AuthUserContext, withAuthorization } from "../Session";
+import withFirebase from "../Firebase"
 import { Button, Form, Row, Col } from "react-bootstrap";
 import Classroom from "../../objects/Classroom";
-import { addClassroom } from "../../actions";
-import { connect } from "react-redux";
+
 
 class CreateClassroom extends Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      loading: false,
-      classname_value: "",
-      names_value: ""
-    };
-
     this.createClassroomForm = this.createClassroomForm.bind(this);
     this.handleClassNameChange = this.handleClassNameChange.bind(this);
     this.handleNamesChange = this.handleNamesChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.addClassroom = this.addClassroom.bind(this);
+
+    this.state = {
+      loading: false,
+      classname: "",
+      names: ""
+    };
+
   }
 
   addClassroom(user_id) {
     let names = [];
-    this.state.names_value.split(/\n/).map(name => names.push(name));
+    this.state.names.split(/\n/).map(name => names.push(name));
     const classroom = new Classroom(
-      null,
-      this.state.classname_value,
       null,
       names,
       user_id
     );
-    this.props.addClassroom(classroom);
+    this.props.firebase.addClassroom(this.state.classname).set(classroom).
   }
+
   handleSubmit = uid => event => {
     event.preventDefault();
     this.addClassroom(uid);
@@ -49,7 +48,7 @@ class CreateClassroom extends Component {
   }
 
   createClassroomForm = uid => {
-    const isInvalid = this.state.value === "";
+    const isInvalid = this.state.classname === "" || this.state.names === "";
 
     return (
       <Form onSubmit={this.handleSubmit(uid)}>
@@ -72,7 +71,7 @@ class CreateClassroom extends Component {
           <Col>
             <Form.Control
               placeholder={"Skriv inn navn på klassen"}
-              value={this.state.classname_value}
+              value={this.state.classname}
               onChange={this.handleClassNameChange}
             />
           </Col>
@@ -81,7 +80,7 @@ class CreateClassroom extends Component {
               as="textarea"
               rows="3"
               placeholder={"Navn1\nNavn2\nNavn3"}
-              value={this.state.names_value}
+              value={this.state.names}
               onChange={this.handleNamesChange}
             />
           </Col>
@@ -112,13 +111,5 @@ class CreateClassroom extends Component {
 }
 const condition = authUser => !!authUser;
 
-const mapDispatchToProps = dispatch => {
-  return {
-    addClassroom: classroom => dispatch(addClassroom(classroom))
-  };
-};
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(withAuthorization(condition)(CreateClassroom));
+export default withFirebase(withAuthorization(condition)(CreateClassroom));
