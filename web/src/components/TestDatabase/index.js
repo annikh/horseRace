@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { withCookies } from "react-cookie";
 import { withFirebase } from "../Firebase";
+import Game from "../../objects/Game";
 import { Button, ListGroup, Row, Col, Container } from "react-bootstrap";
 
 class TestDatabase extends Component {
@@ -9,6 +10,7 @@ class TestDatabase extends Component {
     this.hentSpill = this.hentSpill.bind(this);
     this.playerToActive = this.playerToActive.bind(this);
     this.playerToInActive = this.playerToInActive.bind(this);
+    this.leggTilSpill = this.leggTilSpill.bind(this);
 
     this.state = {
       loading: false,
@@ -26,8 +28,24 @@ class TestDatabase extends Component {
     });
   }
 
+  leggTilSpill() {
+    const pin = "nyPin";
+    let scoreboard = {};
+    scoreboard["Kari"] = {
+      tasks: null,
+      points: 0
+    };
+    scoreboard["Per"] = {
+      tasks: null,
+      points: 0
+    };
+    const newGame = new Game("userid", "classid", null, scoreboard);
+
+    this.props.firebase.addGame(pin).set(newGame);
+  }
+
   playerToActive() {
-    const game = this.props.firebase.game("-La_FeiGJhCT0b-kjK5N");
+    const game = this.props.firebase.game("nyPin");
     game
       .child("scoreboard")
       .child("Ole")
@@ -36,7 +54,7 @@ class TestDatabase extends Component {
   }
 
   playerToInActive() {
-    const game = this.props.firebase.game("-La_FeiGJhCT0b-kjK5N");
+    const game = this.props.firebase.game("nyPin");
     game
       .child("scoreboard")
       .child("Ole")
@@ -71,6 +89,9 @@ class TestDatabase extends Component {
             <Button onClick={this.playerToInActive}>
               Sett Ole til InAktiv
             </Button>
+          </Col>
+          <Col>
+            <Button onClick={this.leggTilSpill}>Legg til nytt spill</Button>
           </Col>
         </Row>
         <Row>{this.state.game && this.names()}</Row>

@@ -36,15 +36,23 @@ class Firebase {
   game = game_id => {
     return this.db.ref("games").child(game_id);
   };
-
-  game_scoreboard = game_id => this.db.ref(`games/${game_id}/scoreboard`);
-  game_player = (game_id, name) =>
-    this.db.ref(`games/${game_id}/scoreboard/${name}`);
-
-  // *** Task API ***
+  games = () => {
+    return this.db.ref("games");
+  };
+  addGame = pin => {
+    return this.db.ref("games/").child(pin);
+  };
+  gamePlayer = (game_id, name) => {
+    return this.db.ref(`games/${game_id}/scoreboard/${name}`);
+  };
 
   // *** Classroom API ***
-  classroom = classroom_id => this.db.ref(`classrooms/${classroom_id}`);
+  classroom = classroom_id => {
+    return this.db.ref("classrooms/").child(classroom_id);
+  };
+  classrooms = () => {
+    return this.db.ref("classrooms");
+  };
 }
 
 export default Firebase;

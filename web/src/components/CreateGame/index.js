@@ -3,15 +3,10 @@ import { AuthUserContext, withAuthorization } from "../Session";
 import { Container, Button, Form, Row, Col, ListGroup } from "react-bootstrap";
 import { Redirect } from "react-router-dom";
 import Game from "../../objects/Game";
+import { withFirebase } from "../Firebase";
 import * as ROUTES from "../../constants/routes";
 import shortid from "shortid";
 import CreateClassroom from "../CreateClassroom";
-import { connect } from "react-redux";
-import {
-  fetchGamesByTeacher,
-  fetchClassroomsByTeacher,
-  addGame
-} from "../../actions";
 
 class CreateGame extends Component {
   constructor(props) {
@@ -26,14 +21,20 @@ class CreateGame extends Component {
 
     this.state = {
       loading: false,
-      classroom_id: ""
+      classroom_id: "",
+      classrooms: [],
+      games: []
     };
   }
 
   componentDidMount() {
-    let authUser = this.context;
-    this.props.fetchGamesByTeacher(authUser.uid);
-    this.props.fetchClassroomsByTeacher(authUser.uid);
+    this.setState({ loading: true });
+    this.props.firebase.games().on("value", snapshot => {
+      this.setState({ games: snapshot.val() });
+    });
+    this.props.firebase.classrooms().on("value", snapshot => {
+      this.setState({ loading: false, classrooms: snapshot.val() });
+    });
   }
 
   addGame() {
@@ -45,14 +46,12 @@ class CreateGame extends Component {
     const names = this.getClassroomNames(this.state.classroom_id);
     const scoreboard = this.fillScoreboard(names);
     const game = new Game(
-      null,
-      newGamePin,
       authUser.uid,
       this.state.classroom_id,
       null,
       scoreboard
     );
-    this.props.addGame(game);
+    this.props.firebase.addGame(newGamePin).set(game);
   }
 
   fillScoreboard(names) {
@@ -68,16 +67,16 @@ class CreateGame extends Component {
   }
 
   getClassroomNames(classroomName) {
-    const classroom = this.props.classrooms.find(
+    const classroom = this.state.classrooms.find(
       classroom => classroom.classroom_name === classroomName
     );
     return classroom.names;
   }
 
   isValidPin(pin) {
-    for (var key in this.props.games) {
-      console.log(this.props.games[key].pin);
-      if (this.props.games[key].pin === pin) {
+    for (var key in this.state.games) {
+      console.log(this.state.games[key].pin);
+      if (this.state.games[key].pin === pin) {
         return false;
       }
     }
@@ -113,7 +112,7 @@ class CreateGame extends Component {
           <Col>
             <Form.Control as="select" onChange={this.handleChange}>
               <option>Velg...</option>
-              {this.props.classrooms.map((classroom, i) => (
+              {this.state.classrooms.map((classroom, i) => (
                 <option key={i} value={classroom.key}>
                   {classroom.classroom_name}
                 </option>
@@ -133,7 +132,7 @@ class CreateGame extends Component {
   };
 
   render() {
-    const games = this.props.games;
+    const games = this.state.games;
 
     return (
       <Container className="accountBody">
@@ -204,23 +203,4 @@ const GameList = ({ games }) => (
   </ListGroup>
 );
 
-const mapDispatchToProps = dispatch => {
-  return {
-    fetchGamesByTeacher: user_id => dispatch(fetchGamesByTeacher(user_id)),
-    fetchClassroomsByTeacher: user_id =>
-      dispatch(fetchClassroomsByTeacher(user_id)),
-    addGame: game => dispatch(addGame(game))
-  };
-};
-
-const mapStateToProps = state => {
-  return {
-    games: state.games,
-    classrooms: state.classrooms
-  };
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withAuthorization(condition)(CreateGame));
+export default withFirebase(withAuthorization(condition)(CreateGame));

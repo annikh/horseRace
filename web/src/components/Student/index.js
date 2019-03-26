@@ -123,23 +123,5 @@ class Student extends Component {
     );
   }
 }
-/*
-const mapStateToProps = (state, ownProps) => {
-  return {
-    currentGame: state.currentGame,
-    cookies: ownProps.cookies
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    fetchGameById: game_pin => dispatch(fetchGameById(game_pin)),
-    setPlayerToActive: player => dispatch(setPlayerToActive(player))
-  };
-};
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Student);*/
 
 export default withFirebase(Student);
