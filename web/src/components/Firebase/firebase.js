@@ -37,7 +37,7 @@ class Firebase {
     return this.db.ref("games").child(game_id);
   };
   games = () => {
-    return this.db.ref("games");
+    return this.db.ref("games/");
   };
   addGame = pin => {
     return this.db.ref("games/").child(pin);
@@ -47,11 +47,14 @@ class Firebase {
   };
 
   // *** Classroom API ***
-  addClassroom = classroom_name => {
-    return this.db.ref("classrooms/").child(classroom_name);
+  addClassroom = (user_id, className) => {
+    return this.db
+      .ref("classrooms/")
+      .child(user_id)
+      .child(className);
   };
-  classrooms = () => {
-    return this.db.ref("classrooms");
+  classroomsByTeacher = (user_id, className) => {
+    return this.db.ref("classrooms").child(user_id);
   };
 }
 

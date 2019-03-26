@@ -1,9 +1,8 @@
 import React, { Component } from "react";
 import { Row, Nav, Button } from "react-bootstrap";
+import { withFirebase } from "../Firebase";
 import * as ROUTES from "../../constants/routes";
 import { Redirect } from "react-router-dom";
-import { connect } from "react-redux";
-import { removeCurrentGame } from "../../actions";
 
 class StudentGame extends Component {
   constructor(props) {
@@ -11,6 +10,7 @@ class StudentGame extends Component {
     this.state = {
       exitGame: false,
       gameStarted: false,
+      game: null,
       player: {
         tasks: [],
         points: 0
@@ -18,12 +18,17 @@ class StudentGame extends Component {
     };
   }
 
+  componentDidMount() {
+    this.props.firebase.game(this.props.game_id).on("value", snapshot => {
+      this.setState({ game: snapshot.val() });
+    });
+  }
+
   exitGame = () => {
     const name = this.props.cookies.get("name");
     this.props.cookies.remove("name");
 
-    //this.props.removeCurrentGame();
-    this.props.firebase.game_player(this.state.game.id, name).set({
+    this.props.firebase.gamePlayer(this.state.game.id, name).set({
       isActive: false
     });
     this.setState({
@@ -32,8 +37,6 @@ class StudentGame extends Component {
   };
 
   render() {
-    this.props.cookies.remove("name");
-    console.log(this.props.cookies.getAll());
     return (
       <div className="studentGame">
         <Nav className="justify-content-center">
@@ -64,17 +67,4 @@ class StudentGame extends Component {
   }
 }
 
-const mapStateToProps = (state, ownProps) => {
-  return {
-    currentGame: state.currentGame,
-    cookies: ownProps.cookies
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    removeCurrentGame: () => dispatch(removeCurrentGame())
-  };
-};
-
-export default StudentGame;
+export default withFirebase(StudentGame);

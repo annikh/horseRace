@@ -1,5 +1,6 @@
 export default class Game {
-  constructor(user_id, classroom_id, date, scoreboard) {
+  constructor(isActive, user_id, classroom_id, date, scoreboard) {
+    this.isActive = isActive;
     this.date = date;
     this.scoreboard = scoreboard;
     this.user_id = user_id;

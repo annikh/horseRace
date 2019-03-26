@@ -1,9 +1,7 @@
 import React, { Component } from "react";
 import { AuthUserContext, withAuthorization } from "../Session";
-import withFirebase from "../Firebase"
 import { Button, Form, Row, Col } from "react-bootstrap";
 import Classroom from "../../objects/Classroom";
-
 
 class CreateClassroom extends Component {
   constructor(props) {
@@ -19,18 +17,15 @@ class CreateClassroom extends Component {
       classname: "",
       names: ""
     };
-
   }
 
   addClassroom(user_id) {
     let names = [];
     this.state.names.split(/\n/).map(name => names.push(name));
-    const classroom = new Classroom(
-      null,
-      names,
-      user_id
-    );
-    this.props.firebase.addClassroom(this.state.classname).set(classroom).
+    const classroom = new Classroom(null, names);
+    this.props.firebase
+      .addClassroom(user_id, this.state.classname)
+      .set(classroom);
   }
 
   handleSubmit = uid => event => {
@@ -40,11 +35,11 @@ class CreateClassroom extends Component {
   };
 
   handleClassNameChange(event) {
-    this.setState({ classname_value: event.target.value });
+    this.setState({ classname: event.target.value });
   }
 
   handleNamesChange(event) {
-    this.setState({ names_value: event.target.value });
+    this.setState({ names: event.target.value });
   }
 
   createClassroomForm = uid => {
@@ -111,5 +106,4 @@ class CreateClassroom extends Component {
 }
 const condition = authUser => !!authUser;
 
-
-export default withFirebase(withAuthorization(condition)(CreateClassroom));
+export default withAuthorization(condition)(CreateClassroom);

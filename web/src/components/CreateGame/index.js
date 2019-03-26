@@ -1,10 +1,8 @@
 import React, { Component } from "react";
 import { AuthUserContext, withAuthorization } from "../Session";
 import { Container, Button, Form, Row, Col, ListGroup } from "react-bootstrap";
-import { Redirect } from "react-router-dom";
 import Game from "../../objects/Game";
 import { withFirebase } from "../Firebase";
-import * as ROUTES from "../../constants/routes";
 import shortid from "shortid";
 import CreateClassroom from "../CreateClassroom";
 
@@ -16,23 +14,29 @@ class CreateGame extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.addGame = this.addGame.bind(this);
     this.isValidPin = this.isValidPin.bind(this);
-    this.getClassroomNames = this.getClassroomNames.bind(this);
     this.fillScoreboard = this.fillScoreboard.bind(this);
 
     this.state = {
       loading: false,
-      classroom_id: "",
+      classroomName: "",
       classrooms: [],
       games: []
     };
   }
 
   componentDidMount() {
+    const user_id = this.context.uid;
     this.setState({ loading: true });
+    let games = [];
     this.props.firebase.games().on("value", snapshot => {
-      this.setState({ games: snapshot.val() });
+      snapshot.forEach(game => {
+        if (game.val().user_id === user_id) {
+          games.push(game.val());
+        }
+      });
     });
-    this.props.firebase.classrooms().on("value", snapshot => {
+    this.setState({ games: games });
+    this.props.firebase.classroomsByTeacher(user_id).on("value", snapshot => {
       this.setState({ loading: false, classrooms: snapshot.val() });
     });
   }
@@ -43,11 +47,12 @@ class CreateGame extends Component {
       newGamePin = shortid.generate();
     }
     let authUser = this.context;
-    const names = this.getClassroomNames(this.state.classroom_id);
+    const names = this.state.classrooms[this.state.classroomName]["names"];
     const scoreboard = this.fillScoreboard(names);
     const game = new Game(
+      false,
       authUser.uid,
-      this.state.classroom_id,
+      this.state.classroomName,
       null,
       scoreboard
     );
@@ -66,16 +71,8 @@ class CreateGame extends Component {
     return scoreboard;
   }
 
-  getClassroomNames(classroomName) {
-    const classroom = this.state.classrooms.find(
-      classroom => classroom.classroom_name === classroomName
-    );
-    return classroom.names;
-  }
-
   isValidPin(pin) {
     for (var key in this.state.games) {
-      console.log(this.state.games[key].pin);
       if (this.state.games[key].pin === pin) {
         return false;
       }
@@ -90,10 +87,11 @@ class CreateGame extends Component {
   }
 
   handleChange(event) {
-    this.setState({ classroom_id: event.target.value });
+    this.setState({ classroomName: event.target.value });
   }
 
   createGameForm = () => {
+    const classroomNames = Object.keys(this.state.classrooms);
     return (
       <Form onSubmit={this.handleSubmit}>
         <Row>
@@ -112,11 +110,12 @@ class CreateGame extends Component {
           <Col>
             <Form.Control as="select" onChange={this.handleChange}>
               <option>Velg...</option>
-              {this.state.classrooms.map((classroom, i) => (
-                <option key={i} value={classroom.key}>
-                  {classroom.classroom_name}
-                </option>
-              ))}
+              {classroomNames.length > 0 &&
+                classroomNames.map((name, i) => (
+                  <option key={i} value={name}>
+                    {name}
+                  </option>
+                ))}
             </Form.Control>
           </Col>
         </Row>
@@ -133,12 +132,14 @@ class CreateGame extends Component {
 
   render() {
     const games = this.state.games;
-
+    console.log("games", games);
+    console.log("class", this.state.classrooms);
     return (
       <Container className="accountBody">
         <Row>
           <Col>
-            <DisplayGames games={games} />
+            <h2 style={{ textAlign: "left" }}>Dine spill:</h2>
+            {games.length > 0 ? <GameList games={games} /> : <NoGames />}
           </Col>
           <Col>
             {this.createGameForm()}
@@ -154,17 +155,6 @@ class CreateGame extends Component {
 CreateGame.contextType = AuthUserContext;
 
 const condition = authUser => !!authUser;
-
-const DisplayGames = ({ games }) => (
-  <div>
-    <h2 style={{ textAlign: "left" }}>Dine spill:</h2>
-    {Object.entries(games).length === 0 && games.constructor === Object ? (
-      <NoGames />
-    ) : (
-      <GameList games={games} />
-    )}
-  </div>
-);
 
 const NoGames = () => (
   <p style={{ textAlign: "left" }}>Du har ingen spill ennå</p>

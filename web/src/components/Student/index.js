@@ -1,10 +1,7 @@
 import React, { Component } from "react";
 import { Button, Form, Row, Col } from "react-bootstrap";
-import { Redirect } from "react-router-dom";
-import { connect } from "react-redux";
 import { withFirebase } from "../Firebase";
-import * as ROUTES from "../../constants/routes";
-import { fetchGameById, setPlayerToActive } from "../../actions";
+import StudentGame from "../StudentGame";
 import "./style.css";
 
 class Student extends Component {
@@ -27,9 +24,11 @@ class Student extends Component {
   }
 
   handleEnterClassroomPin() {
-    this.setState({ loading: true, game_id: this.state.value });
-    console.log("listen to game changes");
-    this.props.firebase.game(this.state.game_id).on("value", snapshot => {
+    const game_id = this.state.value;
+    this.setState({ loading: true, game_id: game_id });
+
+    this.props.firebase.game(game_id).on("value", snapshot => {
+      console.log("snap:", snapshot.val());
       this.setState({ loading: false, game: snapshot.val() });
     });
   }
@@ -89,9 +88,11 @@ class Student extends Component {
   };
 
   render() {
-    const { game, loading, game_id } = this.state;
+    const { game, game_id } = this.state;
     const { cookies } = this.props;
     const cookie = cookies.getAll();
+    console.log("cookie", cookie);
+
     return Object.entries(cookie).length === 0 ? (
       <Form className="student" onSubmit={this.handleSubmit}>
         <Row>
@@ -115,11 +116,7 @@ class Student extends Component {
         </Row>
       </Form>
     ) : (
-      <Redirect
-        to={{
-          pathname: ROUTES.STUDENT + game_id + "/" + cookies.get("name")
-        }}
-      />
+      <StudentGame cookies={cookies} game_id={game_id} />
     );
   }
 }
