@@ -25,8 +25,8 @@ class StudentGame extends Component {
   }
 
   exitGame = () => {
-    const name = this.props.cookies.get("name");
-    this.props.cookies.remove("name");
+    const name = this.props.cookies.get("game_name");
+    this.props.cookies.remove("game_name");
 
     this.props.firebase.gamePlayer(this.state.game.id, name).set({
       isActive: false

@@ -36,7 +36,7 @@ class Student extends Component {
   handleEnterStudentName() {
     const name = this.state.value;
     const { cookies } = this.props;
-    cookies.set("name", name);
+    cookies.set("game_name", name);
     console.log("Set", name, "to active");
     this.props.firebase
       .game(this.state.game_id)
@@ -90,10 +90,10 @@ class Student extends Component {
   render() {
     const { game, game_id } = this.state;
     const { cookies } = this.props;
-    const cookie = cookies.getAll();
+    const cookie = cookies.get("game_name");
     console.log("cookie", cookie);
 
-    return Object.entries(cookie).length === 0 ? (
+    return cookie === undefined ? (
       <Form className="student" onSubmit={this.handleSubmit}>
         <Row>
           <Col>
