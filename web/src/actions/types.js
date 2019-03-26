@@ -1,7 +1,7 @@
 // POST
 export const ADD_GAME = "ADD_GAME";
 export const ADD_CLASSROOM = "ADD_CLASSROOM";
-export const ADD_PLAYER_TO_GAME = "ADD_PLAYER_TO_GAME";
+export const SET_PLAYER_TO_ACTIVE = "SET_PLAYER_TO_ACTIVE";
 
 // FETCH
 export const FETCH_GAME_BY_ID = "FETCH_GAME_BY_ID";

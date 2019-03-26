@@ -22,9 +22,9 @@ class CreateGame extends Component {
     this.addGame = this.addGame.bind(this);
     this.isValidPin = this.isValidPin.bind(this);
     this.getClassroomNames = this.getClassroomNames.bind(this);
+    this.fillScoreboard = this.fillScoreboard.bind(this);
 
     this.state = {
-      doRedirect: false,
       loading: false,
       classroom_id: ""
     };
@@ -43,16 +43,28 @@ class CreateGame extends Component {
     }
     let authUser = this.context;
     const names = this.getClassroomNames(this.state.classroom_id);
+    const scoreboard = this.fillScoreboard(names);
     const game = new Game(
       null,
       newGamePin,
       authUser.uid,
       this.state.classroom_id,
       null,
-      names,
-      null
+      scoreboard
     );
     this.props.addGame(game);
+  }
+
+  fillScoreboard(names) {
+    let scoreboard = {};
+    names.forEach(name => {
+      scoreboard[name] = {
+        isActive: false,
+        points: 0,
+        tasks: []
+      };
+    });
+    return scoreboard;
   }
 
   getClassroomNames(classroomName) {
@@ -75,7 +87,7 @@ class CreateGame extends Component {
   handleSubmit(event) {
     event.preventDefault();
     this.addGame();
-    this.setState({ doRedirect: true });
+    alert("Spill opprettet");
   }
 
   handleChange(event) {
@@ -125,9 +137,6 @@ class CreateGame extends Component {
 
     return (
       <Container className="accountBody">
-        {this.state.doRedirect && (
-          <Redirect to={ROUTES.TEACHER + ROUTES.GAME} />
-        )}
         <Row>
           <Col>
             <DisplayGames games={games} />

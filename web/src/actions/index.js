@@ -1,7 +1,7 @@
 import {
   ADD_GAME,
   ADD_CLASSROOM,
-  ADD_PLAYER_TO_GAME,
+  SET_PLAYER_TO_ACTIVE,
   FETCH_GAME_BY_ID,
   FETCH_GAMES_BY_TEACHER,
   FETCH_CLASSROOMS_BY_TEACHER,
@@ -51,13 +51,13 @@ const addClassroomSuccess = classroom => {
   };
 };
 
-export function addPlayerToGame(player) {
+export function setPlayerToActive(player) {
   console.log(player);
   return dispatch => {
     axios
-      .post(`${apiURL}/addPlayerToGame`, player)
+      .post(`${apiURL}/setPlayerToActive`, player)
       .then(response => {
-        dispatch(addPlayerToGameSuccess(response.data));
+        dispatch(setPlayerToActiveSuccess(response.data));
       })
       .catch(error => {
         throw error;
@@ -65,9 +65,9 @@ export function addPlayerToGame(player) {
   };
 }
 
-const addPlayerToGameSuccess = player => {
+const setPlayerToActiveSuccess = player => {
   return {
-    type: ADD_PLAYER_TO_GAME,
+    type: SET_PLAYER_TO_ACTIVE,
     player
   };
 };

@@ -19,8 +19,13 @@ class StudentGame extends Component {
   }
 
   exitGame = () => {
+    const name = this.props.cookies.get("name");
     this.props.cookies.remove("name");
-    this.props.removeCurrentGame();
+
+    //this.props.removeCurrentGame();
+    this.props.firebase.game_player(this.state.game.id, name).set({
+      isActive: false
+    });
     this.setState({
       exitGame: true
     });
@@ -72,7 +77,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(StudentGame);
+export default StudentGame;

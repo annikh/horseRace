@@ -2,8 +2,9 @@ import React, { Component } from "react";
 import { Button, Form, Row, Col } from "react-bootstrap";
 import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
+import { withFirebase } from "../Firebase";
 import * as ROUTES from "../../constants/routes";
-import { fetchGameById, addPlayerToGame } from "../../actions";
+import { fetchGameById, setPlayerToActive } from "../../actions";
 import "./style.css";
 
 class Student extends Component {
@@ -18,21 +19,32 @@ class Student extends Component {
 
     this.state = {
       value: "",
+      loading: false,
+      game: null,
+      game_id: "",
       buttonValue: "Enter"
     };
   }
 
   handleEnterClassroomPin() {
-    this.props.fetchGameById(this.state.value);
-    this.setState({
-      buttonValue: "Bli med!"
+    this.setState({ loading: true, game_id: this.state.value });
+    console.log("listen to game changes");
+    this.props.firebase.game(this.state.game_id).on("value", snapshot => {
+      this.setState({ loading: false, game: snapshot.val() });
     });
   }
 
   handleEnterStudentName() {
-    const { cookies } = this.props;
     const name = this.state.value;
-    this.props.addPlayerToGame([this.props.currentGame.id, name]);
+    const { cookies } = this.props;
+    cookies.set("name", name);
+    console.log("Set", name, "to active");
+    this.props.firebase
+      .game(this.state.game_id)
+      .child("scoreboard")
+      .child(name)
+      .child("isActive")
+      .set(true);
   }
 
   handleChange(event) {
@@ -40,7 +52,7 @@ class Student extends Component {
   }
 
   handleSubmit(event) {
-    this.props.currentGame === null
+    this.state.game === null
       ? this.handleEnterClassroomPin()
       : this.handleEnterStudentName();
     event.preventDefault();
@@ -58,21 +70,26 @@ class Student extends Component {
   };
 
   namesDropDown = () => {
+    const scoreboard = this.state.game.scoreboard;
     return (
       <Col md="auto">
         <Form.Control as="select" onChange={this.handleChange}>
           <option>Hva heter du?</option>
-          {this.props.currentGame.names.map((player, i) => (
-            <option key={i} value={player}>
-              {player}
-            </option>
-          ))}
+          {Object.keys(scoreboard).map(
+            (player, i) =>
+              scoreboard[player]["isActive"] !== true && (
+                <option key={i} value={player}>
+                  {player}
+                </option>
+              )
+          )}
         </Form.Control>
       </Col>
     );
   };
 
   render() {
+    const { game, loading, game_id } = this.state;
     const { cookies } = this.props;
     const cookie = cookies.getAll();
     return Object.entries(cookie).length === 0 ? (
@@ -85,10 +102,7 @@ class Student extends Component {
           </Col>
         </Row>
         <Row>
-          {this.props.currentGame === null ||
-          this.props.currentClassroom === null
-            ? this.pinInput()
-            : this.namesDropDown()}
+          {game ? this.namesDropDown() : this.pinInput()}
           <Col>
             <Button
               className="btn-classPin"
@@ -103,14 +117,13 @@ class Student extends Component {
     ) : (
       <Redirect
         to={{
-          pathname:
-            ROUTES.STUDENT + ROUTES.STUDENT_GAME + "/" + cookies.get("name")
+          pathname: ROUTES.STUDENT + game_id + "/" + cookies.get("name")
         }}
       />
     );
   }
 }
-
+/*
 const mapStateToProps = (state, ownProps) => {
   return {
     currentGame: state.currentGame,
@@ -121,11 +134,12 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = dispatch => {
   return {
     fetchGameById: game_pin => dispatch(fetchGameById(game_pin)),
-    addPlayerToGame: user => dispatch(addPlayerToGame(user))
+    setPlayerToActive: player => dispatch(setPlayerToActive(player))
   };
 };
-
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Student);
+)(Student);*/
+
+export default withFirebase(Student);
