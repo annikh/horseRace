@@ -27,7 +27,8 @@ class Editor extends Component {
     runCode(event) {
         event.preventDefault();
 
-        axios.get('http://python-eval-server.appspot.com/run', { params: { code: this.state.aceEditorValue } })
+        // axios.get('http://python-eval-server.appspot.com/run', { params: { code: this.state.aceEditorValue } })
+        axios.get('http://127.0.0.1:5000/hei', { params: { code: this.state.aceEditorValue } })
         .then( response => {
           console.log(response)
           this.setState({output: response.data})
@@ -59,7 +60,7 @@ class Editor extends Component {
                 showLineNumbers: true,
                 tabSize: 2,
                 }}/>
-                <Button bsStyle="primary" bsSize="small" onClick={this.runCode}>Run Code</Button>
+                <Button variant="success" onClick={this.runCode}>Run Code</Button>
                 <br/><br/>
 
                 <p>output: {this.state.output}</p>
