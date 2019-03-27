@@ -26,15 +26,10 @@ class Editor extends Component {
             showErrorModal: false,
             showSolvedModal: false,
             errorModalHeaders: ['Prøv igjen!', 'Bedre lykke neste gang!', 'Dette gikk visst ikke helt etter planen.', 'Oops..', 'Ikke helt der ennå..'],
-            errorModalHeaderText: ''
+            errorModalHeaderText: '',
+            currentTask: {difficulty: 1, test: "assert hei('Anniken') == 'Anniken', 'Returnerer funksjonen din navnet som skrives inn?'", text: "Lag en funksjon med navn 'hei' som tar inn et navn og returnerer det.", title: 'hei', error_hint: 'Har du husket å definere en funksjon som heter "hei"?'}
         }
     }
-
-    componentDidMount() {
-        this.props.firebase.game(this.props.game_pin).on("value", snapshot => {
-          this.setState({ game: snapshot.val() });
-        });
-      }
 
     handleChange(value) {
         this.setState({ aceEditorValue: value });
@@ -44,7 +39,7 @@ class Editor extends Component {
         event.preventDefault();
         console.log(this.state.aceEditorValue);
         // axios.get('http://python-eval-server.appspot.com/run', { params: { code: this.state.aceEditorValue } })
-        axios.get('http://127.0.0.1:5000/hei', { params: { code: this.state.aceEditorValue } })
+        axios.get('http://127.0.0.1:5000/run', { params: { code: this.state.aceEditorValue, task: this.state.currentTask } })
         .then( response => {
           console.log(response)
           this.setState({output: response.data.output, error_message: response.data.error_message})
@@ -101,11 +96,9 @@ class Editor extends Component {
     render() {
         return(
             <div>
-                <AceEditor className="ace_editor"
-                    placeholder="Placeholder Text"
+                <AceEditor
                     mode="python"
                     theme="monokai"
-                    name="UNIQUE_ID_OF_DIV"
                     onChange={this.handleChange}
                     width={"80vh"}
                     height={"60vh"}
@@ -115,9 +108,6 @@ class Editor extends Component {
                     highlightActiveLine={true}
                     value={this.state.aceEditorValue}
                     setOptions={{
-                    enableBasicAutocompletion: true,
-                    enableLiveAutocompletion: true,
-                    enableSnippets: true,
                     showLineNumbers: true,
                     tabSize: 2,
                     }}/>
@@ -125,7 +115,7 @@ class Editor extends Component {
                 <this.ErrorModal/>
                 <this.SolvedModal/>
                 <br/><br/>
-                <Form.Control as="textarea" style={{backgroundColor: '#262722', color: '#aaaaaa', height: "20vh", width: "80vh"}} value={"Output: " + this.state.output}/>
+                <Form.Control as="textarea" readOnly style={{backgroundColor: '#262722', color: '#aaaaaa', height: "20vh", width: "80vh"}} value={"Output: " + this.state.output}/>
             </div>
         )
     }

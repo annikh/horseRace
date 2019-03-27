@@ -65,13 +65,6 @@ class Firebase {
   tasks = type => {
     return this.db.ref("tasks").child(type);
   };
-  
-  getTaskById = (category, task_id) => {
-    return this.db
-      .ref("tasks")
-      .child(category)
-      .child(task_id)
-  }
 }
 
 export default Firebase;
