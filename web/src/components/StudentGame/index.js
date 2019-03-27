@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Row, Nav, Button } from "react-bootstrap";
 import { withFirebase } from "../Firebase";
 import * as ROUTES from "../../constants/routes";
+import Editor from "../../components/Editor";
 import { Redirect } from "react-router-dom";
 
 class StudentGame extends Component {
@@ -9,7 +10,7 @@ class StudentGame extends Component {
     super(props);
     this.state = {
       exitGame: false,
-      gameStarted: false,
+      gameStarted: true,
       game: null,
       player: {
         tasks: [],
@@ -28,9 +29,9 @@ class StudentGame extends Component {
     const name = this.props.cookies.get("game_name");
     this.props.cookies.remove("game_name");
 
-    this.props.firebase.gamePlayer(this.props.game_pin, name).set({
-      isActive: false
-    });
+    this.props.firebase.gamePlayer(this.props.game_pin, name).child('isActive').set(
+      false
+    );
     this.setState({
       exitGame: true
     });
@@ -60,7 +61,7 @@ class StudentGame extends Component {
             Venter på at spillet skal starte..
           </Row>
         ) : (
-          <div> Her skal spillet komme</div>
+          <div> <Editor/></div>
         )}
       </div>
     );

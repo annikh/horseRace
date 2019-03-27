@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import AceEditor from 'react-ace';
-import { Button, Modal, Form } from 'react-bootstrap';
+import { Button, Modal, Form, Container } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import axios from 'axios';
 
@@ -71,27 +71,29 @@ class Editor extends Component {
         return(
             <div>
             <this.ErrorModal/>
-            <AceEditor
-                placeholder="Placeholder Text"
-                mode="python"
-                theme="monokai"
-                name="UNIQUE_ID_OF_DIV"
-                onChange={this.hanldeChange}
-                fontSize={14}
-                showPrintMargin={true}
-                showGutter={true}
-                highlightActiveLine={true}
-                value={this.state.aceEditorValue}
-                setOptions={{
-                enableBasicAutocompletion: true,
-                enableLiveAutocompletion: true,
-                enableSnippets: true,
-                showLineNumbers: true,
-                tabSize: 2,
-                }}/>
+                <AceEditor className="ace_editor"
+                    placeholder="Placeholder Text"
+                    mode="python"
+                    theme="monokai"
+                    name="UNIQUE_ID_OF_DIV"
+                    onChange={this.hanldeChange}
+                    width={"80vh"}
+                    height={"60vh"}
+                    fontSize={14}
+                    showPrintMargin={true}
+                    showGutter={true}
+                    highlightActiveLine={true}
+                    value={this.state.aceEditorValue}
+                    setOptions={{
+                    enableBasicAutocompletion: true,
+                    enableLiveAutocompletion: true,
+                    enableSnippets: true,
+                    showLineNumbers: true,
+                    tabSize: 2,
+                    }}/>
                 <Button variant="success" onClick={this.runCode}><FontAwesomeIcon icon="play"/> Run</Button>
                 <br/><br/>
-                <Form.Control as="textarea" style={{backgroundColor: '#262722', color: '#aaaaaa', height: 100, width: 500}} value={"Output: " + this.state.output}/>
+                <Form.Control as="textarea" style={{backgroundColor: '#262722', color: '#aaaaaa', height: "20vh", width: "80vh"}} value={"Output: " + this.state.output}/>
             </div>
         )
     }
