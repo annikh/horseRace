@@ -40,18 +40,22 @@ class TeacherHome extends Component {
     const { games, classrooms } = this.state;
     return (
       <Container className="accountBody">
-        <Row>
+        <Row className="rowAccount">
           <Col>
-            <h2 style={{ textAlign: "left" }}>Dine spill:</h2>
-            {games.length > 0 ? <GameList games={games} /> : <NoGames />}
+            <Row className="rowAccount">
+              <h2 style={{ textAlign: "left" }}>Dine spill:</h2>{" "}
+            </Row>
+            <Row className="rowAccount">
+              {games.length > 0 ? <GameList games={games} /> : <NoGames />}
+            </Row>
           </Col>
           <Col>
-            <Row>
+            <Row className="rowAccount">
               {Object.keys(this.state.classrooms).length > 0 && (
                 <CreateGame classrooms={this.state.classrooms} />
               )}
             </Row>
-            <Row>
+            <Row className="rowAccount">
               <CreateClassroom />
             </Row>
           </Col>

@@ -71,7 +71,6 @@ class CreateGame extends Component {
   }
 
   render() {
-    console.log(this.props.classrooms);
     const classroomNames = Object.keys(this.props.classrooms);
     return (
       <Form onSubmit={this.handleSubmit}>
