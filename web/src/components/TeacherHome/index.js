@@ -39,7 +39,6 @@ class TeacherHome extends Component {
 
   render() {
     const { games, classrooms } = this.state;
-    console.log(games);
     return (
       <Container className="accountBody">
         <Row className="rowAccount">

@@ -16,8 +16,16 @@ class CreateGame extends Component {
 
     this.state = {
       loading: false,
-      classroomName: ""
+      classroomName: "",
+      tasks: null
     };
+  }
+
+  componentDidMount() {
+    this.props.firebase.tasks("variables").once("value", snapshot => {
+      console.log(snapshot.val());
+      this.setState({ tasks: snapshot.val() });
+    });
   }
 
   addGame() {
@@ -33,7 +41,8 @@ class CreateGame extends Component {
       authUser.uid,
       this.state.classroomName,
       null,
-      scoreboard
+      scoreboard,
+      this.state.tasks
     );
     this.props.firebase.addGame(newGamePin).set(game);
   }
@@ -44,7 +53,7 @@ class CreateGame extends Component {
       scoreboard[name] = {
         isActive: false,
         points: 0,
-        tasks: []
+        tasks: null
       };
     });
     return scoreboard;

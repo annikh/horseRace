@@ -60,6 +60,11 @@ class Firebase {
   classroomsByTeacher = (user_id, className) => {
     return this.db.ref("classrooms").child(user_id);
   };
+
+  // *** Task API ***
+  tasks = type => {
+    return this.db.ref("tasks").child(type);
+  };
 }
 
 export default Firebase;
