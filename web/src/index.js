@@ -13,8 +13,8 @@ import thunk from "redux-thunk";
 import { CookiesProvider } from "react-cookie";
 /* Add Font Awesome Icons */
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faUser } from "@fortawesome/free-solid-svg-icons";
-library.add(faUser);
+import { faUser, faPlay } from "@fortawesome/free-solid-svg-icons";
+library.add(faUser, faPlay);
 
 const store = createStore(rootReducer, applyMiddleware(thunk));
 

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import AceEditor from 'react-ace';
 import { Button, Modal, Form } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import axios from 'axios';
 
 import 'brace/mode/python';
@@ -63,11 +64,6 @@ class Editor extends Component {
           <Modal.Body>
             {this.state.error_message}
           </Modal.Body>
-          {/* <Modal.Footer>
-            <Button variant="secondary" onClick={this.handleModalClose}>
-              Close
-            </Button>
-          </Modal.Footer> */}
         </Modal>
     )
 
@@ -93,7 +89,7 @@ class Editor extends Component {
                 showLineNumbers: true,
                 tabSize: 2,
                 }}/>
-                <Button variant="success" onClick={this.runCode}>Run Code</Button>
+                <Button variant="success" onClick={this.runCode}><FontAwesomeIcon icon="play"/> Run</Button>
                 <br/><br/>
                 <Form.Control as="textarea" style={{backgroundColor: '#262722', color: '#aaaaaa', height: 100, width: 500}} value={"Output: " + this.state.output}/>
             </div>
