@@ -1,11 +1,16 @@
 import React, { Component } from "react";
-import { Row, Nav } from "react-bootstrap";
+import { Row, Nav, Button } from "react-bootstrap";
+import { withFirebase } from "../Firebase";
+import * as ROUTES from "../../constants/routes";
+import { Redirect } from "react-router-dom";
 
 class StudentGame extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      exitGame: false,
       gameStarted: false,
+      game: null,
       player: {
         tasks: [],
         points: 0
@@ -13,13 +18,41 @@ class StudentGame extends Component {
     };
   }
 
+  componentDidMount() {
+    this.props.firebase.game(this.props.game_pin).on("value", snapshot => {
+      this.setState({ game: snapshot.val() });
+    });
+  }
+
+  exitGame = () => {
+    const name = this.props.cookies.get("game_name");
+    this.props.cookies.remove("game_name");
+
+    this.props.firebase.gamePlayer(this.props.game_pin, name).set({
+      isActive: false
+    });
+    this.setState({
+      exitGame: true
+    });
+  };
+
   render() {
-    const { game, player } = this.props.location.state;
     return (
       <div className="studentGame">
         <Nav className="justify-content-center">
           <Nav.Item>
-            <h3>Hei, {player}</h3>
+            {this.state.exitGame ? (
+              <Redirect
+                to={{
+                  pathname: ROUTES.STUDENT
+                }}
+              />
+            ) : (
+              <Button onClick={this.exitGame}>Avslutt spill</Button>
+            )}
+          </Nav.Item>
+          <Nav.Item>
+            <h3>Hei, </h3>
           </Nav.Item>
         </Nav>
         {this.state.gameStarted === false ? (
@@ -34,4 +67,4 @@ class StudentGame extends Component {
   }
 }
 
-export default StudentGame;
+export default withFirebase(StudentGame);

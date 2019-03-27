@@ -11,7 +11,7 @@ import SignUpPage from "../../components/SignUp";
 import SignInPage from "../../components/SignIn";
 import StudentGame from "../../components/StudentGame";
 import PasswordForgetPage from "../../components/PasswordForget";
-import Editor from "../Editor";
+import TestDatabase from "../../components/TestDatabase";
 
 class App extends Component {
   render() {
@@ -23,35 +23,23 @@ class App extends Component {
             path={ROUTES.LANDING}
             render={() => <Home cookies={this.props.cookies} />}
           />
+          <Route path={ROUTES.SIGN_UP} component={SignUpPage} />
+          <Route path={ROUTES.SIGN_IN} component={SignInPage} />
+          <Route path={ROUTES.PASSWORD_FORGET} component={PasswordForgetPage} />
           <Route
-            path={ROUTES.SIGN_UP}
-            render={() => <SignUpPage cookies={this.props.cookies} />}
-          />
-          <Route
-            path={ROUTES.SIGN_IN}
-            render={() => <SignInPage cookies={this.props.cookies} />}
-          />
-          <Route
-            path={ROUTES.PASSWORD_FORGET}
-            render={() => <PasswordForgetPage cookies={this.props.cookies} />}
-          />
-          <Route
-            exact
             path={ROUTES.STUDENT}
             render={() => <Student cookies={this.props.cookies} />}
           />
+          <Route path={ROUTES.TEACHER} component={Teacher} />
           <Route
-            path={ROUTES.TEACHER}
-            render={() => <Teacher cookies={this.props.cookies} />}
+            exact
+            path={ROUTES.STUDENT + "/:game_id" + "/:user"}
+            render={() => <StudentGame cookies={this.props.cookies} />}
           />
           <Route
             exact
-            path={ROUTES.STUDENT + ROUTES.STUDENT_GAME + "/:user"}
-            render={() => <StudentGame cookies={this.props.cookies} />}
-          />
-          <Route 
-            path={'/editor'}
-            render={() => <Editor cookies={this.props.cookies} />}
+            path={"/test"}
+            render={() => <TestDatabase cookies={this.props.cookies} />}
           />
         </div>
       </BrowserRouter>
