@@ -30,6 +30,12 @@ class Editor extends Component {
         }
     }
 
+    componentDidMount() {
+        this.props.firebase.game(this.props.game_pin).on("value", snapshot => {
+          this.setState({ game: snapshot.val() });
+        });
+      }
+
     handleChange(value) {
         this.setState({ aceEditorValue: value });
     }
