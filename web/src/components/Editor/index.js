@@ -14,16 +14,19 @@ class Editor extends Component {
         
         this.handleChange = this.handleChange.bind(this);
         this.runCode = this.runCode.bind(this);
-        this.handleModalClose = this.handleModalClose.bind(this);
-        this.handleModalShow = this.handleModalShow.bind(this);
+        this.handleErrorModalClose = this.handleErrorModalClose.bind(this);
+        this.handleErrorModalShow = this.handleErrorModalShow.bind(this);
+        this.handleSolvedModalClose = this.handleSolvedModalClose.bind(this);
+        this.handleSolvedModalShow = this.handleSolvedModalShow.bind(this);
 
         this.state = {
             aceEditorValue: '# Enter your code here.',
             output: '',
             error_message: '',
-            showModal: false,
-            modalHeaders: ['Prøv igjen!', 'Bedre lykke neste gang!', 'Dette gikk visst ikke helt etter planen.', 'Oops..', 'Ikke helt der ennå..'],
-            modalHeaderText: ''
+            showErrorModal: false,
+            showSolvedModal: false,
+            errorModalHeaders: ['Prøv igjen!', 'Bedre lykke neste gang!', 'Dette gikk visst ikke helt etter planen.', 'Oops..', 'Ikke helt der ennå..'],
+            errorModalHeaderText: ''
         }
     }
 
@@ -33,32 +36,54 @@ class Editor extends Component {
 
     runCode(event) {
         event.preventDefault();
-
+        console.log(this.state.aceEditorValue);
         // axios.get('http://python-eval-server.appspot.com/run', { params: { code: this.state.aceEditorValue } })
         axios.get('http://127.0.0.1:5000/hei', { params: { code: this.state.aceEditorValue } })
         .then( response => {
           console.log(response)
           this.setState({output: response.data.output, error_message: response.data.error_message})
-          if (this.state.error_message) this.handleModalShow()
+          if (this.state.error_message !== '') this.handleErrorModalShow()
+          if (response.data.solved) this.handleSolvedModalShow()
         })
         .catch(function(error) {
           console.log(error);
         });
     } 
 
-    handleModalClose() {
-        this.setState({showModal: false})
+    handleErrorModalClose() {
+        this.setState({showErrorModal: false})
     }
 
-    handleModalShow() {
-        this.setState({showModal: true, modalHeaderText: this.state.modalHeaders[Math.floor(Math.random()*this.state.modalHeaders.length)]})
+    handleErrorModalShow() {
+        this.setState({showErrorModal: true, errorModalHeaderText: this.state.errorModalHeaders[Math.floor(Math.random()*this.state.errorModalHeaders.length)]})
     }
 
-    ErrorModal = () => (
-        <Modal show={this.state.showModal} onHide={this.handleModalClose}>
+    handleSolvedModalClose() {
+        this.setState({showSolvedModal: false})
+    }
+
+    handleSolvedModalShow() {
+        this.setState({showSolvedModal: true})
+    }
+
+    SolvedModal = () => (
+        <Modal show={this.state.showSolvedModal} onHide={this.handleSolvedModalClose}>
           <Modal.Header closeButton>
             <Modal.Title>
-                {this.state.modalHeaderText}
+                Bra jobbet!
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            Du fikk til oppgaven :D
+          </Modal.Body>
+        </Modal>
+    )
+
+    ErrorModal = () => (
+        <Modal show={this.state.showErrorModal} onHide={this.handleErrorModalClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>
+                {this.state.errorModalHeaderText}
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
@@ -70,13 +95,12 @@ class Editor extends Component {
     render() {
         return(
             <div>
-            <this.ErrorModal/>
                 <AceEditor className="ace_editor"
                     placeholder="Placeholder Text"
                     mode="python"
                     theme="monokai"
                     name="UNIQUE_ID_OF_DIV"
-                    onChange={this.hanldeChange}
+                    onChange={this.handleChange}
                     width={"80vh"}
                     height={"60vh"}
                     fontSize={14}
@@ -92,6 +116,8 @@ class Editor extends Component {
                     tabSize: 2,
                     }}/>
                 <Button variant="success" onClick={this.runCode}><FontAwesomeIcon icon="play"/> Run</Button>
+                <this.ErrorModal/>
+                <this.SolvedModal/>
                 <br/><br/>
                 <Form.Control as="textarea" style={{backgroundColor: '#262722', color: '#aaaaaa', height: "20vh", width: "80vh"}} value={"Output: " + this.state.output}/>
             </div>

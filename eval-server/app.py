@@ -19,6 +19,7 @@ def run_code():
 @app.route('/hei', methods=['GET'])
 def run_hei():
     code = request.args.get('code')
+    print("code: ", code)
     if code == '' or code == '# Enter your code here.':
         return jsonify(output='', error_message='Skriv din kode i editoren.')
 
@@ -37,7 +38,7 @@ def run_hei():
             return jsonify(output='', error_message="Har du husket å definere en funksjon som heter hei?")
         except TypeError as error:
             return jsonify(output='', error_message=str(error))
-    return jsonify(output=s.getvalue())
+    return jsonify(output=s.getvalue(), error_message='', solved=True)
 
 
 @contextlib.contextmanager
