@@ -18,7 +18,7 @@ const Navigation = () => (
           </Link>
         </Nav.Item>
         <Nav.Item>
-          <Link to={ROUTES.TEACHER + ROUTES.CREATE_GAME} className="link">
+          <Link to={ROUTES.TEACHER} className="link">
             Spill
           </Link>
         </Nav.Item>

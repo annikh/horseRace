@@ -3,5 +3,9 @@
   background-color: #f9c35e;
   min-height: 100vh;
   min-width: 100%;
+}
+
+.rowAccount {
   justify-content: center;
+  padding: 10px;
 }
