@@ -87,13 +87,23 @@ class Student extends Component {
     );
   };
 
+  componentWillReceiveProps({ game_pin }) {
+    this.setState({ game_pin: game_pin });
+  }
+
   render() {
+    console.log("gamepin", this.state.game_pin);
+    const isInvalid =
+      this.props.game_pin === "" &&
+      this.props.cookies.get("game_name") !== null;
+    if (isInvalid) {
+      console.log("invalid");
+      this.props.cookies.remove("game_name");
+    }
     const { game, game_pin } = this.state;
     const { cookies } = this.props;
     const cookie = cookies.get("game_name");
-    console.log("cookie", cookie);
-
-    return cookie === undefined ? (
+    return cookie === undefined || game_pin === "" ? (
       <Form className="student" onSubmit={this.handleSubmit}>
         <Row>
           <Col>

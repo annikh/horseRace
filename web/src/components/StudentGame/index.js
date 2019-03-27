@@ -48,11 +48,11 @@ class StudentGame extends Component {
                 }}
               />
             ) : (
-              <Button onClick={this.exitGame}>Avslutt spill</Button>
+              <Button onClick={this.exitGame}>Avslutts spill</Button>
             )}
           </Nav.Item>
           <Nav.Item>
-            <h3>Hei, </h3>
+            <h3>Hei, {this.props.cookies.get("game_name")} </h3>
           </Nav.Item>
         </Nav>
         {this.state.gameStarted === false ? (

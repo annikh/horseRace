@@ -33,11 +33,6 @@ class App extends Component {
           <Route path={ROUTES.TEACHER} component={Teacher} />
           <Route
             exact
-            path={ROUTES.STUDENT + "/:game_id" + "/:user"}
-            render={() => <StudentGame cookies={this.props.cookies} />}
-          />
-          <Route
-            exact
             path={"/test"}
             render={() => <TestDatabase cookies={this.props.cookies} />}
           />
