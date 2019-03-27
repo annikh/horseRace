@@ -1,15 +1,15 @@
 import React, { Component } from "react";
-import { Row, Nav, Button } from "react-bootstrap";
+import { Row, Nav, Button, Container } from "react-bootstrap";
 import { withFirebase } from "../Firebase";
 import * as ROUTES from "../../constants/routes";
 import { Redirect } from "react-router-dom";
+import Game from "../Game";
 
 class StudentGame extends Component {
   constructor(props) {
     super(props);
     this.state = {
       exitGame: false,
-      gameStarted: false,
       game: null,
       player: {
         tasks: [],
@@ -41,7 +41,7 @@ class StudentGame extends Component {
 
   render() {
     return (
-      <div className="studentGame">
+      <Container className="studentGame">
         <Nav className="justify-content-center">
           <Nav.Item>
             {this.state.exitGame ? (
@@ -58,12 +58,12 @@ class StudentGame extends Component {
             <h3>Hei, {this.props.cookies.get("game_name")} </h3>
           </Nav.Item>
         </Nav>
-        {this.state.gameStarted === false ? (
+        {this.state.game && this.state.game.isActive === false ? (
           <Row style={{ justifyContent: "center" }}>
             Venter på at spillet skal starte..
           </Row>
         ) : (
-          <div> Her skal spilrlet komme</div>
+          <Game cookies={this.props.cookies} />
         )}
       </Container>
     );

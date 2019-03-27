@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { withFirebase } from "../Firebase";
 import {
   Container,
   Row,
@@ -22,126 +23,20 @@ class Game extends Component {
     this.handleCardClicked = this.handleCardClicked.bind(this);
 
     this.state = {
-      cards: [
-        {
-          difficulty: 1,
-          solved: false,
-          disabled: false,
-          title: "Variabel 1",
-          text: "I denne oppgaven skal du blablabl."
-        },
-        {
-          difficulty: 2,
-          solved: false,
-          disabled: false,
-          title: "Variabel 2",
-          text: "I denne oppgaven skal du blablabl."
-        },
-        {
-          difficulty: 1,
-          solved: false,
-          disabled: false,
-          title: "Variabel 3",
-          text: "I denne oppgaven skal du blablabl."
-        },
-        {
-          difficulty: 1,
-          solved: false,
-          disabled: false,
-          title: "Variabel 4",
-          text: "I denne oppgaven skal du blablabl."
-        },
-        {
-          difficulty: 1,
-          solved: false,
-          disabled: false,
-          title: "Variabel 5",
-          text: "I denne oppgaven skal du blablabl."
-        },
-        {
-          difficulty: 2,
-          solved: false,
-          disabled: false,
-          title: "Variabel 6",
-          text: "I denne oppgaven skal du blablabl."
-        },
-        {
-          difficulty: 3,
-          solved: false,
-          disabled: false,
-          title: "Variabel 7",
-          text: "I denne oppgaven skal du blablabl."
-        },
-        {
-          difficulty: 2,
-          solved: false,
-          disabled: false,
-          title: "Variabel 8",
-          text: "I denne oppgaven skal du blablabl."
-        },
-        {
-          difficulty: 3,
-          solved: false,
-          disabled: false,
-          title: "Variabel 9",
-          text: "I denne oppgaven skal du blablabl."
-        },
-        {
-          difficulty: 2,
-          solved: false,
-          disabled: false,
-          title: "Variabel 10",
-          text: "I denne oppgaven skal du blablabl."
-        },
-        {
-          difficulty: 3,
-          solved: false,
-          disabled: false,
-          title: "Variabel 11",
-          text: "I denne oppgaven skal du blablabl."
-        },
-        {
-          difficulty: 1,
-          solved: false,
-          disabled: false,
-          title: "Variabel 12",
-          text: "I denne oppgaven skal du blablabl."
-        },
-        {
-          difficulty: 2,
-          solved: false,
-          disabled: false,
-          title: "Variabel 13",
-          text: "I denne oppgaven skal du blablabl."
-        },
-        {
-          difficulty: 1,
-          solved: false,
-          disabled: false,
-          title: "Variabel 14",
-          text: "I denne oppgaven skal du blablabl."
-        },
-        {
-          difficulty: 2,
-          solved: false,
-          disabled: false,
-          title: "Variabel 15",
-          text: "I denne oppgaven skal du blablabl."
-        },
-        {
-          difficulty: 1,
-          solved: false,
-          disabled: false,
-          title: "Variabel 16",
-          text: "I denne oppgaven skal du blablabl."
-        }
-      ],
+      cards: [],
       showCard: false,
       selectedCard: {
         title: "",
         text: ""
       }
     };
+  }
+
+  componentDidMount() {
+    const game_pin = this.props.cookies.get("game_pin");
+    this.props.firebase.game(game_pin).on("value", snapshot => {
+      this.setState({ cards: snapshot.val().tasks });
+    });
   }
 
   handleClose() {
@@ -203,6 +98,7 @@ class Game extends Component {
   }
 
   render() {
+    console.log(this.props.game);
     return (
       <Container className="gameComponent">
         <Row>
@@ -236,4 +132,4 @@ class Game extends Component {
     );
   }
 }
-export default Game;
+export default withFirebase(Game);
