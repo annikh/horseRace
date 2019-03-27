@@ -1,10 +1,9 @@
 import React, { Component } from "react";
 import { AuthUserContext, withAuthorization } from "../Session";
-import { Container, Button, Form, Row, Col, ListGroup } from "react-bootstrap";
+import { Button, Form, Row, Col } from "react-bootstrap";
 import Game from "../../objects/Game";
 import { withFirebase } from "../Firebase";
 import shortid from "shortid";
-import CreateClassroom from "../CreateClassroom";
 
 class CreateGame extends Component {
   constructor(props) {

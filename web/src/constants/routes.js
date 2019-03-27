@@ -4,6 +4,7 @@ export const SIGN_IN = "/signin";
 export const PASSWORD_FORGET = "/pw-forget";
 export const STUDENT = "/student";
 export const TEACHER = "/teacher";
+export const TEACHER_GAME = "/teacher/game";
 export const ACCOUNT = "/account";
 export const GAME = "/game";
 export const STUDENT_GAME = "/game";

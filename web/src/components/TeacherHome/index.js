@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import { AuthUserContext, withAuthorization } from "../Session";
-import { Container, Button, Form, Row, Col, ListGroup } from "react-bootstrap";
-import Game from "../../objects/Game";
+import { Container, Row, Col, ListGroup } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import { withFirebase } from "../Firebase";
-import shortid from "shortid";
 import CreateClassroom from "../CreateClassroom";
 import CreateGame from "../CreateGame";
+import * as ROUTES from "../../constants/routes";
 
 class TeacherHome extends Component {
   constructor(props) {
@@ -15,7 +15,7 @@ class TeacherHome extends Component {
       loading: false,
       classroomName: "",
       classrooms: [],
-      games: []
+      games: {}
     };
   }
 
@@ -23,10 +23,11 @@ class TeacherHome extends Component {
     const user_id = this.context.uid;
     this.setState({ loading: true });
     this.props.firebase.games().on("value", snapshot => {
-      let games = [];
-      snapshot.forEach(game => {
-        if (game.val().user_id === user_id) {
-          games.push(game.val());
+      const allGames = snapshot.val();
+      let games = {};
+      Object.keys(allGames).forEach(pin => {
+        if (allGames[pin].user_id === user_id) {
+          games[pin] = allGames[pin];
           this.setState({ games: games });
         }
       });
@@ -38,6 +39,7 @@ class TeacherHome extends Component {
 
   render() {
     const { games, classrooms } = this.state;
+    console.log(games);
     return (
       <Container className="accountBody">
         <Row className="rowAccount">
@@ -46,7 +48,11 @@ class TeacherHome extends Component {
               <h2 style={{ textAlign: "left" }}>Dine spill:</h2>{" "}
             </Row>
             <Row className="rowAccount">
-              {games.length > 0 ? <GameList games={games} /> : <NoGames />}
+              {Object.keys(games).length > 0 ? (
+                <GameList games={games} />
+              ) : (
+                <NoGames />
+              )}
             </Row>
           </Col>
           <Col>
@@ -74,33 +80,27 @@ const NoGames = () => (
 
 const GameList = ({ games }) => (
   <ListGroup variant="flush" style={{ width: "80%" }}>
-    {games.map((game, i) => (
-      <ListGroup.Item
+    {Object.keys(games).map((pin, i) => (
+      <Link
         key={i}
-        style={{ textAlign: "left" }}
-        action
-        variant="warning"
-        pin={game.pin}
+        to={ROUTES.TEACHER + "/" + pin}
+        style={{ textDecoration: "none" }}
       >
-        <Row>
-          <Col>
-            <strong>Klasse:</strong>
-          </Col>
-          <Col>{game.classroom_id}</Col>
-        </Row>
-        <Row>
-          <Col>
-            <strong>Dato: </strong>
-          </Col>
-          <Col>
-            {new Intl.DateTimeFormat("en-GB", {
-              year: "numeric",
-              month: "long",
-              day: "2-digit"
-            }).format(game.date)}
-          </Col>
-        </Row>
-      </ListGroup.Item>
+        <ListGroup.Item style={{ textAlign: "left" }} action variant="warning">
+          <Row>
+            <Col>{games[pin].classroom_id}</Col>
+          </Row>
+          <Row>
+            <Col>
+              {new Intl.DateTimeFormat("en-GB", {
+                year: "numeric",
+                month: "long",
+                day: "2-digit"
+              }).format(games[pin].date)}
+            </Col>
+          </Row>
+        </ListGroup.Item>
+      </Link>
     ))}
   </ListGroup>
 );
