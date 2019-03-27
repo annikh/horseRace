@@ -48,7 +48,7 @@ class StudentGame extends Component {
                 }}
               />
             ) : (
-              <Button onClick={this.exitGame}>Avslutts spill</Button>
+              <Button onClick={this.exitGame}>Avslutt spill</Button>
             )}
           </Nav.Item>
           <Nav.Item>
