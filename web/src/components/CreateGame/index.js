@@ -27,15 +27,15 @@ class CreateGame extends Component {
   componentDidMount() {
     const user_id = this.context.uid;
     this.setState({ loading: true });
-    let games = [];
     this.props.firebase.games().on("value", snapshot => {
+      let games = [];
       snapshot.forEach(game => {
         if (game.val().user_id === user_id) {
           games.push(game.val());
+          this.setState({ games: games });
         }
       });
     });
-    this.setState({ games: games });
     this.props.firebase.classroomsByTeacher(user_id).on("value", snapshot => {
       this.setState({ loading: false, classrooms: snapshot.val() });
     });
