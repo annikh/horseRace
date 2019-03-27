@@ -33,8 +33,8 @@ class Firebase {
   doPasswordUpdate = password => this.auth.currentUser.updatePassword(password);
 
   // *** Game API ***
-  game = game_id => {
-    return this.db.ref("games").child(game_id);
+  game = pin => {
+    return this.db.ref("games").child(pin);
   };
   games = () => {
     return this.db.ref("games/");
@@ -42,8 +42,12 @@ class Firebase {
   addGame = pin => {
     return this.db.ref("games/").child(pin);
   };
-  gamePlayer = (game_id, name) => {
-    return this.db.ref(`games/${game_id}/scoreboard/${name}`);
+  gamePlayer = (pin, name) => {
+    return this.db
+      .ref("games")
+      .child(pin)
+      .child("scoreboard")
+      .child(name);
   };
 
   // *** Classroom API ***

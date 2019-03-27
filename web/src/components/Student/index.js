@@ -18,16 +18,16 @@ class Student extends Component {
       value: "",
       loading: false,
       game: null,
-      game_id: "",
+      game_pin: "",
       buttonValue: "Enter"
     };
   }
 
   handleEnterClassroomPin() {
-    const game_id = this.state.value;
-    this.setState({ loading: true, game_id: game_id });
+    const game_pin = this.state.value;
+    this.setState({ loading: true, game_pin: game_pin });
 
-    this.props.firebase.game(game_id).on("value", snapshot => {
+    this.props.firebase.game(game_pin).on("value", snapshot => {
       console.log("snap:", snapshot.val());
       this.setState({ loading: false, game: snapshot.val() });
     });
@@ -39,7 +39,7 @@ class Student extends Component {
     cookies.set("game_name", name);
     console.log("Set", name, "to active");
     this.props.firebase
-      .game(this.state.game_id)
+      .game(this.state.game_pin)
       .child("scoreboard")
       .child(name)
       .child("isActive")
@@ -88,7 +88,7 @@ class Student extends Component {
   };
 
   render() {
-    const { game, game_id } = this.state;
+    const { game, game_pin } = this.state;
     const { cookies } = this.props;
     const cookie = cookies.get("game_name");
     console.log("cookie", cookie);
@@ -116,7 +116,7 @@ class Student extends Component {
         </Row>
       </Form>
     ) : (
-      <StudentGame cookies={cookies} game_id={game_id} />
+      <StudentGame cookies={cookies} game_pin={game_pin} />
     );
   }
 }

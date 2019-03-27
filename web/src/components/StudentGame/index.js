@@ -19,7 +19,7 @@ class StudentGame extends Component {
   }
 
   componentDidMount() {
-    this.props.firebase.game(this.props.game_id).on("value", snapshot => {
+    this.props.firebase.game(this.props.game_pin).on("value", snapshot => {
       this.setState({ game: snapshot.val() });
     });
   }
@@ -28,7 +28,7 @@ class StudentGame extends Component {
     const name = this.props.cookies.get("game_name");
     this.props.cookies.remove("game_name");
 
-    this.props.firebase.gamePlayer(this.state.game.id, name).set({
+    this.props.firebase.gamePlayer(this.props.game_pin, name).set({
       isActive: false
     });
     this.setState({
