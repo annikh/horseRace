@@ -9,7 +9,6 @@ import CreateClassroom from "../CreateClassroom";
 class CreateGame extends Component {
   constructor(props) {
     super(props);
-    this.createGameForm = this.createGameForm.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.addGame = this.addGame.bind(this);
@@ -18,27 +17,8 @@ class CreateGame extends Component {
 
     this.state = {
       loading: false,
-      classroomName: "",
-      classrooms: [],
-      games: []
+      classroomName: ""
     };
-  }
-
-  componentDidMount() {
-    const user_id = this.context.uid;
-    this.setState({ loading: true });
-    this.props.firebase.games().on("value", snapshot => {
-      let games = [];
-      snapshot.forEach(game => {
-        if (game.val().user_id === user_id) {
-          games.push(game.val());
-          this.setState({ games: games });
-        }
-      });
-    });
-    this.props.firebase.classroomsByTeacher(user_id).on("value", snapshot => {
-      this.setState({ loading: false, classrooms: snapshot.val() });
-    });
   }
 
   addGame() {
@@ -47,7 +27,7 @@ class CreateGame extends Component {
       newGamePin = shortid.generate();
     }
     let authUser = this.context;
-    const names = this.state.classrooms[this.state.classroomName]["names"];
+    const names = this.props.classrooms[this.state.classroomName]["names"];
     const scoreboard = this.fillScoreboard(names);
     const game = new Game(
       false,
@@ -90,8 +70,9 @@ class CreateGame extends Component {
     this.setState({ classroomName: event.target.value });
   }
 
-  createGameForm = () => {
-    const classroomNames = Object.keys(this.state.classrooms);
+  render() {
+    console.log(this.props.classrooms);
+    const classroomNames = Object.keys(this.props.classrooms);
     return (
       <Form onSubmit={this.handleSubmit}>
         <Row>
@@ -128,69 +109,10 @@ class CreateGame extends Component {
         </Row>
       </Form>
     );
-  };
-
-  render() {
-    const games = this.state.games;
-    console.log("games", games);
-    console.log("class", this.state.classrooms);
-    return (
-      <Container className="accountBody">
-        <Row>
-          <Col>
-            <h2 style={{ textAlign: "left" }}>Dine spill:</h2>
-            {games.length > 0 ? <GameList games={games} /> : <NoGames />}
-          </Col>
-          <Col>
-            {this.createGameForm()}
-            <Row>
-              <CreateClassroom />
-            </Row>
-          </Col>
-        </Row>
-      </Container>
-    );
   }
 }
 CreateGame.contextType = AuthUserContext;
 
 const condition = authUser => !!authUser;
-
-const NoGames = () => (
-  <p style={{ textAlign: "left" }}>Du har ingen spill ennå</p>
-);
-
-const GameList = ({ games }) => (
-  <ListGroup variant="flush" style={{ width: "80%" }}>
-    {games.map((game, i) => (
-      <ListGroup.Item
-        key={i}
-        style={{ textAlign: "left" }}
-        action
-        variant="warning"
-        pin={game.pin}
-      >
-        <Row>
-          <Col>
-            <strong>Klasse:</strong>
-          </Col>
-          <Col>{game.classroom_id}</Col>
-        </Row>
-        <Row>
-          <Col>
-            <strong>Dato: </strong>
-          </Col>
-          <Col>
-            {new Intl.DateTimeFormat("en-GB", {
-              year: "numeric",
-              month: "long",
-              day: "2-digit"
-            }).format(game.date)}
-          </Col>
-        </Row>
-      </ListGroup.Item>
-    ))}
-  </ListGroup>
-);
 
 export default withFirebase(withAuthorization(condition)(CreateGame));

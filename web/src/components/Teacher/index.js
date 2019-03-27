@@ -3,7 +3,7 @@ import Navigation from "../Navigation";
 import { withAuthentication } from "../Session";
 import { Route } from "react-router-dom";
 import Account from "../Account";
-import CreateGame from "../CreateGame";
+import TeacherHome from "../TeacherHome";
 import * as ROUTES from "../../constants/routes";
 
 const teacherURL = "/teacher";
@@ -11,11 +11,7 @@ const teacherURL = "/teacher";
 const Teacher = () => (
   <div>
     <Navigation />
-    <Route
-      exact
-      path={teacherURL + ROUTES.CREATE_GAME}
-      component={CreateGame}
-    />
+    <Route exact path={ROUTES.TEACHER} component={TeacherHome} />
     <Route path={teacherURL + ROUTES.ACCOUNT} component={Account} />
   </div>
 );
