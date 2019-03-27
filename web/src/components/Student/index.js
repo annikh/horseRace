@@ -26,7 +26,8 @@ class Student extends Component {
   handleEnterClassroomPin() {
     const game_pin = this.state.value;
     this.setState({ loading: true, game_pin: game_pin });
-
+    const { cookies } = this.props;
+    cookies.set("game_pin", game_pin);
     this.props.firebase.game(game_pin).on("value", snapshot => {
       console.log("snap:", snapshot.val());
       this.setState({ loading: false, game: snapshot.val() });
@@ -37,7 +38,6 @@ class Student extends Component {
     const name = this.state.value;
     const { cookies } = this.props;
     cookies.set("game_name", name);
-    console.log("Set", name, "to active");
     this.props.firebase
       .game(this.state.game_pin)
       .child("scoreboard")
@@ -87,24 +87,12 @@ class Student extends Component {
     );
   };
 
-  componentWillReceiveProps({ game_pin }) {
-    this.setState({ game_pin: game_pin });
-  }
-
-  checkIfGamePinIsValid() {
-    return (
-      this.props.game_pin === "" && this.props.cookies.get("game_name") !== null
-    );
-  }
-
   render() {
     const { game, game_pin } = this.state;
     const { cookies } = this.props;
-    {
-      this.checkIfGamePinIsValid() && cookies.remove("game_name");
-    }
-    const cookie = cookies.get("game_name");
-    return cookie === undefined || game_pin === "" ? (
+    const nameCookie = cookies.get("game_name");
+    const gamePinCookie = cookies.get("game_pin");
+    return nameCookie === undefined || gamePinCookie === undefined ? (
       <Form className="student" onSubmit={this.handleSubmit}>
         <Row>
           <Col>
