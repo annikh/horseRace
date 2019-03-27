@@ -152,7 +152,6 @@ const getGameByIdFromDatabase = (reqGame, res) => {
           };
         }
       });
-      console.log(matched_game);
       res.status(200).json(matched_game);
     },
     error => {
@@ -162,3 +161,19 @@ const getGameByIdFromDatabase = (reqGame, res) => {
     }
   );
 };
+
+// ACTIVE-GAME UPDATES
+exports.setPlayerToActive = functions.https.onRequest((req, res) => {
+  return cors(req, res, () => {
+    if (req.method !== "POST") {
+      return res.status(404).json({
+        message: "Not allowed"
+      });
+    }
+    const game_id = req.body[0];
+    const player = req.body[1];
+    let update = {};
+    update["/" + game_id + "/scoreboard/" + player + "/isActive"] = true;
+    return gameDB.update(update);
+  });
+});
