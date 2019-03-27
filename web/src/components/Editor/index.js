@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import AceEditor from 'react-ace';
-import { Button } from 'react-bootstrap';
+import { Button, Container, Form } from 'react-bootstrap';
 import axios from 'axios';
 
 import 'brace/mode/python';
@@ -41,7 +41,6 @@ class Editor extends Component {
     render() {
         return(
             <div>
-            <h2>Editor</h2>
             <AceEditor
                 placeholder="Placeholder Text"
                 mode="python"
@@ -62,8 +61,7 @@ class Editor extends Component {
                 }}/>
                 <Button variant="success" onClick={this.runCode}>Run Code</Button>
                 <br/><br/>
-
-                <p>output: {this.state.output}</p>
+                <Form.Control as="textarea" style={{backgroundColor: '#262722', height: 100, width: 500}} value={"Output: " + this.state.output}/>
             </div>
         )
     }
