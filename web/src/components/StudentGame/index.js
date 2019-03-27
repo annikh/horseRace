@@ -1,19 +1,16 @@
 import React, { Component } from "react";
-import {
-  Row,
-  Navbar,
-  Form,
-  FormControl,
-  Button,
-  Container
-} from "react-bootstrap";
-import Game from "../../components/Game";
+import { Row, Nav, Button } from "react-bootstrap";
+import { withFirebase } from "../Firebase";
+import * as ROUTES from "../../constants/routes";
+import { Redirect } from "react-router-dom";
 
 class StudentGame extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      exitGame: false,
       gameStarted: false,
+      game: null,
       player: {
         tasks: [],
         points: 0
@@ -21,35 +18,56 @@ class StudentGame extends Component {
     };
   }
 
-  guessPicture(picture) {
-    //sjekk mot redux store currentGame -> Solution ->
-    // ELLER hent fra en egen gameID: solution tabell, sjekk om den er lik
-    // hvis riktig , sett currentGame til "isFinished"
+  componentDidMount() {
+    const game_pin = this.props.cookies.get("game_pin");
+    this.props.firebase.game(game_pin).on("value", snapshot => {
+      this.setState({ game: snapshot.val() });
+    });
   }
 
+  exitGame = () => {
+    const name = this.props.cookies.get("game_name");
+    const game_pin = this.props.cookies.get("game_pin");
+    this.props.cookies.remove("game_name");
+    this.props.cookies.remove("game_pin");
+
+    this.props.firebase.gamePlayer(game_pin, name).set({
+      isActive: false
+    });
+    this.setState({
+      exitGame: true
+    });
+  };
+
   render() {
-    const { game, player } = this.props.location.state;
     return (
-      <Container className="studentGame">
-        <Navbar className="navbar-game" fixed="top">
-          <Navbar.Brand className="mr-auto" variant="primary">
-            GAME
-          </Navbar.Brand>
-          <Form inline>
-            <FormControl type="text" placeholder="Search" className="mr-sm-2" />
-            <Button variant="outline-light">Gjett motiv</Button>
-          </Form>
-        </Navbar>
+      <div className="studentGame">
+        <Nav className="justify-content-center">
+          <Nav.Item>
+            {this.state.exitGame ? (
+              <Redirect
+                to={{
+                  pathname: ROUTES.STUDENT
+                }}
+              />
+            ) : (
+              <Button onClick={this.exitGame}>Avslutt spill</Button>
+            )}
+          </Nav.Item>
+          <Nav.Item>
+            <h3>Hei, {this.props.cookies.get("game_name")} </h3>
+          </Nav.Item>
+        </Nav>
         {this.state.gameStarted === false ? (
           <Row style={{ justifyContent: "center" }}>
             Venter på at spillet skal starte..
           </Row>
         ) : (
-          <Game game={game} player={player} />
+          <div> Her skal spilrlet komme</div>
         )}
       </Container>
     );
   }
 }
 
-export default StudentGame;
+export default withFirebase(StudentGame);

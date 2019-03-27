@@ -88,3 +88,6 @@ node_modules/
 
 # dotenv environment variables file
 .env
+
+# python virtual environment
+eval-server/env/

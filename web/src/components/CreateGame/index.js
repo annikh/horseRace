@@ -1,38 +1,31 @@
 import React, { Component } from "react";
 import { AuthUserContext, withAuthorization } from "../Session";
-import { Container, Button, Form, Row, Col, ListGroup } from "react-bootstrap";
-import { Redirect } from "react-router-dom";
+import { Button, Form, Row, Col } from "react-bootstrap";
 import Game from "../../objects/Game";
-import * as ROUTES from "../../constants/routes";
+import { withFirebase } from "../Firebase";
 import shortid from "shortid";
-import CreateClassroom from "../CreateClassroom";
-import { connect } from "react-redux";
-import {
-  fetchGamesByTeacher,
-  fetchClassroomsByTeacher,
-  addGame
-} from "../../actions";
 
 class CreateGame extends Component {
   constructor(props) {
     super(props);
-    this.createGameForm = this.createGameForm.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.addGame = this.addGame.bind(this);
     this.isValidPin = this.isValidPin.bind(this);
-    this.getClassroomNames = this.getClassroomNames.bind(this);
+    this.fillScoreboard = this.fillScoreboard.bind(this);
 
     this.state = {
       loading: false,
-      classroom_id: ""
+      classroomName: "",
+      tasks: null
     };
   }
 
   componentDidMount() {
-    let authUser = this.context;
-    this.props.fetchGamesByTeacher(authUser.uid);
-    this.props.fetchClassroomsByTeacher(authUser.uid);
+    this.props.firebase.tasks("variables").once("value", snapshot => {
+      console.log(snapshot.val());
+      this.setState({ tasks: snapshot.val() });
+    });
   }
 
   addGame() {
@@ -41,40 +34,34 @@ class CreateGame extends Component {
       newGamePin = shortid.generate();
     }
     let authUser = this.context;
-    const classroomNames = this.getClassroomNames(this.state.classroom_id);
-    let scoreboard = [];
-    classroomNames.forEach(function(name) {
-      let newPlayer = {
-        name: name,
-        points: 0,
-        tasks: []
-      };
-      scoreboard.push(newPlayer);
-    });
+    const names = this.props.classrooms[this.state.classroomName]["names"];
+    const scoreboard = this.fillScoreboard(names);
     const game = new Game(
-      null,
-      newGamePin,
+      false,
       authUser.uid,
-      this.state.classroom_id,
+      this.state.classroomName,
       null,
-      scoreboard
+      scoreboard,
+      this.state.tasks
     );
-    this.props.addGame(game);
+    this.props.firebase.addGame(newGamePin).set(game);
   }
 
-  getClassroomNames(classroomName) {
-    const classroom = this.props.classrooms.find(
-      classroom => classroom.classroom_name === classroomName
-    );
-    let names = [];
-    classroom.names.split(/\n/).map(name => names.push(name));
-    return names;
+  fillScoreboard(names) {
+    let scoreboard = {};
+    names.forEach(name => {
+      scoreboard[name] = {
+        isActive: false,
+        points: 0,
+        tasks: null
+      };
+    });
+    return scoreboard;
   }
 
   isValidPin(pin) {
-    for (var key in this.props.games) {
-      console.log(this.props.games[key].pin);
-      if (this.props.games[key].pin === pin) {
+    for (var key in this.state.games) {
+      if (this.state.games[key].pin === pin) {
         return false;
       }
     }
@@ -84,14 +71,15 @@ class CreateGame extends Component {
   handleSubmit(event) {
     event.preventDefault();
     this.addGame();
-    alert("Spill opprettet!");
+    alert("Spill opprettet");
   }
 
   handleChange(event) {
-    this.setState({ classroom_id: event.target.value });
+    this.setState({ classroomName: event.target.value });
   }
 
-  createGameForm = () => {
+  render() {
+    const classroomNames = Object.keys(this.props.classrooms);
     return (
       <Form onSubmit={this.handleSubmit}>
         <Row>
@@ -110,11 +98,12 @@ class CreateGame extends Component {
           <Col>
             <Form.Control as="select" onChange={this.handleChange}>
               <option>Velg...</option>
-              {this.props.classrooms.map((classroom, i) => (
-                <option key={i} value={classroom.key}>
-                  {classroom.classroom_name}
-                </option>
-              ))}
+              {classroomNames.length > 0 &&
+                classroomNames.map((name, i) => (
+                  <option key={i} value={name}>
+                    {name}
+                  </option>
+                ))}
             </Form.Control>
           </Col>
         </Row>
@@ -127,97 +116,10 @@ class CreateGame extends Component {
         </Row>
       </Form>
     );
-  };
-
-  render() {
-    const games = this.props.games;
-
-    return (
-      <Container className="accountBody">
-        <Row>
-          <Col>
-            <DisplayGames games={games} />
-          </Col>
-          <Col>
-            {this.createGameForm()}
-            <Row>
-              <CreateClassroom />
-            </Row>
-          </Col>
-        </Row>
-      </Container>
-    );
   }
 }
 CreateGame.contextType = AuthUserContext;
 
 const condition = authUser => !!authUser;
 
-const DisplayGames = ({ games }) => (
-  <div>
-    <h2 style={{ textAlign: "left" }}>Dine spill:</h2>
-    {Object.entries(games).length === 0 && games.constructor === Object ? (
-      <NoGames />
-    ) : (
-      <GameList games={games} />
-    )}
-  </div>
-);
-
-const NoGames = () => (
-  <p style={{ textAlign: "left" }}>Du har ingen spill ennå</p>
-);
-
-const GameList = ({ games }) => (
-  <ListGroup variant="flush" style={{ width: "80%" }}>
-    {games.map((game, i) => (
-      <ListGroup.Item
-        key={i}
-        style={{ textAlign: "left" }}
-        action
-        variant="warning"
-        pin={game.pin}
-      >
-        <Row>
-          <Col>
-            <strong>Klasse:</strong>
-          </Col>
-          <Col>{game.classroom_id}</Col>
-        </Row>
-        <Row>
-          <Col>
-            <strong>Dato: </strong>
-          </Col>
-          <Col>
-            {new Intl.DateTimeFormat("en-GB", {
-              year: "numeric",
-              month: "long",
-              day: "2-digit"
-            }).format(game.date)}
-          </Col>
-        </Row>
-      </ListGroup.Item>
-    ))}
-  </ListGroup>
-);
-
-const mapDispatchToProps = dispatch => {
-  return {
-    fetchGamesByTeacher: user_id => dispatch(fetchGamesByTeacher(user_id)),
-    fetchClassroomsByTeacher: user_id =>
-      dispatch(fetchClassroomsByTeacher(user_id)),
-    addGame: game => dispatch(addGame(game))
-  };
-};
-
-const mapStateToProps = state => {
-  return {
-    games: state.games,
-    classrooms: state.classrooms
-  };
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withAuthorization(condition)(CreateGame));
+export default withFirebase(withAuthorization(condition)(CreateGame));

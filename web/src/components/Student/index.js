@@ -1,9 +1,7 @@
 import React, { Component } from "react";
 import { Button, Form, Row, Col } from "react-bootstrap";
-import { Redirect } from "react-router-dom";
-
-import axios from "axios";
-import * as ROUTES from "../../constants/routes";
+import { withFirebase } from "../Firebase";
+import StudentGame from "../StudentGame";
 import "./style.css";
 
 class Student extends Component {
@@ -17,36 +15,35 @@ class Student extends Component {
     this.namesDropDown = this.namesDropDown.bind(this);
 
     this.state = {
-      game: {},
       value: "",
-      pinEntered: false,
-      buttonValue: "Enter",
-      gameEntered: false
+      loading: false,
+      game: null,
+      game_pin: "",
+      buttonValue: "Enter"
     };
   }
 
   handleEnterClassroomPin() {
-    axios
-      .get(
-        "https://us-central1-horse-race-232509.cloudfunctions.net/getGameById",
-        { params: { pin: this.state.value } }
-      )
-      .then(response => {
-        this.setState({
-          game: response.data,
-          pinEntered: true,
-          buttonValue: "Bli med!"
-        });
-      })
-      .catch(function(error) {
-        console.log(error);
-      });
+    const game_pin = this.state.value;
+    this.setState({ loading: true, game_pin: game_pin });
+    const { cookies } = this.props;
+    cookies.set("game_pin", game_pin);
+    this.props.firebase.game(game_pin).on("value", snapshot => {
+      console.log("snap:", snapshot.val());
+      this.setState({ loading: false, game: snapshot.val() });
+    });
   }
 
   handleEnterStudentName() {
-    this.setState({
-      gameEntered: true
-    });
+    const name = this.state.value;
+    const { cookies } = this.props;
+    cookies.set("game_name", name);
+    this.props.firebase
+      .game(this.state.game_pin)
+      .child("scoreboard")
+      .child(name)
+      .child("isActive")
+      .set(true);
   }
 
   handleChange(event) {
@@ -54,9 +51,9 @@ class Student extends Component {
   }
 
   handleSubmit(event) {
-    this.state.pinEntered
-      ? this.handleEnterStudentName()
-      : this.handleEnterClassroomPin();
+    this.state.game === null
+      ? this.handleEnterClassroomPin()
+      : this.handleEnterStudentName();
     event.preventDefault();
   }
 
@@ -65,7 +62,6 @@ class Student extends Component {
       <Col md="auto">
         <Form.Control
           placeholder="Skriv inn PIN"
-          value={this.state.value}
           onChange={this.handleChange}
         />
       </Col>
@@ -73,22 +69,30 @@ class Student extends Component {
   };
 
   namesDropDown = () => {
+    const scoreboard = this.state.game.scoreboard;
     return (
       <Col md="auto">
         <Form.Control as="select" onChange={this.handleChange}>
           <option>Hva heter du?</option>
-          {this.state.game.scoreboard.map((player, i) => (
-            <option key={i} value={player.name}>
-              {player.name}
-            </option>
-          ))}
+          {Object.keys(scoreboard).map(
+            (player, i) =>
+              scoreboard[player]["isActive"] !== true && (
+                <option key={i} value={player}>
+                  {player}
+                </option>
+              )
+          )}
         </Form.Control>
       </Col>
     );
   };
 
   render() {
-    return this.state.game !== null && this.state.gameEntered === false ? (
+    const { game, game_pin } = this.state;
+    const { cookies } = this.props;
+    const nameCookie = cookies.get("game_name");
+    const gamePinCookie = cookies.get("game_pin");
+    return nameCookie === undefined || gamePinCookie === undefined ? (
       <Form className="student" onSubmit={this.handleSubmit}>
         <Row>
           <Col>
@@ -98,9 +102,7 @@ class Student extends Component {
           </Col>
         </Row>
         <Row>
-          {this.state.pinEntered === false
-            ? this.pinInput()
-            : this.namesDropDown()}
+          {game ? this.namesDropDown() : this.pinInput()}
           <Col>
             <Button
               className="btn-classPin"
@@ -113,15 +115,9 @@ class Student extends Component {
         </Row>
       </Form>
     ) : (
-      <Redirect
-        to={{
-          pathname:
-            ROUTES.STUDENT + ROUTES.STUDENT_GAME + "/" + this.state.value,
-          state: { game: this.state.game, player: this.state.value }
-        }}
-      />
+      <StudentGame cookies={cookies} game_pin={game_pin} />
     );
   }
 }
 
-export default Student;
+export default withFirebase(Student);
