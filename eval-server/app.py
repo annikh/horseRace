@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, json
 from flask_cors import CORS
 import sys
 from io import StringIO
@@ -19,22 +19,25 @@ def run_code():
 @app.route('/hei', methods=['GET'])
 def run_hei():
     code = request.args.get('code')
-    print("code: ", code)
+    if code == '' or code == '# Enter your code here.':
+        return json.jsonify(output='', error_message='Skriv din kode i editoren.')
+
     test_code = code + '\nassert hei("Anniken") == "Anniken", "Should be Anniken"'
+    
     with stdoutIO() as s:
         try:
             exec(test_code)
         except AssertionError as error:
-            return str(error)
+            return json.jsonify(output='', error_message=str(error))
         except SyntaxError as error:
-            return str(error)
+            return json.jsonify(output='', error_message=str(error))
         except IndentationError as error:
-            return str(error)
+            return json.jsonify(output='', error_message=str(error))
         except NameError as error:
-            return "Har du husket å definere en funksjon som heter hei?"
+            return json.jsonify(output='', error_message="Har du husket å definere en funksjon som heter hei?")
         except TypeError as error:
-            return str(error)
-    return s.getvalue()
+            return json.jsonify(output='', error_message=str(error))
+    return json.jsonify(output=s.getvalue())
 
 
 @contextlib.contextmanager

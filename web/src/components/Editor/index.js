@@ -31,7 +31,9 @@ class Editor extends Component {
         axios.get('http://127.0.0.1:5000/hei', { params: { code: this.state.aceEditorValue } })
         .then( response => {
           console.log(response)
-          this.setState({output: response.data})
+          this.setState({output: response.data.output})
+          let error_message = response.data.error_message
+          if (error_message) alert(error_message);
         })
         .catch(function(error) {
           console.log(error);
@@ -61,7 +63,7 @@ class Editor extends Component {
                 }}/>
                 <Button variant="success" onClick={this.runCode}>Run Code</Button>
                 <br/><br/>
-                <Form.Control as="textarea" style={{backgroundColor: '#262722', height: 100, width: 500}} value={"Output: " + this.state.output}/>
+                <Form.Control as="textarea" style={{backgroundColor: '#262722', color: '#aaaaaa', height: 100, width: 500}} value={"Output: " + this.state.output}/>
             </div>
         )
     }
