@@ -12,10 +12,6 @@ import Cards from "../Cards";
 import Console from "../Console";
 import "./style.css";
 
-const ErrorModal = () => {
-
-}
-
 class Game extends Component {
   constructor(props) {
     super(props);
@@ -81,29 +77,29 @@ class Game extends Component {
   }
 
   SolvedModal = () => (
-      <Modal show={this.state.showSolvedModal} onHide={this.handleSolvedModalClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>
-              Bra jobbet!
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          Du fikk til oppgaven :D
-        </Modal.Body>
-      </Modal>
+    <Modal show={this.state.showSolvedModal} onHide={this.handleSolvedModalClose}>
+      <Modal.Header closeButton>
+        <Modal.Title>
+            Bra jobbet!
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        Du fikk til oppgaven :D
+      </Modal.Body>
+    </Modal>
   )
 
   ErrorModal = () => (
-      <Modal show={this.state.showErrorModal} onHide={this.handleErrorModalClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>
-              {this.state.errorModalHeaderText}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {this.state.error_message}
-        </Modal.Body>
-      </Modal>
+    <Modal show={this.state.showErrorModal} onHide={this.handleErrorModalClose}>
+      <Modal.Header closeButton>
+        <Modal.Title>
+            {this.state.errorModalHeaderText}
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        {this.state.error_message}
+      </Modal.Body>
+    </Modal>
   )
 
   render() {
@@ -113,7 +109,7 @@ class Game extends Component {
       <this.ErrorModal/>
       <this.SolvedModal/>
       <Row>
-        <Col style={{justifyContent: "left"}}>
+        <Col>
           <Editor onRunCode={this.runCode}/>
           <br/>
           <Console output={this.state.output} />
