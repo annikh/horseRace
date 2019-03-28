@@ -49,7 +49,7 @@ class Game extends Component {
       console.log("response: ", response)
       this.setState({output: response.data.output, error_message: response.data.error_message})
       if (this.state.error_message !== '') this.handleErrorModalShow()
-      if (response.data.solved) this.handleSolvedModalShow()
+      if (this.state.currentTask !== this.emptyTask && response.data.solved) this.handleSolvedModalShow()
     })
     .catch(function(error) {
       console.log(error);
