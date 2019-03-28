@@ -8,6 +8,9 @@ import {
 import "./style.css";
 
 class Cards extends Component {
+
+  emptyCard = {difficulty: 0, test: "", text: "", title: "", error_hint: ""}
+
   constructor(props) {
     super(props);
     this.handleClose = this.handleClose.bind(this);
@@ -16,10 +19,7 @@ class Cards extends Component {
     this.state = {
       cards: [],
       showCard: false,
-      selectedCard: {
-        title: "",
-        text: ""
-      }
+      selectedCard: this.emptyCard
     };
   }
 
@@ -31,16 +31,16 @@ class Cards extends Component {
   }
 
   handleClose() {
-    this.setState({ showCard: false, selectedCard: {} });
-    //Send kall på å sette oppgaven til enabled
+    this.setState({ showCard: false, selectedCard: this.emptyCard });
+    this.props.onCardSelect(this.emptyCard);
   }
 
   handleCardClicked(card) {
-    console.log(card);
     this.setState({
       selectedCard: card,
       showCard: true
     });
+    this.props.onCardSelect(card);
     //send kall for å sette oppgaven til disabled
   }
 
@@ -84,7 +84,6 @@ class Cards extends Component {
   }
 
   render() {
-    console.log(this.props.game);
     return (
       <div>
         {this.state.showCard ? (

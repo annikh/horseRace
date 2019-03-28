@@ -13,9 +13,13 @@ import Console from "../Console";
 import "./style.css";
 
 class Game extends Component {
+
+  emptyTask = {difficulty: 0, test: "", text: "", title: "", error_hint: ""}
+
   constructor(props) {
     super(props);
 
+    this.setCurrentTask = this.setCurrentTask.bind(this);
     this.runCode = this.runCode.bind(this);
     this.handleErrorModalClose = this.handleErrorModalClose.bind(this);
     this.handleErrorModalShow = this.handleErrorModalShow.bind(this);
@@ -23,28 +27,26 @@ class Game extends Component {
     this.handleSolvedModalShow = this.handleSolvedModalShow.bind(this);
 
     this.state = {
-      cards: [],
-      showCard: false,
-      selectedCard: {
-        title: "",
-        text: ""
-      },
+      currentTask: this.emptyTask,
       output: '',
       error_message: '',
       showErrorModal: false,
       showSolvedModal: false,
       errorModalHeaders: ['Prøv igjen!', 'Bedre lykke neste gang!', 'Dette gikk visst ikke helt etter planen.', 'Oops..', 'Ikke helt der ennå..'],
-      errorModalHeaderText: '',
-      currentTask: {difficulty: 1, test: "assert hei('Anniken') == 'Anniken', 'Returnerer funksjonen din navnet som skrives inn?'", text: "Lag en funksjon med navn 'hei' som tar inn et navn og returnerer det.", title: 'hei', error_hint: 'Har du husket å definere en funksjon som heter "hei"?'}
+      errorModalHeaderText: ''
     };
   }
 
+  setCurrentTask(card) {
+    this.setState({currentTask: card})
+  }
+
   runCode(submittedCode) {
-    console.log(this.state.aceEditorValue);
+    console.log("code: ", this.state.aceEditorValue);
     // axios.get('http://python-eval-server.appspot.com/run', { params: { code: this.state.aceEditorValue } })
     axios.get('http://127.0.0.1:5000/run', { params: { code: submittedCode, task: this.state.currentTask } })
     .then( response => {
-      console.log(response)
+      console.log("response: ", response)
       this.setState({output: response.data.output, error_message: response.data.error_message})
       if (this.state.error_message !== '') this.handleErrorModalShow()
       if (response.data.solved) this.handleSolvedModalShow()
@@ -103,7 +105,6 @@ class Game extends Component {
   )
 
   render() {
-    console.log(this.props.game);
     return (
       <Container className="gameComponent">
       <this.ErrorModal/>
@@ -115,7 +116,7 @@ class Game extends Component {
           <Console output={this.state.output} />
         </Col>
         <Col>
-          <Cards cookies={this.props.cookies} />
+          <Cards onCardSelect={this.setCurrentTask} cookies={this.props.cookies} />
         </Col>
       </Row>
       </Container>
