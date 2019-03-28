@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import { AuthUserContext, withAuthorization } from "../Session";
-import { Button, Form, Row, Col } from "react-bootstrap";
+import { Button, Form, Row, Col, Table } from "react-bootstrap";
 import Game from "../../objects/Game";
 import { withFirebase } from "../Firebase";
 import shortid from "shortid";
+import CreateTeams from "../CreateTeams";
 
 class CreateGame extends Component {
   constructor(props) {
@@ -107,6 +108,7 @@ class CreateGame extends Component {
             </Form.Control>
           </Col>
         </Row>
+        {this.state.classroomName !== "" && <CreateTeams />}
         <Row>
           <Col>
             <Button className="btn-orange" type="submit" block>

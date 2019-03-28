@@ -56,12 +56,12 @@ class TeacherHome extends Component {
           </Col>
           <Col>
             <Row className="rowAccount">
+              <CreateClassroom />
+            </Row>
+            <Row className="rowAccount">
               {Object.keys(this.state.classrooms).length > 0 && (
                 <CreateGame classrooms={this.state.classrooms} />
               )}
-            </Row>
-            <Row className="rowAccount">
-              <CreateClassroom />
             </Row>
           </Col>
         </Row>
