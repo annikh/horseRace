@@ -1,0 +1,36 @@
+.card {
+    width: 150px;
+    height: 150px;
+    font-size: 15px;
+    justify-content: center;
+    padding: 0px;
+    align-items: center;
+    color: black;
+  }
+  
+  .card:hover {
+    filter: brightness(75%);
+    cursor: pointer;
+    color: black;
+    border: none;
+  }
+  
+  .card:active {
+    filter: brightness(65%);
+    cursor: pointer;
+    color: black;
+    border: none;
+  }
+  
+  .openedCard {
+    width: 600px !important;
+    height: 600px !important;
+    color: black;
+    margin: auto;
+    background-color: #8ecaff;
+  }
+  
+  .openedCard:hover {
+    filter: brightness(100%);
+  }
+  
