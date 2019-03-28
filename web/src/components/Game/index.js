@@ -5,12 +5,16 @@ import {
   Container,
   Row,
   Col,
-  Modal,
-  Form
+  Modal
 } from "react-bootstrap";
 import Editor from "../Editor";
 import Cards from "../Cards";
+import Console from "../Console";
 import "./style.css";
+
+const ErrorModal = () => {
+
+}
 
 class Game extends Component {
   constructor(props) {
@@ -111,8 +115,8 @@ class Game extends Component {
       <Row>
         <Col style={{justifyContent: "left"}}>
           <Editor onRunCode={this.runCode}/>
-          <br/><br/>
-          <Form.Control as="textarea" readOnly style={{backgroundColor: '#262722', color: '#aaaaaa', height: "20vh", width: "80vh"}} value={"Output: " + this.state.output}/>
+          <br/>
+          <Console output={this.state.output} />
         </Col>
         <Col>
           <Cards cookies={this.props.cookies} />
