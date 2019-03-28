@@ -115,7 +115,7 @@ class Student extends Component {
         </Row>
       </Form>
     ) : (
-      <StudentGame cookies={cookies} game_pin={game_pin} />
+      <StudentGame cookies={cookies} />
     );
   }
 }

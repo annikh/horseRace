@@ -80,7 +80,7 @@ class TeacherGame extends Component {
                         <br />
                         <strong>Oppgaver:</strong>
                         <br />
-                        {scoreboard[player].tasks.length > 0 ? (
+                        {scoreboard[player].tasks ? (
                           this.taskList(player)
                         ) : (
                           <div>Fant ingen oppgaver..</div>
