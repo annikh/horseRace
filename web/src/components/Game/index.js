@@ -21,10 +21,10 @@ class Game extends Component {
 
     this.setCurrentTask = this.setCurrentTask.bind(this);
     this.runCode = this.runCode.bind(this);
-    this.handleErrorModalClose = this.handleErrorModalClose.bind(this);
-    this.handleErrorModalShow = this.handleErrorModalShow.bind(this);
-    this.handleSolvedModalClose = this.handleSolvedModalClose.bind(this);
-    this.handleSolvedModalShow = this.handleSolvedModalShow.bind(this);
+    this.closeErrorModal = this.closeErrorModal.bind(this);
+    this.showErrorModal = this.showErrorModal.bind(this);
+    this.closeSolvedModal = this.closeSolvedModal.bind(this);
+    this.showSolvedModal = this.showSolvedModal.bind(this);
 
     this.state = {
       currentTask: this.emptyTask,
@@ -48,8 +48,8 @@ class Game extends Component {
     .then( response => {
       console.log("response: ", response)
       this.setState({output: response.data.output, error_message: response.data.error_message})
-      if (this.state.error_message !== '') this.handleErrorModalShow()
-      if (this.state.currentTask !== this.emptyTask && response.data.solved) this.handleSolvedModalShow()
+      if (this.state.error_message !== '') this.showErrorModal()
+      if (this.state.currentTask !== this.emptyTask && response.data.solved) this.showSolvedModal()
     })
     .catch(function(error) {
       console.log(error);
@@ -62,24 +62,24 @@ class Game extends Component {
     //               disable oppgaven for spillet = bytt ut oppgaven med del av bilde
   }
 
-  handleErrorModalClose() {
+  closeErrorModal() {
       this.setState({showErrorModal: false})
   }
 
-  handleErrorModalShow() {
+  showErrorModal() {
       this.setState({showErrorModal: true, errorModalHeaderText: this.state.errorModalHeaders[Math.floor(Math.random()*this.state.errorModalHeaders.length)]})
   }
 
-  handleSolvedModalClose() {
+  closeSolvedModal() {
       this.setState({showSolvedModal: false})
   }
 
-  handleSolvedModalShow() {
+  showSolvedModal() {
       this.setState({showSolvedModal: true})
   }
 
   SolvedModal = () => (
-    <Modal show={this.state.showSolvedModal} onHide={this.handleSolvedModalClose}>
+    <Modal show={this.state.showSolvedModal} onHide={this.closeSolvedModal}>
       <Modal.Header closeButton>
         <Modal.Title>
             Bra jobbet!
@@ -92,7 +92,7 @@ class Game extends Component {
   )
 
   ErrorModal = () => (
-    <Modal show={this.state.showErrorModal} onHide={this.handleErrorModalClose}>
+    <Modal show={this.state.showErrorModal} onHide={this.closeErrorModal}>
       <Modal.Header closeButton>
         <Modal.Title>
             {this.state.errorModalHeaderText}
