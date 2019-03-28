@@ -9,10 +9,8 @@ import Student from "../../components/Student";
 import Teacher from "../../components/Teacher";
 import SignUpPage from "../../components/SignUp";
 import SignInPage from "../../components/SignIn";
-import StudentGame from "../../components/StudentGame";
 import PasswordForgetPage from "../../components/PasswordForget";
 import TestDatabase from "../../components/TestDatabase";
-import Game from "../../components/Game";
 
 class App extends Component {
   render() {
@@ -36,11 +34,6 @@ class App extends Component {
             exact
             path={"/test"}
             render={() => <TestDatabase cookies={this.props.cookies} />}
-          />
-          <Route
-            exact 
-            path={"/editor"}
-            render={() => <Game cookies={this.props.cookies} />}
           />
         </div>
       </BrowserRouter>

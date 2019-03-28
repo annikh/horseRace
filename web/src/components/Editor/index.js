@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import AceEditor from 'react-ace';
-import { Button, Modal, Form, Container } from 'react-bootstrap';
+import { Button, Modal, Form } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import axios from 'axios';
 
@@ -111,7 +111,7 @@ class Editor extends Component {
                     showLineNumbers: true,
                     tabSize: 2,
                     }}/>
-                <Button variant="success" onClick={this.runCode}><FontAwesomeIcon icon="play"/> Run</Button>
+                <Button variant="success" onClick={this.runCode} ><FontAwesomeIcon icon="play"/> Run</Button>
                 <this.ErrorModal/>
                 <this.SolvedModal/>
                 <br/><br/>
