@@ -32,15 +32,15 @@ class Cards extends Component {
 
   handleClose() {
     this.setState({ showCard: false, selectedCard: this.emptyCard });
-    this.props.onCardSelect(this.emptyCard);
+    this.props.onCardSelect({id: -1, body: this.emptyCard});
   }
 
-  handleCardClicked(card) {
+  handleCardClicked(key, card) {
     this.setState({
       selectedCard: card,
       showCard: true
     });
-    this.props.onCardSelect(card);
+    this.props.onCardSelect({id: key, body: card});
     //send kall for å sette oppgaven til disabled
   }
 
@@ -68,7 +68,7 @@ class Cards extends Component {
           style={{
             backgroundColor: this.setBackgroundColor(card.difficulty)
           }}
-          onClick={() => this.handleCardClicked(card)}
+          onClick={() => this.handleCardClicked(i, card)}
         >
           {card.title}
         </Button>

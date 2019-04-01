@@ -14,7 +14,7 @@ import "./style.css";
 
 class Game extends Component {
 
-  emptyTask = {difficulty: 0, test: "", text: "", title: "", error_hint: ""}
+  emptyTask = { id: -1, body: {difficulty: 0, test: "", text: "", title: "", error_hint: ""}}
 
   constructor(props) {
     super(props);
@@ -25,6 +25,9 @@ class Game extends Component {
     this.showErrorModal = this.showErrorModal.bind(this);
     this.closeSolvedModal = this.closeSolvedModal.bind(this);
     this.showSolvedModal = this.showSolvedModal.bind(this);
+    this.taskIsSolved = this.taskIsSolved.bind(this);
+    this.handleSolvedTask = this.handleSolvedTask.bind(this);
+    this.codeHasError = this.codeHasError.bind(this);
 
     this.state = {
       currentTask: this.emptyTask,
@@ -37,45 +40,56 @@ class Game extends Component {
     };
   }
 
-  setCurrentTask(card) {
-    this.setState({currentTask: card})
+  setCurrentTask(task) {
+    this.setState({currentTask: task})
   }
 
   runCode(submittedCode) {
     console.log("code: ", this.state.aceEditorValue);
     // axios.get('http://python-eval-server.appspot.com/run', { params: { code: this.state.aceEditorValue } })
-    axios.get('http://127.0.0.1:5000/run', { params: { code: submittedCode, task: this.state.currentTask } })
+    axios.get('http://127.0.0.1:5000/run', { params: { code: submittedCode, task: this.state.currentTask.body } })
     .then( response => {
       console.log("response: ", response)
       this.setState({output: response.data.output, error_message: response.data.error_message})
-      if (this.state.error_message !== '') this.showErrorModal()
-      if (this.state.currentTask !== this.emptyTask && response.data.solved) this.showSolvedModal()
+      if (this.codeHasError()) this.showErrorModal()
+      if (this.taskIsSolved(response)) this.handleSolvedTask()
     })
     .catch(function(error) {
       console.log(error);
     });
-  } 
-
-  solveTask(solutionCode) {
-    //Sjekk mot redux store currentGame -> Tasks -> lik ID -> solutionCode
-    //hvis lik =>    legg til oppgave til bruker
-    //               disable oppgaven for spillet = bytt ut oppgaven med del av bilde
+  }
+  
+  codeHasError() {
+    return this.state.error_message !== '';
   }
 
-  closeErrorModal() {
-      this.setState({showErrorModal: false})
+  taskIsSolved(response) {
+    return this.state.currentTask.id !== this.emptyTask.id && response.data.solved;
+  }
+
+  handleSolvedTask() {
+    this.props.firebase.gameTask(this.props.game_pin, this.state.currentTask.id).child('active').set(
+      false
+    );
+    //hvis solved =>    legg til oppgave til bruker
+    //               disable oppgaven for spillet = bytt ut oppgaven med del av bilde
+    this.showSolvedModal()
   }
 
   showErrorModal() {
       this.setState({showErrorModal: true, errorModalHeaderText: this.state.errorModalHeaders[Math.floor(Math.random()*this.state.errorModalHeaders.length)]})
   }
 
-  closeSolvedModal() {
-      this.setState({showSolvedModal: false})
+  closeErrorModal() {
+      this.setState({showErrorModal: false})
   }
 
   showSolvedModal() {
-      this.setState({showSolvedModal: true})
+    this.setState({showSolvedModal: true})
+  }
+  
+  closeSolvedModal() {
+      this.setState({showSolvedModal: false})
   }
 
   SolvedModal = () => (
@@ -105,6 +119,8 @@ class Game extends Component {
   )
 
   render() {
+    console.log("Game:", this.props.game_pin);
+    console.log(this.state.currentTask);
     return (
       <Container className="gameComponent">
       <this.ErrorModal/>
