@@ -36,6 +36,16 @@ class Firebase {
   game = pin => {
     return this.db.ref("games").child(pin);
   };
+  gameState = pin => {
+    return this.db.ref("games")
+    .child(pin)
+    .child("isActive");
+  }
+  gameScoreboard = pin => {
+    return this.db.ref("games")
+    .child(pin)
+    .child("scoreboard");
+  }
   games = () => {
     return this.db.ref("games/");
   };
@@ -48,6 +58,13 @@ class Firebase {
       .child(pin)
       .child("scoreboard")
       .child(name);
+  };
+  gameTask = (pin, taskId) => {
+    return this.db
+      .ref("games/")
+      .child(pin)
+      .child("tasks")
+      .child(taskId);
   };
 
   // *** Classroom API ***

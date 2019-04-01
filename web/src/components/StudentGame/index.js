@@ -6,12 +6,13 @@ import { Redirect } from "react-router-dom";
 import Game from "../Game";
 
 class StudentGame extends Component {
+
   constructor(props) {
     super(props);
     this.state = {
       exitGame: false,
-      gameStarted: true,
-      game: null,
+      gameIsActive: false, 
+      gamePin: null,
       player: {
         tasks: [],
         points: 0
@@ -21,8 +22,9 @@ class StudentGame extends Component {
 
   componentDidMount() {
     const game_pin = this.props.cookies.get("game_pin");
-    this.props.firebase.game(game_pin).on("value", snapshot => {
-      this.setState({ game: snapshot.val() });
+    this.setState({ gamePin: game_pin })
+    this.props.firebase.gameState(game_pin).on("value", snapshot => {
+      this.setState({ gameIsActive: snapshot.val() });
     });
   }
 
@@ -32,11 +34,12 @@ class StudentGame extends Component {
     this.props.cookies.remove("game_name");
     this.props.cookies.remove("game_pin");
 
-    this.props.firebase.gamePlayer(this.props.game_pin, name).child('isActive').set(
+    this.props.firebase.gamePlayer(game_pin, name).child('isActive').set(
       false
     );
     this.setState({
-      exitGame: true
+      exitGame: true,
+      gamePin: null
     });
   };
 
@@ -59,12 +62,12 @@ class StudentGame extends Component {
             <h3>Hei, {this.props.cookies.get("game_name")} </h3>
           </Nav.Item>
         </Nav>
-        {this.state.game && this.state.game.isActive === false ? (
+        {this.state.gamePin && !this.state.gameIsActive ? (
           <Row style={{ justifyContent: "center" }}>
             Venter på at spillet skal starte..
           </Row>
         ) : (
-          <Game cookies={this.props.cookies} />
+          <Game game_pin={this.state.gamePin} cookies={this.props.cookies} />
         )}
       </Container>
     );

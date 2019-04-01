@@ -16,21 +16,19 @@ class Student extends Component {
 
     this.state = {
       value: "",
-      loading: false,
-      game: null,
-      game_pin: "",
+      scoreboard: null,
+      game_pin: null,
       buttonValue: "Enter"
     };
   }
 
   handleEnterClassroomPin() {
     const game_pin = this.state.value;
-    this.setState({ loading: true, game_pin: game_pin });
+    this.setState({ game_pin: game_pin });
     const { cookies } = this.props;
     cookies.set("game_pin", game_pin);
-    this.props.firebase.game(game_pin).on("value", snapshot => {
-      console.log("snap:", snapshot.val());
-      this.setState({ loading: false, game: snapshot.val() });
+    this.props.firebase.gameScoreboard(game_pin).on("value", snapshot => {
+      this.setState({ scoreboard: snapshot.val() });
     });
   }
 
@@ -39,8 +37,7 @@ class Student extends Component {
     const { cookies } = this.props;
     cookies.set("game_name", name);
     this.props.firebase
-      .game(this.state.game_pin)
-      .child("scoreboard")
+      .gameScoreboard(this.state.game_pin)
       .child(name)
       .child("isActive")
       .set(true);
@@ -51,7 +48,7 @@ class Student extends Component {
   }
 
   handleSubmit(event) {
-    this.state.game === null
+    this.state.game_pin === null
       ? this.handleEnterClassroomPin()
       : this.handleEnterStudentName();
     event.preventDefault();
@@ -69,14 +66,15 @@ class Student extends Component {
   };
 
   namesDropDown = () => {
-    const scoreboard = this.state.game.scoreboard;
+    const scoreboard = this.state.scoreboard;
+    console.log("scoreboard: ", scoreboard)
     return (
       <Col md="auto">
         <Form.Control as="select" onChange={this.handleChange}>
           <option>Hva heter du?</option>
           {Object.keys(scoreboard).map(
             (player, i) =>
-              scoreboard[player]["isActive"] !== true && (
+              !scoreboard[player]["isActive"] && (
                 <option key={i} value={player}>
                   {player}
                 </option>
@@ -88,7 +86,6 @@ class Student extends Component {
   };
 
   render() {
-    const { game, game_pin } = this.state;
     const { cookies } = this.props;
     const nameCookie = cookies.get("game_name");
     const gamePinCookie = cookies.get("game_pin");
@@ -102,7 +99,7 @@ class Student extends Component {
           </Col>
         </Row>
         <Row>
-          {game ? this.namesDropDown() : this.pinInput()}
+          {this.state.scoreboard ? this.namesDropDown() : this.pinInput()}
           <Col>
             <Button
               className="btn-classPin"
@@ -115,7 +112,7 @@ class Student extends Component {
         </Row>
       </Form>
     ) : (
-      <StudentGame cookies={cookies} game_pin={game_pin} />
+      <StudentGame cookies={cookies} />
     );
   }
 }
