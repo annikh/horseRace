@@ -27,6 +27,7 @@ class Game extends Component {
     this.showSolvedModal = this.showSolvedModal.bind(this);
     this.taskIsSolved = this.taskIsSolved.bind(this);
     this.handleSolvedTask = this.handleSolvedTask.bind(this);
+    this.deactivateTask = this.deactivateTask.bind(this);
     this.codeHasError = this.codeHasError.bind(this);
 
     this.state = {
@@ -45,14 +46,13 @@ class Game extends Component {
   }
 
   runCode(submittedCode) {
-    console.log("code: ", this.state.aceEditorValue);
     // axios.get('http://python-eval-server.appspot.com/run', { params: { code: this.state.aceEditorValue } })
     axios.get('http://127.0.0.1:5000/run', { params: { code: submittedCode, task: this.state.currentTask.body } })
     .then( response => {
       console.log("response: ", response)
       this.setState({output: response.data.output, error_message: response.data.error_message})
       if (this.codeHasError()) this.showErrorModal()
-      if (this.taskIsSolved(response)) this.handleSolvedTask()
+      if (this.taskIsSolved(response)) this.handleSolvedTask(submittedCode)
     })
     .catch(function(error) {
       console.log(error);
@@ -67,11 +67,17 @@ class Game extends Component {
     return this.state.currentTask.id !== this.emptyTask.id && response.data.solved;
   }
 
-  handleSolvedTask() {
+  deactivateTask() {
     this.props.firebase.gameTask(this.props.game_pin, this.state.currentTask.id).child('active').set(
       false
     );
-    //hvis solved =>    legg til oppgave til bruker
+  }
+
+  handleSolvedTask(solution) {
+    this.deactivateTask()
+    this.props.firebase.gamePlayer(this.props.game_pin, this.props.cookies.get("game_name")).child("solvedTasks").set(
+      {task: this.state.currentTask.id, solution: solution}
+    )
     //               disable oppgaven for spillet = bytt ut oppgaven med del av bilde
     this.showSolvedModal()
   }
@@ -119,8 +125,6 @@ class Game extends Component {
   )
 
   render() {
-    console.log("Game:", this.props.game_pin);
-    console.log(this.state.currentTask);
     return (
       <Container className="gameComponent">
       <this.ErrorModal/>
