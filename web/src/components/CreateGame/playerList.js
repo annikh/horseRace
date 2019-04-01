@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { ListGroup, Row } from "react-bootstrap";
+import "../Account/style.css";
 
 class PlayerList extends Component {
   constructor(props) {
@@ -37,7 +38,7 @@ class PlayerList extends Component {
           Del inn i lag ved å trykke på en deltaker, slik at fargen på boksen
           endrer seg.
         </h5>
-        <ListGroup variant="flush">
+        <ListGroup>
           {names.map((name, i) => (
             <ListGroup.Item
               key={i}
@@ -45,7 +46,6 @@ class PlayerList extends Component {
                 backgroundColor: this.setBackgroundColor(scoreboard[name].team)
               }}
               action
-              variant="warning"
               onClick={event => this.props.handleNewTeam(event, name)}
             >
               {name}

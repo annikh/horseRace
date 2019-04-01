@@ -14,3 +14,11 @@
   padding: 10px;
   border: 1px solid #dfa841;
 }
+
+.player {
+  color: white;
+}
+
+.player:hover {
+  background-color: darken(inherit, 20%);
+}
