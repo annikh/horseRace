@@ -32,22 +32,27 @@ class PlayerList extends Component {
     const { scoreboard } = this.props;
     const names = Object.keys(scoreboard);
     return (
-      <ListGroup variant="flush" style={{ width: "80%", color: "white" }}>
-        {names.map((name, i) => (
-          <ListGroup.Item
-            key={i}
-            style={{
-              textAlign: "left",
-              backgroundColor: this.setBackgroundColor(scoreboard[name].team)
-            }}
-            action
-            variant="warning"
-            onClick={event => this.props.handleNewTeam(event, name)}
-          >
-            <Row>{name}</Row>
-          </ListGroup.Item>
-        ))}
-      </ListGroup>
+      <Row className="rowAccount">
+        <h5>
+          Del inn i lag ved å trykke på en deltaker, slik at fargen på boksen
+          endrer seg.
+        </h5>
+        <ListGroup variant="flush">
+          {names.map((name, i) => (
+            <ListGroup.Item
+              key={i}
+              style={{
+                backgroundColor: this.setBackgroundColor(scoreboard[name].team)
+              }}
+              action
+              variant="warning"
+              onClick={event => this.props.handleNewTeam(event, name)}
+            >
+              {name}
+            </ListGroup.Item>
+          ))}
+        </ListGroup>
+      </Row>
     );
   }
 }

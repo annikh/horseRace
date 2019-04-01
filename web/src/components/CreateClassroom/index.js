@@ -46,7 +46,7 @@ class CreateClassroom extends Component {
     const isInvalid = this.state.classname === "" || this.state.names === "";
 
     return (
-      <Form onSubmit={this.handleSubmit(uid)}>
+      <Form className="insideBox" onSubmit={this.handleSubmit(uid)}>
         <Row>
           <Col>
             <Form.Label>

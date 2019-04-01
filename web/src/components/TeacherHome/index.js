@@ -42,9 +42,9 @@ class TeacherHome extends Component {
     return (
       <Container className="accountBody">
         <Row className="rowAccount">
-          <Col>
+          <Col className="insideBox">
             <Row className="rowAccount">
-              <h2 style={{ textAlign: "left" }}>Dine spill:</h2>{" "}
+              <h2 style={{ textAlign: "left" }}>Dine spill:</h2>
             </Row>
             <Row className="rowAccount">
               {Object.keys(games).length > 0 ? (

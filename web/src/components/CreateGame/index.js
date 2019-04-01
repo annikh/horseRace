@@ -21,7 +21,8 @@ class CreateGame extends Component {
       classroomName: "",
       tasks: null,
       teamNum: 2,
-      scoreboard: {}
+      scoreboard: {},
+      chosenClass: false
     };
   }
 
@@ -41,11 +42,15 @@ class CreateGame extends Component {
       false,
       authUser.uid,
       this.state.classroomName,
-      null,
+      new Date(),
       this.state.scoreboard,
       this.state.tasks
     );
     this.props.firebase.addGame(newGamePin).set(game);
+    this.setState({
+      classroomName: "",
+      chosenClass: false
+    });
   }
 
   fillScoreboard(names) {
@@ -80,7 +85,11 @@ class CreateGame extends Component {
     const classroomName = event.target.value;
     const names = this.props.classrooms[classroomName]["names"];
     const scoreboard = this.fillScoreboard(names);
-    this.setState({ classroomName: classroomName, scoreboard: scoreboard });
+    this.setState({
+      classroomName: classroomName,
+      scoreboard: scoreboard,
+      chosenClass: true
+    });
   }
 
   handleNewTeam(event, name) {
@@ -107,15 +116,15 @@ class CreateGame extends Component {
   render() {
     const classroomNames = Object.keys(this.props.classrooms);
     return (
-      <Form>
-        <Row>
+      <Form className="insideBox">
+        <Row className="rowAccount">
           <Col>
             <Form.Label>
               <h2>Opprett et spill</h2>
             </Form.Label>
           </Col>
         </Row>
-        <Row>
+        <Row className="rowAccount">
           <Col>
             <Form.Label>
               Velg hvilket klasserom som skal delta i spillet:
@@ -123,7 +132,7 @@ class CreateGame extends Component {
           </Col>
           <Col>
             <Form.Control as="select" onChange={this.handleChange}>
-              <option>Velg...</option>
+              <option disabled={this.state.chosenClass}>Velg...</option>
               {classroomNames.length > 0 &&
                 classroomNames.map((name, i) => (
                   <option key={i} value={name}>
@@ -133,13 +142,15 @@ class CreateGame extends Component {
             </Form.Control>
           </Col>
         </Row>
+
         {this.state.classroomName !== "" && this.state.scoreboard !== {} && (
           <PlayerList
             scoreboard={this.state.scoreboard}
             handleNewTeam={this.handleNewTeam}
           />
         )}
-        <Row>
+
+        <Row className="rowAccount">
           <Col>
             <Button className="btn-orange" onClick={this.handleSubmit} block>
               Opprett spill
