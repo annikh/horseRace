@@ -27,29 +27,28 @@ class Game extends Component {
     this.showSolvedModal = this.showSolvedModal.bind(this);
     this.taskIsSolved = this.taskIsSolved.bind(this);
     this.handleSolvedTask = this.handleSolvedTask.bind(this);
-    this.deactivateTask = this.deactivateTask.bind(this);
     this.codeHasError = this.codeHasError.bind(this);
 
     this.state = {
       currentTask: this.emptyTask,
+      lastSolvedTaskId: this.emptyTask.id,
       output: '',
       error_message: '',
       showErrorModal: false,
       showSolvedModal: false,
       errorModalHeaders: ['Prøv igjen!', 'Bedre lykke neste gang!', 'Dette gikk visst ikke helt etter planen.', 'Oops..', 'Ikke helt der ennå..'],
-      errorModalHeaderText: ''
+      errorModalHeaderText: '',
     };
   }
 
   setCurrentTask(task) {
-    this.setState({currentTask: task})
+    this.setState({currentTask: task })
   }
 
   runCode(submittedCode) {
-    // axios.get('http://python-eval-server.appspot.com/run', { params: { code: this.state.aceEditorValue } })
+    // axios.get('http://python-eval-server.appspot.com/run', { params: { code: submittedCode, task: this.state.currentTask.body } })
     axios.get('http://127.0.0.1:5000/run', { params: { code: submittedCode, task: this.state.currentTask.body } })
     .then( response => {
-      console.log("response: ", response)
       this.setState({output: response.data.output, error_message: response.data.error_message})
       if (this.codeHasError()) this.showErrorModal()
       if (this.taskIsSolved(response)) this.handleSolvedTask(submittedCode)
@@ -67,18 +66,16 @@ class Game extends Component {
     return this.state.currentTask.id !== this.emptyTask.id && response.data.solved;
   }
 
-  deactivateTask() {
-    this.props.firebase.gameTask(this.props.game_pin, this.state.currentTask.id).child('active').set(
-      false
-    );
-  }
-
   handleSolvedTask(solution) {
-    this.deactivateTask()
-    this.props.firebase.gamePlayer(this.props.game_pin, this.props.cookies.get("game_name")).child("solvedTasks").set(
-      {task: this.state.currentTask.id, solution: solution}
+    const solvedTaskId = this.state.currentTask.id;
+    const game_pin = this.props.cookies.get("game_pin")
+    const game_name = this.props.cookies.get("game_name")
+
+    this.setState({lastSolvedTaskId: solvedTaskId})
+
+    this.props.firebase.gamePlayer(game_pin, game_name).child("solvedTasks").set(
+      {task: solvedTaskId, solution: solution}
     )
-    //               disable oppgaven for spillet = bytt ut oppgaven med del av bilde
     this.showSolvedModal()
   }
 
@@ -131,12 +128,12 @@ class Game extends Component {
       <this.SolvedModal/>
       <Row>
         <Col>
-          <Editor onRunCode={this.runCode}/>
+          <Editor onRunCode={this.runCode} />
           <br/>
           <Console output={this.state.output} />
         </Col>
         <Col>
-          <Cards onCardSelect={this.setCurrentTask} cookies={this.props.cookies} />
+          <Cards lastSolvedTaskId={this.state.lastSolvedTaskId} onCardSelect={this.setCurrentTask} cookies={this.props.cookies} />
         </Col>
       </Row>
       </Container>

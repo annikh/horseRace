@@ -1,6 +1,7 @@
 import app from "firebase/app";
 import "firebase/auth";
 import "firebase/database";
+import "firebase/storage";
 
 const config = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -17,6 +18,7 @@ class Firebase {
 
     this.auth = app.auth();
     this.db = app.database();
+    this.image_storage = app.storage();
   }
 
   // *** Auth API ***
@@ -66,6 +68,12 @@ class Firebase {
       .child("tasks")
       .child(taskId);
   };
+  gameTasks = pin => {
+    return this.db
+      .ref("games/")
+      .child(pin)
+      .child("tasks");
+  }
 
   // *** Classroom API ***
   addClassroom = (user_id, className) => {
@@ -82,6 +90,15 @@ class Firebase {
   tasks = type => {
     return this.db.ref("tasks").child(type);
   };
+
+  // *** Image API ***
+  getImagePart = (folder, part) => {
+    const string_part = '/image_part_0' + part + '.jpg'
+    return this.image_storage
+      .ref()
+      .child(folder)
+      .child(string_part)
+  }
 }
 
 export default Firebase;

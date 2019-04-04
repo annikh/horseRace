@@ -67,7 +67,7 @@ class StudentGame extends Component {
             Venter på at spillet skal starte..
           </Row>
         ) : (
-          <Game game_pin={this.state.gamePin} cookies={this.props.cookies} />
+          <Game cookies={this.props.cookies} />
         )}
       </Container>
     );
