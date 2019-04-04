@@ -48,6 +48,10 @@ class Cards extends Component {
     return board;
   }
 
+  emptyGameBoard() {
+    return Object.keys(this.state.gameBoard).length === 0;
+  }
+
   componentDidMount() {
     const game_pin = this.props.cookies.get("game_pin");
     this.setState({ gamePin: game_pin });
@@ -55,7 +59,7 @@ class Cards extends Component {
     this.props.firebase.gameTasks(game_pin).on("value", snapshot => {
       const cards = snapshot.val()
       this.setState({cards: cards});
-      if (Object.keys(this.state.gameBoard).length === 0) this.setState({gameBoard: this.generateInitialBoardState(cards)})
+      if (this.emptyGameBoard()) this.setState({gameBoard: this.generateInitialBoardState(cards)})
     })
   }
 
@@ -73,7 +77,7 @@ class Cards extends Component {
 
   updateBoardState(taskId, imgUrl) {
     let newGameBoardState = this.state.gameBoard;
-    newGameBoardState[taskId] = <img src={imgUrl} className="card" key={taskId}/>;
+    newGameBoardState[taskId] = <img src={imgUrl} className="img" key={taskId}/>;
     console.log(newGameBoardState)
     this.setState({gameBoard: newGameBoardState})
   }

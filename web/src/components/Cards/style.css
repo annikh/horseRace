@@ -1,3 +1,9 @@
+.img {
+  width: 150px;
+  height: 150px;
+  padding: 0px;
+}
+
 .card {
     width: 150px;
     height: 150px;
