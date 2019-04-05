@@ -63,30 +63,66 @@ class TeacherGame extends Component {
     this.setState({ task: task, show_task: true });
   }
 
+  setBackgroundColor = team => {
+    switch (team) {
+      case 0:
+        return "#8DDA77";
+      case 1:
+        return "#F0EE8D";
+      case 2:
+        return "#E37171";
+      case 3:
+        return "#77ABDA";
+      case 4:
+        return "#8D6A9F";
+      default:
+        return "#DB7F67";
+    }
+  };
+
   playerList() {
     const { scoreboard } = this.state.game;
-    return (
-      <Container>
-        <Row>
-          {Object.keys(scoreboard).map(
-            (player, i) =>
-              scoreboard[player].isActive === true && (
-                <Col key={i}>
-                  <Card className="player">
-                    <Card.Body>
-                      <Card.Title>{player}</Card.Title>
-                      <Card.Text>
-                        <strong>Oppgaver:</strong>
-                        {this.taskList(player)}
-                      </Card.Text>
-                    </Card.Body>
-                  </Card>
-                </Col>
-              )
-          )}
-        </Row>
-      </Container>
-    );
+    let assignedPlayers = 0;
+    let team = 1;
+    let teamList = [];
+    let fullList = [];
+    while (assignedPlayers < Object.keys(scoreboard).length) {
+      Object.keys(scoreboard).map((player, i) => {
+        if (
+          scoreboard[player].isActive === true &&
+          scoreboard[player].team === team
+        ) {
+          console.log(scoreboard[player].team);
+          teamList.push(
+            <Col key={i}>
+              <Card
+                className="player"
+                style={{
+                  backgroundColor: this.setBackgroundColor(
+                    scoreboard[player].team
+                  )
+                }}
+              >
+                <Card.Body>
+                  <Card.Title>{player}</Card.Title>
+                  {this.state.isStarted ? (
+                    <Card.Text>
+                      <strong>Oppgaver:</strong>
+                      {this.taskList(player)}
+                    </Card.Text>
+                  ) : null}
+                </Card.Body>
+              </Card>
+            </Col>
+          );
+          assignedPlayers += 1;
+        }
+      });
+      team++;
+      fullList.push(<Row className="rowAccount">{teamList}</Row>);
+      teamList = [];
+    }
+    return <Container>{fullList}</Container>;
   }
 
   taskList(player) {
@@ -94,7 +130,7 @@ class TeacherGame extends Component {
     return (
       <div>
         {playerTasks ? (
-          <ListGroup variant="flush" style={{ width: "100%" }}>
+          <ListGroup variant="dark" style={{ width: "100%" }}>
             {playerTasks.length > 0 &&
               playerTasks.map((task, i) => (
                 <ListGroup.Item
@@ -126,7 +162,9 @@ class TeacherGame extends Component {
               <strong>Spill-PIN: </strong> {game_pin}
             </h5>
           </Row>
+
           {this.playerList()}
+
           <Row className="rowAccount">
             <Button className="btn-orange" onClick={this.startStopGame}>
               {button_value}

@@ -15,14 +15,15 @@ class CreateGame extends Component {
     this.isValidPin = this.isValidPin.bind(this);
     this.fillScoreboard = this.fillScoreboard.bind(this);
     this.handleNewTeam = this.handleNewTeam.bind(this);
+    this.handleNumberOfTeams = this.handleNumberOfTeams.bind(this);
 
     this.state = {
       loading: false,
       classroomName: "",
       tasks: null,
-      teamNum: 2,
       scoreboard: {},
-      chosenClass: false
+      chosenClass: false,
+      numberOfTeams: 1
     };
   }
 
@@ -53,21 +54,6 @@ class CreateGame extends Component {
     });
   }
 
-  fillScoreboard(names) {
-    let scoreboard = {};
-    names.forEach(name => {
-      scoreboard[name] = {
-        isActive: false,
-        points: 0,
-        tasks: null,
-        team: 0,
-        startTime: null,
-        endTime: null
-      };
-    });
-    return scoreboard;
-  }
-
   isValidPin(pin) {
     for (var key in this.state.games) {
       if (this.state.games[key].pin === pin) {
@@ -83,6 +69,12 @@ class CreateGame extends Component {
     alert("Spill opprettet");
   }
 
+  handleNumberOfTeams(event) {
+    this.setState({
+      numberOfTeams: event.target.value
+    });
+  }
+
   handleChange(event) {
     const classroomName = event.target.value;
     const names = this.props.classrooms[classroomName]["names"];
@@ -94,14 +86,28 @@ class CreateGame extends Component {
     });
   }
 
+  fillScoreboard(names) {
+    let scoreboard = {};
+    names.forEach(name => {
+      scoreboard[name] = {
+        isActive: false,
+        points: 0,
+        tasks: null,
+        team: 0,
+        startTime: null,
+        endTime: null
+      };
+    });
+    return scoreboard;
+  }
+
   handleNewTeam(event, name) {
     event.preventDefault();
-    const currentTeam = this.state.scoreboard[name].team;
-    let team = currentTeam;
-    if (currentTeam + 1 === this.state.teamNum) {
-      team = 0;
+    let currentTeam = this.state.scoreboard[name].team;
+    if (currentTeam === this.state.numberOfTeams - 1) {
+      currentTeam = 0;
     } else {
-      team++;
+      currentTeam++;
     }
     this.setState(prevState => ({
       ...prevState,
@@ -109,7 +115,7 @@ class CreateGame extends Component {
         ...prevState.scoreboard,
         [name]: {
           ...prevState.scoreboard[name],
-          team: team
+          team: currentTeam
         }
       }
     }));
@@ -144,13 +150,41 @@ class CreateGame extends Component {
             </Form.Control>
           </Col>
         </Row>
-
-        {this.state.classroomName !== "" && this.state.scoreboard !== {} && (
-          <PlayerList
-            scoreboard={this.state.scoreboard}
-            handleNewTeam={this.handleNewTeam}
-          />
-        )}
+        <Row>
+          <Col>
+            <Form.Label>Velg antall lag:</Form.Label>
+          </Col>
+          <Col>
+            <Form.Control as="select" onChange={this.handleNumberOfTeams}>
+              <option key={1} value={1}>
+                1
+              </option>
+              <option key={2} value={2}>
+                2
+              </option>
+              <option key={3} value={3}>
+                3
+              </option>
+              <option key={4} value={4}>
+                4
+              </option>
+              <option key={5} value={5}>
+                5
+              </option>
+              <option key={6} value={6}>
+                6
+              </option>
+            </Form.Control>
+          </Col>
+        </Row>
+        {this.state.classroomName !== "" &&
+          this.state.scoreboard !== {} &&
+          this.state.numberOfTeams > 1 && (
+            <PlayerList
+              scoreboard={this.state.scoreboard}
+              handleNewTeam={this.handleNewTeam}
+            />
+          )}
 
         <Row>
           <Col>
