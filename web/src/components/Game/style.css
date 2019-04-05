@@ -1,0 +1,9 @@
+.gameComponent {
+  background-color: #4cc078;
+  min-width: 100%;
+  min-height: 100vh;
+}
+
+.navbar-game {
+  background-color: #399b5e !important;
+}

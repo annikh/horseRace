@@ -1,16 +1,18 @@
 import React, { Component } from "react";
-import { Row, Nav, Button } from "react-bootstrap";
+import { Row, Nav, Button, Container } from "react-bootstrap";
 import { withFirebase } from "../Firebase";
 import * as ROUTES from "../../constants/routes";
 import { Redirect } from "react-router-dom";
+import Game from "../Game";
 
 class StudentGame extends Component {
+
   constructor(props) {
     super(props);
     this.state = {
       exitGame: false,
-      gameStarted: false,
-      game: null,
+      gameIsActive: false, 
+      gamePin: null,
       player: {
         tasks: [],
         points: 0
@@ -20,8 +22,9 @@ class StudentGame extends Component {
 
   componentDidMount() {
     const game_pin = this.props.cookies.get("game_pin");
-    this.props.firebase.game(game_pin).on("value", snapshot => {
-      this.setState({ game: snapshot.val() });
+    this.setState({ gamePin: game_pin })
+    this.props.firebase.gameState(game_pin).on("value", snapshot => {
+      this.setState({ gameIsActive: snapshot.val() });
     });
   }
 
@@ -31,17 +34,18 @@ class StudentGame extends Component {
     this.props.cookies.remove("game_name");
     this.props.cookies.remove("game_pin");
 
-    this.props.firebase.gamePlayer(game_pin, name).set({
-      isActive: false
-    });
+    this.props.firebase.gamePlayer(game_pin, name).child('isActive').set(
+      false
+    );
     this.setState({
-      exitGame: true
+      exitGame: true,
+      gamePin: null
     });
   };
 
   render() {
     return (
-      <div className="studentGame">
+      <Container className="studentGame">
         <Nav className="justify-content-center">
           <Nav.Item>
             {this.state.exitGame ? (
@@ -58,14 +62,14 @@ class StudentGame extends Component {
             <h3>Hei, {this.props.cookies.get("game_name")} </h3>
           </Nav.Item>
         </Nav>
-        {this.state.gameStarted === false ? (
+        {this.state.gamePin && !this.state.gameIsActive ? (
           <Row style={{ justifyContent: "center" }}>
             Venter på at spillet skal starte..
           </Row>
         ) : (
-          <div> Her skal spilrlet komme</div>
+          <Game cookies={this.props.cookies} />
         )}
-      </div>
+      </Container>
     );
   }
 }
