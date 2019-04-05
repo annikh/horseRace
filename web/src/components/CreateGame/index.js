@@ -60,7 +60,9 @@ class CreateGame extends Component {
         isActive: false,
         points: 0,
         tasks: null,
-        team: 0
+        team: 0,
+        startTime: null,
+        endTime: null
       };
     });
     return scoreboard;

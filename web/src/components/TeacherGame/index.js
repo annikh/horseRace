@@ -43,12 +43,12 @@ class TeacherGame extends Component {
 
   startStopGame() {
     this.state.isStarted
-      ? this.setState({ button_value: "Start Spill" }) &&
+      ? this.setState({ isStarted: false, button_value: "Start Spill" }) &&
         this.props.firebase
           .game(this.state.game_pin)
           .child("isActive")
           .set(false)
-      : this.setState({ button_value: "Avslutt Spill" }) &&
+      : this.setState({ isStarted: true, button_value: "Avslutt Spill" }) &&
         this.props.firebase
           .game(this.state.game_pin)
           .child("isActive")
