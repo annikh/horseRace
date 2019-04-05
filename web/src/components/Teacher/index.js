@@ -18,7 +18,11 @@ const Teacher = () => (
       path={ROUTES.TEACHER_CLASSROOMS}
       component={TeacherClassrooms}
     />
-    <Route exact path={ROUTES.TEACHER + "/:game_pin"} component={TeacherGame} />
+    <Route
+      exact
+      path={ROUTES.TEACHER_GAMES + "/:game_pin"}
+      component={TeacherGame}
+    />
   </div>
 );
 

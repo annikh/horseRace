@@ -76,15 +76,8 @@ class TeacherGame extends Component {
                     <Card.Body>
                       <Card.Title>{player}</Card.Title>
                       <Card.Text>
-                        <strong>Poeng:</strong> {scoreboard[player].points}
-                        <br />
                         <strong>Oppgaver:</strong>
-                        <br />
-                        {scoreboard[player].tasks ? (
-                          this.taskList(player)
-                        ) : (
-                          <div>Fant ingen oppgaver..</div>
-                        )}
+                        {this.taskList(player)}
                       </Card.Text>
                     </Card.Body>
                   </Card>
@@ -99,20 +92,26 @@ class TeacherGame extends Component {
   taskList(player) {
     const playerTasks = this.state.game.scoreboard[player].tasks;
     return (
-      <ListGroup variant="flush" style={{ width: "100%" }}>
-        {playerTasks.length > 0 &&
-          playerTasks.map((task, i) => (
-            <ListGroup.Item
-              key={i}
-              style={{ textAlign: "left" }}
-              action
-              variant="warning"
-              onClick={() => this.handleShow(task)}
-            >
-              {task.title}
-            </ListGroup.Item>
-          ))}
-      </ListGroup>
+      <div>
+        {playerTasks ? (
+          <ListGroup variant="flush" style={{ width: "100%" }}>
+            {playerTasks.length > 0 &&
+              playerTasks.map((task, i) => (
+                <ListGroup.Item
+                  key={i}
+                  style={{ textAlign: "left" }}
+                  action
+                  variant="warning"
+                  onClick={() => this.handleShow(task)}
+                >
+                  {task.title}
+                </ListGroup.Item>
+              ))}
+          </ListGroup>
+        ) : (
+          <div>Fant ingen oppgaver..</div>
+        )}
+      </div>
     );
   }
 
@@ -122,11 +121,13 @@ class TeacherGame extends Component {
     return (
       this.state.game && (
         <Container className="accountBody">
-          <Row>
-            <strong>Spill-PIN: </strong> {game_pin}
+          <Row className="rowAccount">
+            <h5>
+              <strong>Spill-PIN: </strong> {game_pin}
+            </h5>
           </Row>
           {this.playerList()}
-          <Row>
+          <Row className="rowAccount">
             <Button className="btn-orange" onClick={this.startStopGame}>
               {button_value}
             </Button>
@@ -137,7 +138,7 @@ class TeacherGame extends Component {
                 <Modal.Title>{task.title}</Modal.Title>
               </Modal.Header>
               <Modal.Body>
-                <strong>Difficulty:</strong>
+                <strong>Vanskelighetsgrad:</strong>
                 {task.difficulty} <br />
                 {ReactHtmlParser(task.text)}
               </Modal.Body>

@@ -79,7 +79,7 @@ const GameList = ({ games }) => (
     {Object.keys(games).map((pin, i) => (
       <Link
         key={i}
-        to={ROUTES.TEACHER + "/" + pin}
+        to={ROUTES.TEACHER_GAMES + "/" + pin}
         style={{ textDecoration: "none" }}
       >
         <ListGroup.Item style={{ textAlign: "left" }} action variant="warning">
