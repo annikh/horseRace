@@ -9,7 +9,6 @@ import Student from "../../components/Student";
 import Teacher from "../../components/Teacher";
 import SignUpPage from "../../components/SignUp";
 import SignInPage from "../../components/SignIn";
-import StudentGame from "../../components/StudentGame";
 import PasswordForgetPage from "../../components/PasswordForget";
 import TestDatabase from "../../components/TestDatabase";
 

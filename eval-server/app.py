@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, json
 from flask_cors import CORS
 import sys
 from io import StringIO
@@ -10,34 +10,26 @@ cors = CORS(app)
 @app.route('/run', methods=['GET'])
 def run_code():
     code = request.args.get('code')
-    print("code: ", code)
-    with stdoutIO() as s:
-        exec(code)
-    print("value: ", s.getvalue())
-    return s.getvalue()
-
-@app.route('/hei', methods=['GET'])
-def run_hei():
-    code = request.args.get('code')
+    task = json.loads(request.args.get('task'))
     if code == '' or code == '# Enter your code here.':
         return jsonify(output='', error_message='Skriv din kode i editoren.')
 
-    test_code = code + '\nassert hei("Anniken") == "Anniken", "Should be Anniken"'
+    test_code = code + '\n' + task["test"]
     
     with stdoutIO() as s:
         try:
             exec(test_code)
         except AssertionError as error:
-            return jsonify(output='', error_message=str(error))
+            return jsonify(output=s.getvalue(), error_message=str(error))
         except SyntaxError as error:
-            return jsonify(output='', error_message=str(error))
+            return jsonify(output=s.getvalue(), error_message=str(error))
         except IndentationError as error:
-            return jsonify(output='', error_message=str(error))
+            return jsonify(output=s.getvalue(), error_message=str(error))
         except NameError as error:
-            return jsonify(output='', error_message="Har du husket å definere en funksjon som heter hei?")
+            return jsonify(output=s.getvalue(), error_message=task["error_hint"])
         except TypeError as error:
-            return jsonify(output='', error_message=str(error))
-    return jsonify(output=s.getvalue())
+            return jsonify(output=s.getvalue(), error_message=str(error))
+    return jsonify(output=s.getvalue(), error_message='', solved=True)
 
 
 @contextlib.contextmanager
