@@ -43,42 +43,52 @@ class Firebase {
     .child(pin)
     .child("isActive");
   }
-  gameScoreboard = pin => {
+  gamePlayerList = pin => {
     return this.db.ref("games")
     .child(pin)
-    .child("scoreboard");
+    .child("teams")
+    .child("0")
+    .child("players");
   }
   games = () => {
-    return this.db.ref("games/");
+    return this.db.ref("games");
   };
   addGame = pin => {
-    return this.db.ref("games/").child(pin);
+    return this.db.ref("games").child(pin);
   };
   gamePlayer = (pin, name) => {
     return this.db
       .ref("games")
       .child(pin)
-      .child("scoreboard")
+      .child("teams")
+      .child("players")
       .child(name);
   };
   gameTask = (pin, taskId) => {
     return this.db
-      .ref("games/")
+      .ref("games")
       .child(pin)
       .child("tasks")
       .child(taskId);
   };
   gameTasks = pin => {
     return this.db
-      .ref("games/")
+      .ref("games")
       .child(pin)
       .child("tasks");
+  }
+  solvedGameTasks = pin => {
+    return this.db
+      .ref("games")
+      .child(pin)
+      .child("teams")
+      .child("solvedTasks");
   }
 
   // *** Classroom API ***
   addClassroom = (user_id, className) => {
     return this.db
-      .ref("classrooms/")
+      .ref("classrooms")
       .child(user_id)
       .child(className);
   };

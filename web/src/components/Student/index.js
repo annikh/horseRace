@@ -16,7 +16,7 @@ class Student extends Component {
 
     this.state = {
       value: "",
-      scoreboard: null,
+      nameList: null,
       game_pin: null,
       buttonValue: "Enter"
     };
@@ -27,8 +27,8 @@ class Student extends Component {
     this.setState({ game_pin: game_pin });
     const { cookies } = this.props;
     cookies.set("game_pin", game_pin);
-    this.props.firebase.gameScoreboard(game_pin).on("value", snapshot => {
-      this.setState({ scoreboard: snapshot.val() });
+    this.props.firebase.gamePlayerList(game_pin).on("value", snapshot => {
+      this.setState({ nameList: snapshot.val() });
     });
   }
 
@@ -37,7 +37,7 @@ class Student extends Component {
     const { cookies } = this.props;
     cookies.set("game_name", name);
     this.props.firebase
-      .gameScoreboard(this.state.game_pin)
+      .gamePlayerList(this.state.game_pin)
       .child(name)
       .child("isActive")
       .set(true);
@@ -66,15 +66,15 @@ class Student extends Component {
   };
 
   namesDropDown = () => {
-    const scoreboard = this.state.scoreboard;
-    console.log("scoreboard: ", scoreboard)
+    const nameList = this.state.nameList;
+    console.log("nameList: ", nameList)
     return (
       <Col md="auto">
         <Form.Control as="select" onChange={this.handleChange}>
           <option>Hva heter du?</option>
-          {Object.keys(scoreboard).map(
+          {Object.keys(nameList).map(
             (player, i) =>
-              !scoreboard[player]["isActive"] && (
+              !nameList[player]["isActive"] && (
                 <option key={i} value={player}>
                   {player}
                 </option>
@@ -99,7 +99,7 @@ class Student extends Component {
           </Col>
         </Row>
         <Row>
-          {this.state.scoreboard ? this.namesDropDown() : this.pinInput()}
+          {this.state.nameList ? this.namesDropDown() : this.pinInput()}
           <Col>
             <Button
               className="btn-classPin"

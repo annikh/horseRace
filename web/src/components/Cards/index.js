@@ -55,6 +55,15 @@ class Cards extends Component {
   componentDidMount() {
     const game_pin = this.props.cookies.get("game_pin");
     this.setState({ gamePin: game_pin });
+
+    this.props.firebase.solvedGameTasks(game_pin).on("value", snapshot => {
+      const solvedTasks = snapshot;
+      let solvedTasksIds = []
+      solvedTasks.forEach((task) => {
+        solvedTasksIds.push(parseInt(task.key, 10))
+      })
+      this.setState({solvedTasksIds: solvedTasksIds})
+    })
     
     this.props.firebase.gameTasks(game_pin).on("value", snapshot => {
       const cards = snapshot.val()
@@ -64,12 +73,12 @@ class Cards extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    let lastSolvedTaskId = this.props.lastSolvedTaskId
-    let previousLastSolvedTaskId = prevProps.lastSolvedTaskId
+    const lastSolvedTaskId = this.props.lastSolvedTaskId
+    const previousLastSolvedTaskId = prevProps.lastSolvedTaskId
     if (lastSolvedTaskId !== previousLastSolvedTaskId && !this.taskIsSolved(lastSolvedTaskId)) {
       this.getImageUrl(lastSolvedTaskId+1).then(url => {
         this.updateBoardState(lastSolvedTaskId, url)
-        this.setState({solvedTasksIds: [...this.state.solvedTasksIds, lastSolvedTaskId]})
+        //this.setState({solvedTasksIds: [...this.state.solvedTasksIds, lastSolvedTaskId]})
         this.handleCardClose()
       });
     }
