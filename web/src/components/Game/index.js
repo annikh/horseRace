@@ -73,8 +73,8 @@ class Game extends Component {
 
     this.setState({lastSolvedTaskId: solvedTaskId})
 
-    this.props.firebase.gamePlayer(game_pin, game_name).child("solvedTasks").set(
-      {task: solvedTaskId, solution: solution}
+    this.props.firebase.gamePlayer(game_pin, game_name).child("solvedTasks").child(solvedTaskId).set(
+      {solution: solution}
     )
     this.showSolvedModal()
   }
