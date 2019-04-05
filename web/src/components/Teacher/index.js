@@ -5,15 +5,19 @@ import { Route } from "react-router-dom";
 import Account from "../Account";
 import TeacherHome from "../TeacherHome";
 import TeacherGame from "../TeacherGame";
+import TeacherClassrooms from "../TeacherClassrooms";
 import * as ROUTES from "../../constants/routes";
-
-const teacherURL = "/teacher";
 
 const Teacher = () => (
   <div>
     <Navigation />
-    <Route exact path={ROUTES.TEACHER} component={TeacherHome} />
-    <Route path={teacherURL + ROUTES.ACCOUNT} component={Account} />
+    <Route exact path={ROUTES.TEACHER_GAMES} component={TeacherHome} />
+    <Route path={ROUTES.TEACHER_ACCOUNT} component={Account} />
+    <Route
+      exact
+      path={ROUTES.TEACHER_CLASSROOMS}
+      component={TeacherClassrooms}
+    />
     <Route exact path={ROUTES.TEACHER + "/:game_pin"} component={TeacherGame} />
   </div>
 );
