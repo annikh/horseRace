@@ -116,15 +116,15 @@ class CreateGame extends Component {
   render() {
     const classroomNames = Object.keys(this.props.classrooms);
     return (
-      <Form className="insideBox">
-        <Row className="rowAccount">
+      <Form>
+        <Row>
           <Col>
             <Form.Label>
-              <h2>Opprett et spill</h2>
+              <h2>Opprett et spill:</h2>
             </Form.Label>
           </Col>
         </Row>
-        <Row className="rowAccount">
+        <Row>
           <Col>
             <Form.Label>
               Velg hvilket klasserom som skal delta i spillet:
@@ -150,7 +150,7 @@ class CreateGame extends Component {
           />
         )}
 
-        <Row className="rowAccount">
+        <Row>
           <Col>
             <Button className="btn-orange" onClick={this.handleSubmit} block>
               Opprett spill

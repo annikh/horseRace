@@ -54,7 +54,7 @@ class TeacherGames extends Component {
               )}
             </Row>
           </Col>
-          <Col>
+          <Col className="insideBox">
             <Row className="rowAccount">
               {Object.keys(this.state.classrooms).length > 0 && (
                 <CreateGame classrooms={classrooms} />
