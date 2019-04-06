@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { ListGroup, Row } from "react-bootstrap";
 import "../Account/style.css";
+import "../CreateGame/style.css";
 
 class PlayerList extends Component {
   constructor(props) {
@@ -30,20 +31,21 @@ class PlayerList extends Component {
   };
 
   render() {
-    const { scoreboard } = this.props;
-    const names = Object.keys(scoreboard);
+    const { teams } = this.props;
+    const names = Object.keys(teams);
     return (
       <Row className="rowAccount">
         <h5>
           Del inn i lag ved å trykke på en deltaker, slik at fargen på boksen
           endrer seg.
         </h5>
-        <ListGroup>
+        <ListGroup className="teamList">
           {names.map((name, i) => (
             <ListGroup.Item
+              className="player"
               key={i}
               style={{
-                backgroundColor: this.setBackgroundColor(scoreboard[name].team)
+                backgroundColor: this.setBackgroundColor(teams[name].team)
               }}
               action
               onClick={event => this.props.handleNewTeam(event, name)}

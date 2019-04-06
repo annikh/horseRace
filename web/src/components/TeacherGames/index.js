@@ -3,7 +3,6 @@ import { AuthUserContext, withAuthorization } from "../Session";
 import { Container, Row, Col, ListGroup } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { withFirebase } from "../Firebase";
-import CreateClassroom from "../CreateClassroom";
 import CreateGame from "../CreateGame";
 import * as ROUTES from "../../constants/routes";
 
@@ -85,6 +84,9 @@ const GameList = ({ games }) => (
         <ListGroup.Item style={{ textAlign: "left" }} action variant="warning">
           <Row>
             <Col>{games[pin].classroom_id}</Col>
+          </Row>
+          <Row>
+            <Col>{pin}</Col>
           </Row>
           <Row>
             <Col>

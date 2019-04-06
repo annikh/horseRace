@@ -1,10 +1,8 @@
 import React, { Component } from "react";
 import { AuthUserContext, withAuthorization } from "../Session";
 import { Container, Row, Col, ListGroup } from "react-bootstrap";
-import { Link } from "react-router-dom";
 import { withFirebase } from "../Firebase";
 import CreateClassroom from "../CreateClassroom";
-import * as ROUTES from "../../constants/routes";
 
 class TeacherClassrooms extends Component {
   constructor(props) {
@@ -62,7 +60,12 @@ const NoClassrooms = () => (
 const ClassroomList = ({ classrooms }) => (
   <ListGroup variant="flush" style={{ width: "80%" }}>
     {Object.keys(classrooms).map((name, i) => (
-      <ListGroup.Item style={{ textAlign: "left" }} action variant="warning">
+      <ListGroup.Item
+        key={i}
+        style={{ textAlign: "left" }}
+        action
+        variant="warning"
+      >
         <Row>
           <Col>{name}</Col>
         </Row>

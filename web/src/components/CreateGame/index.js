@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { AuthUserContext, withAuthorization } from "../Session";
-import { Button, Form, Row, Col, Table, ListGroup } from "react-bootstrap";
+import { Button, Form, Row, Col } from "react-bootstrap";
 import Game from "../../objects/Game";
 import PlayerList from "./playerList";
 import { withFirebase } from "../Firebase";
@@ -13,7 +13,8 @@ class CreateGame extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.addGame = this.addGame.bind(this);
     this.isValidPin = this.isValidPin.bind(this);
-    this.fillScoreboard = this.fillScoreboard.bind(this);
+    this.createTeams = this.createTeams.bind(this);
+    this.updateTeams = this.updateTeams.bind(this);
     this.handleNewTeam = this.handleNewTeam.bind(this);
     this.handleNumberOfTeams = this.handleNumberOfTeams.bind(this);
 
@@ -21,7 +22,7 @@ class CreateGame extends Component {
       loading: false,
       classroomName: "",
       tasks: null,
-      scoreboard: {},
+      teams: {},
       chosenClass: false,
       numberOfTeams: 1
     };
@@ -35,6 +36,9 @@ class CreateGame extends Component {
 
   addGame() {
     let newGamePin = shortid.generate();
+    const teams = this.updateTeams(
+      this.props.classrooms[this.state.classroomName]["names"]
+    );
     while (!this.isValidPin(newGamePin)) {
       newGamePin = shortid.generate();
     }
@@ -44,7 +48,7 @@ class CreateGame extends Component {
       authUser.uid,
       this.state.classroomName,
       new Date(),
-      this.state.scoreboard,
+      teams,
       this.state.tasks
     );
     this.props.firebase.addGame(newGamePin).set(game);
@@ -73,23 +77,26 @@ class CreateGame extends Component {
     this.setState({
       numberOfTeams: event.target.value
     });
+    this.handleChange({ target: { value: this.state.classroomName } });
   }
 
   handleChange(event) {
     const classroomName = event.target.value;
     const names = this.props.classrooms[classroomName]["names"];
-    const scoreboard = this.fillScoreboard(names);
+    const teams = this.createTeams(names);
     this.setState({
       classroomName: classroomName,
-      scoreboard: scoreboard,
+      teams: teams,
       chosenClass: true
     });
   }
 
-  fillScoreboard(names) {
-    let scoreboard = {};
-    names.forEach(name => {
-      scoreboard[name] = {
+  updateTeams() {
+    let newTeams = {};
+    Object.keys(this.state.teams).forEach(name => {
+      let team = this.state.teams[name].team;
+      if (!newTeams[team]) newTeams[team] = { players: {} };
+      let newPlayer = {
         isActive: false,
         points: 0,
         tasks: null,
@@ -97,13 +104,28 @@ class CreateGame extends Component {
         startTime: null,
         endTime: null
       };
+      newTeams[team].players[name] = newPlayer;
     });
-    return scoreboard;
+    return newTeams;
+  }
+
+  createTeams(names) {
+    let teams = {};
+    names.forEach(name => {
+      teams[name] = {
+        isActive: false,
+        tasks: null,
+        team: 0,
+        startTime: null,
+        endTime: null
+      };
+    });
+    return teams;
   }
 
   handleNewTeam(event, name) {
     event.preventDefault();
-    let currentTeam = this.state.scoreboard[name].team;
+    let currentTeam = this.state.teams[name].team;
     if (currentTeam === this.state.numberOfTeams - 1) {
       currentTeam = 0;
     } else {
@@ -111,10 +133,10 @@ class CreateGame extends Component {
     }
     this.setState(prevState => ({
       ...prevState,
-      scoreboard: {
-        ...prevState.scoreboard,
+      teams: {
+        ...prevState.teams,
         [name]: {
-          ...prevState.scoreboard[name],
+          ...prevState.teams[name],
           team: currentTeam
         }
       }
@@ -178,10 +200,10 @@ class CreateGame extends Component {
           </Col>
         </Row>
         {this.state.classroomName !== "" &&
-          this.state.scoreboard !== {} &&
+          this.state.teams !== {} &&
           this.state.numberOfTeams > 1 && (
             <PlayerList
-              scoreboard={this.state.scoreboard}
+              teams={this.state.teams}
               handleNewTeam={this.handleNewTeam}
             />
           )}

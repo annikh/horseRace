@@ -8,7 +8,6 @@ import {
   ListGroup,
   Modal
 } from "react-bootstrap";
-import { Link } from "react-router-dom";
 import { withFirebase } from "../Firebase";
 import ReactHtmlParser from "react-html-parser";
 import { AuthUserContext, withAuthorization } from "../Session";
@@ -65,68 +64,59 @@ class TeacherGame extends Component {
 
   setBackgroundColor = team => {
     switch (team) {
-      case 0:
+      case "0":
         return "#8DDA77";
-      case 1:
+      case "1":
         return "#F0EE8D";
-      case 2:
+      case "2":
         return "#E37171";
-      case 3:
+      case "3":
         return "#77ABDA";
-      case 4:
+      case "4":
         return "#8D6A9F";
       default:
-        return "#DB7F67";
+        return "#FFFFFF";
     }
   };
 
   playerList() {
-    const { scoreboard } = this.state.game;
-    let assignedPlayers = 0;
-    let team = 1;
-    let teamList = [];
+    const { teams } = this.state.game;
     let fullList = [];
-    while (assignedPlayers < Object.keys(scoreboard).length) {
-      Object.keys(scoreboard).map((player, i) => {
-        if (
-          scoreboard[player].isActive === true &&
-          scoreboard[player].team === team
-        ) {
-          console.log(scoreboard[player].team);
-          teamList.push(
-            <Col key={i}>
-              <Card
-                className="player"
-                style={{
-                  backgroundColor: this.setBackgroundColor(
-                    scoreboard[player].team
-                  )
-                }}
-              >
-                <Card.Body>
-                  <Card.Title>{player}</Card.Title>
-                  {this.state.isStarted ? (
-                    <Card.Text>
-                      <strong>Oppgaver:</strong>
-                      {this.taskList(player)}
-                    </Card.Text>
-                  ) : null}
-                </Card.Body>
-              </Card>
-            </Col>
-          );
-          assignedPlayers += 1;
-        }
+    let teamList = [];
+    Object.keys(teams).map(team => {
+      Object.keys(teams[team].players).map((player, i) => {
+        teamList.push(
+          <Col key={i}>
+            <Card
+              className="player"
+              style={{
+                backgroundColor: this.setBackgroundColor(team)
+              }}
+            >
+              <Card.Body>
+                <Card.Title>{player}</Card.Title>
+                {this.state.isStarted ? (
+                  <Card.Text>
+                    <strong>Oppgaver:</strong>
+                    {this.taskList(team, player)}
+                  </Card.Text>
+                ) : null}
+              </Card.Body>
+            </Card>
+          </Col>
+        );
       });
-      team++;
+
       fullList.push(<Row className="rowAccount">{teamList}</Row>);
       teamList = [];
-    }
+    });
+
     return <Container>{fullList}</Container>;
   }
 
-  taskList(player) {
-    const playerTasks = this.state.game.scoreboard[player].tasks;
+  taskList(team, player) {
+    const playerTasks = this.state.game.teams[team].players[player].tasks;
+    console.log(playerTasks);
     return (
       <div>
         {playerTasks ? (
