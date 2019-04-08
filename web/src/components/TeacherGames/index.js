@@ -3,11 +3,10 @@ import { AuthUserContext, withAuthorization } from "../Session";
 import { Container, Row, Col, ListGroup } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { withFirebase } from "../Firebase";
-import CreateClassroom from "../CreateClassroom";
 import CreateGame from "../CreateGame";
 import * as ROUTES from "../../constants/routes";
 
-class TeacherHome extends Component {
+class TeacherGames extends Component {
   constructor(props) {
     super(props);
 
@@ -42,9 +41,9 @@ class TeacherHome extends Component {
     return (
       <Container className="accountBody">
         <Row className="rowAccount">
-          <Col>
+          <Col className="insideBox">
             <Row className="rowAccount">
-              <h2 style={{ textAlign: "left" }}>Dine spill:</h2>{" "}
+              <h2 style={{ textAlign: "left" }}>Dine spill:</h2>
             </Row>
             <Row className="rowAccount">
               {Object.keys(games).length > 0 ? (
@@ -54,14 +53,11 @@ class TeacherHome extends Component {
               )}
             </Row>
           </Col>
-          <Col>
+          <Col className="insideBox">
             <Row className="rowAccount">
               {Object.keys(this.state.classrooms).length > 0 && (
-                <CreateGame classrooms={this.state.classrooms} />
+                <CreateGame classrooms={classrooms} />
               )}
-            </Row>
-            <Row className="rowAccount">
-              <CreateClassroom />
             </Row>
           </Col>
         </Row>
@@ -69,7 +65,7 @@ class TeacherHome extends Component {
     );
   }
 }
-TeacherHome.contextType = AuthUserContext;
+TeacherGames.contextType = AuthUserContext;
 
 const condition = authUser => !!authUser;
 
@@ -82,12 +78,15 @@ const GameList = ({ games }) => (
     {Object.keys(games).map((pin, i) => (
       <Link
         key={i}
-        to={ROUTES.TEACHER + "/" + pin}
+        to={ROUTES.TEACHER_GAMES + "/" + pin}
         style={{ textDecoration: "none" }}
       >
         <ListGroup.Item style={{ textAlign: "left" }} action variant="warning">
           <Row>
             <Col>{games[pin].classroom_id}</Col>
+          </Row>
+          <Row>
+            <Col>{pin}</Col>
           </Row>
           <Row>
             <Col>
@@ -104,4 +103,4 @@ const GameList = ({ games }) => (
   </ListGroup>
 );
 
-export default withFirebase(withAuthorization(condition)(TeacherHome));
+export default withFirebase(withAuthorization(condition)(TeacherGames));
