@@ -8,7 +8,6 @@ import {
   ListGroup,
   Modal
 } from "react-bootstrap";
-import { Link } from "react-router-dom";
 import { withFirebase } from "../Firebase";
 import ReactHtmlParser from "react-html-parser";
 import { AuthUserContext, withAuthorization } from "../Session";
@@ -43,12 +42,12 @@ class TeacherGame extends Component {
 
   startStopGame() {
     this.state.isStarted
-      ? this.setState({ button_value: "Start Spill" }) &&
+      ? this.setState({ isStarted: false, button_value: "Start Spill" }) &&
         this.props.firebase
           .game(this.state.game_pin)
           .child("isActive")
           .set(false)
-      : this.setState({ button_value: "Avslutt Spill" }) &&
+      : this.setState({ isStarted: true, button_value: "Avslutt Spill" }) &&
         this.props.firebase
           .game(this.state.game_pin)
           .child("isActive")
@@ -63,56 +62,82 @@ class TeacherGame extends Component {
     this.setState({ task: task, show_task: true });
   }
 
+  setBackgroundColor = team => {
+    switch (team) {
+      case "0":
+        return "#8DDA77";
+      case "1":
+        return "#F0EE8D";
+      case "2":
+        return "#E37171";
+      case "3":
+        return "#77ABDA";
+      case "4":
+        return "#8D6A9F";
+      default:
+        return "#FFFFFF";
+    }
+  };
+
   playerList() {
-    const { scoreboard } = this.state.game;
-    return (
-      <Container>
-        <Row>
-          {Object.keys(scoreboard).map(
-            (player, i) =>
-              scoreboard[player].isActive === true && (
-                <Col key={i}>
-                  <Card className="player">
-                    <Card.Body>
-                      <Card.Title>{player}</Card.Title>
-                      <Card.Text>
-                        <strong>Poeng:</strong> {scoreboard[player].points}
-                        <br />
-                        <strong>Oppgaver:</strong>
-                        <br />
-                        {scoreboard[player].tasks.length > 0 ? (
-                          this.taskList(player)
-                        ) : (
-                          <div>Fant ingen oppgaver..</div>
-                        )}
-                      </Card.Text>
-                    </Card.Body>
-                  </Card>
-                </Col>
-              )
-          )}
-        </Row>
-      </Container>
-    );
+    const { teams } = this.state.game;
+    let fullList = [];
+    let teamList = [];
+    Object.keys(teams).map(team => {
+      Object.keys(teams[team].players).map((player, i) => {
+        teamList.push(
+          <Col key={i}>
+            <Card
+              className="player"
+              style={{
+                backgroundColor: this.setBackgroundColor(team)
+              }}
+            >
+              <Card.Body>
+                <Card.Title>{player}</Card.Title>
+                {this.state.isStarted ? (
+                  <Card.Text>
+                    <strong>Oppgaver:</strong>
+                    {this.taskList(team, player)}
+                  </Card.Text>
+                ) : null}
+              </Card.Body>
+            </Card>
+          </Col>
+        );
+      });
+
+      fullList.push(<Row className="rowAccount">{teamList}</Row>);
+      teamList = [];
+    });
+
+    return <Container>{fullList}</Container>;
   }
 
-  taskList(player) {
-    const playerTasks = this.state.game.scoreboard[player].tasks;
+  taskList(team, player) {
+    const playerTasks = this.state.game.teams[team].players[player].tasks;
+    console.log(playerTasks);
     return (
-      <ListGroup variant="flush" style={{ width: "100%" }}>
-        {playerTasks.length > 0 &&
-          playerTasks.map((task, i) => (
-            <ListGroup.Item
-              key={i}
-              style={{ textAlign: "left" }}
-              action
-              variant="warning"
-              onClick={() => this.handleShow(task)}
-            >
-              {task.title}
-            </ListGroup.Item>
-          ))}
-      </ListGroup>
+      <div>
+        {playerTasks ? (
+          <ListGroup variant="dark" style={{ width: "100%" }}>
+            {playerTasks.length > 0 &&
+              playerTasks.map((task, i) => (
+                <ListGroup.Item
+                  key={i}
+                  style={{ textAlign: "left" }}
+                  action
+                  variant="warning"
+                  onClick={() => this.handleShow(task)}
+                >
+                  {task.title}
+                </ListGroup.Item>
+              ))}
+          </ListGroup>
+        ) : (
+          <div>Fant ingen oppgaver..</div>
+        )}
+      </div>
     );
   }
 
@@ -122,11 +147,15 @@ class TeacherGame extends Component {
     return (
       this.state.game && (
         <Container className="accountBody">
-          <Row>
-            <strong>Spill-PIN: </strong> {game_pin}
+          <Row className="rowAccount">
+            <h5>
+              <strong>Spill-PIN: </strong> {game_pin}
+            </h5>
           </Row>
+
           {this.playerList()}
-          <Row>
+
+          <Row className="rowAccount">
             <Button className="btn-orange" onClick={this.startStopGame}>
               {button_value}
             </Button>
@@ -137,7 +166,7 @@ class TeacherGame extends Component {
                 <Modal.Title>{task.title}</Modal.Title>
               </Modal.Header>
               <Modal.Body>
-                <strong>Difficulty:</strong>
+                <strong>Vanskelighetsgrad:</strong>
                 {task.difficulty} <br />
                 {ReactHtmlParser(task.text)}
               </Modal.Body>

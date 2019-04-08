@@ -1,6 +1,17 @@
 .player {
-  background-color: rgb(245, 157, 57) !important;
+  background-color: rgb(245, 157, 57);
   width: 15rem;
   text-decoration: none;
   color: black;
+  display: inline-table;
+}
+
+.card:hover {
+  -webkit-filter: none !important;
+  cursor: initial !important;
+  border: 1px solid rgba(0, 0, 0, 0.125) !important;
+}
+
+.card:active {
+  border: 1px solid rgba(0, 0, 0, 0.125) !important;
 }

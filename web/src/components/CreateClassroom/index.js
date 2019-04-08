@@ -50,7 +50,7 @@ class CreateClassroom extends Component {
         <Row>
           <Col>
             <Form.Label>
-              <h2>Opprett et klasserom</h2>
+              <h4>Opprett et klasserom:</h4>
             </Form.Label>
           </Col>
         </Row>

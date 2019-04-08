@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import SignOutButton from "../SignOut";
-import { Nav } from "react-bootstrap";
+import { Navbar, Nav } from "react-bootstrap";
 import { AuthUserContext, withAuthorization } from "../Session";
 import * as ROUTES from "../../constants/routes";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -10,22 +10,29 @@ import "./style.css";
 const Navigation = () => (
   <AuthUserContext.Consumer>
     {authUser => (
-      <Nav className="navbar">
-        <Nav.Item>
-          <Link to={ROUTES.TEACHER + ROUTES.ACCOUNT} className="link">
-            <FontAwesomeIcon icon="user" color="black" />
-            {authUser.email}
-          </Link>
-        </Nav.Item>
-        <Nav.Item>
-          <Link to={ROUTES.TEACHER} className="link">
-            Spill
-          </Link>
-        </Nav.Item>
-        <Nav.Item>
-          <SignOutButton />
-        </Nav.Item>
-      </Nav>
+      <Navbar className="navbar">
+        <Nav className="navbar-items">
+          <Nav.Item>
+            <Link to={ROUTES.TEACHER_ACCOUNT} className="link">
+              <FontAwesomeIcon icon="user" color="black" />
+              {authUser.email}
+            </Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Link to={ROUTES.TEACHER_GAMES} className="link">
+              Spill
+            </Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Link to={ROUTES.TEACHER_CLASSROOMS} className="link">
+              Klasserom
+            </Link>
+          </Nav.Item>
+          <Nav.Item>
+            <SignOutButton />
+          </Nav.Item>
+        </Nav>
+      </Navbar>
     )}
   </AuthUserContext.Consumer>
 );
