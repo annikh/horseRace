@@ -28,7 +28,14 @@ class Student extends Component {
     const { cookies } = this.props;
     cookies.set("game_pin", game_pin);
     this.props.firebase.gamePlayerList(game_pin).on("value", snapshot => {
-      this.setState({ nameList: snapshot.val() });
+      const teams = snapshot.val();
+      let players = {};
+      teams.forEach(team => {
+        let names = Object.keys(team.players)
+        let values = Object.values(team.players)
+        names.map((name,i) => players[name]=values[i])
+      })
+      this.setState({ nameList: players });
     });
   }
 
