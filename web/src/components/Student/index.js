@@ -41,13 +41,18 @@ class Student extends Component {
 
   handleEnterStudentName() {
     const name = this.state.value;
+    const team = this.getTeamFromPlayerName(name);
     const { cookies } = this.props;
     cookies.set("game_name", name);
+    cookies.set("game_team", team);
     this.props.firebase
-      .gamePlayerList(this.state.game_pin)
-      .child(name)
+      .gamePlayer(this.state.game_pin, team, name)
       .child("isActive")
       .set(true);
+  }
+
+  getTeamFromPlayerName(name) {
+    return (this.state.nameList !== null) ? this.state.nameList[name].team : "";
   }
 
   handleChange(event) {

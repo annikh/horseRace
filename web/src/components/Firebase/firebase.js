@@ -54,11 +54,12 @@ class Firebase {
   addGame = pin => {
     return this.db.ref("games").child(pin);
   };
-  gamePlayer = (pin, name) => {
+  gamePlayer = (pin, team, name) => {
     return this.db
       .ref("games")
       .child(pin)
       .child("teams")
+      .child(team)
       .child("players")
       .child(name);
   };
