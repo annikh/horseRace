@@ -15,9 +15,9 @@ class Cards extends Component {
   constructor(props) {
     super(props);
     this.handleCardClose = this.handleCardClose.bind(this);
-    this.handleCardClicked = this.handleCardClicked.bind(this);
-    this.deactivateTask = this.deactivateTask.bind(this);
-    this.reactivateTask = this.reactivateTask.bind(this);
+    this.handleCardOpen = this.handleCardOpen.bind(this);
+    this.deactivateTaskInDB = this.deactivateTaskInDB.bind(this);
+    this.reactivateTaskInDB = this.reactivateTaskInDB.bind(this);
 
     this.state = {
       cards: [],
@@ -42,9 +42,9 @@ class Cards extends Component {
             key={i}
             className="card"
             style={{
-              backgroundColor: this.setBackgroundColor(card.difficulty)
+              backgroundColor: this.setCardColorByDiffictuly(card.difficulty)
             }}
-            onClick={() => this.handleCardClicked(i, card)}
+            onClick={() => this.handleCardOpen(i, card)}
           >
             {card.title}
         </Button>
@@ -53,7 +53,7 @@ class Cards extends Component {
     return board;
   }
 
-  emptyGameBoard() {
+  gameBoardIsEmpty() {
     return Object.keys(this.state.gameBoard).length === 0;
   }
 
@@ -71,11 +71,9 @@ class Cards extends Component {
       this.props.firebase.gameTasks(game_pin).on("value", snapshot => {
         const cards = snapshot.val()
         this.setState({cards: cards});
-        if (this.emptyGameBoard()) this.setState({gameBoard: this.generateInitialBoardState(cards)})
+        if (this.gameBoardIsEmpty()) this.setState({gameBoard: this.generateInitialBoardState(cards)})
       })
     })
-    
-    
   }
 
   componentDidUpdate(prevProps) {
@@ -83,14 +81,14 @@ class Cards extends Component {
     const previousLastSolvedTaskId = prevProps.lastSolvedTaskId
     if (lastSolvedTaskId !== previousLastSolvedTaskId && !this.taskIsSolved(lastSolvedTaskId)) {
       this.getImageUrl(lastSolvedTaskId+1).then(url => {
-        this.updateBoardState(lastSolvedTaskId, url)
+        this.replaceCardWithImage(lastSolvedTaskId, url)
         this.setState({solvedTasksIds: [...this.state.solvedTasksIds, lastSolvedTaskId]})
         this.handleCardClose()
       });
     }
   }
 
-  updateBoardState(taskId, imgUrl) {
+  replaceCardWithImage(taskId, imgUrl) {
     let newGameBoardState = this.state.gameBoard;
     newGameBoardState[taskId] = <img src={imgUrl} className="img" key={taskId}/>;
     console.log(newGameBoardState)
@@ -113,33 +111,33 @@ class Cards extends Component {
   }
 
   handleCardClose() {
-    this.reactivateTask(this.state.selectedCard.id);
+    this.reactivateTaskInDB(this.state.selectedCard.id);
     this.setState({ showCard: false, selectedCard: this.emptyCard });
     this.props.onCardSelect(this.emptyCard);
   }
 
-  handleCardClicked(key, card) {
+  handleCardOpen(key, card) {
     this.setState({
       selectedCard: {id: key, body: card},
       showCard: true
     });
     this.props.onCardSelect({id: key, body: card});
-    this.deactivateTask(key);
+    this.deactivateTaskInDB(key);
   }
 
-  deactivateTask(taskId) {
+  deactivateTaskInDB(taskId) {
     this.props.firebase.gameTask(this.props.cookies.get("game_pin"), taskId).child('active').set(
       false
     );
   }
 
-  reactivateTask(taskId) {
+  reactivateTaskInDB(taskId) {
     this.props.firebase.gameTask(this.props.cookies.get("game_pin"), taskId).child('active').set(
       true
     );
   }
 
-  setBackgroundColor(difficulty) {
+  setCardColorByDiffictuly(difficulty) {
     switch (difficulty) {
       case 1:
         return COLORS.EASY_DIFFICULTY;
@@ -152,11 +150,11 @@ class Cards extends Component {
     }
   }
 
-  TaskCard = () => (
+  OpenedCard = () => (
     <Card
       className="openedCard"
       style={{
-        backgroundColor: this.setBackgroundColor(
+        backgroundColor: this.setCardColorByDiffictuly(
           this.state.selectedCard.body.difficulty
         )
       }}>
@@ -187,7 +185,7 @@ class Cards extends Component {
   render() {
     return (
       <div>
-        {this.state.showCard ? <this.TaskCard/> : <this.GameBoard />}
+        {this.state.showCard ? <this.OpenedCard /> : <this.GameBoard />}
       </div>
     );
   }
