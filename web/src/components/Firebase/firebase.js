@@ -43,7 +43,7 @@ class Firebase {
     .child(pin)
     .child("isActive");
   }
-  gamePlayerList = (pin, team) => {
+  gamePlayerList = pin => {
     return this.db.ref("games")
     .child(pin)
     .child("teams");
