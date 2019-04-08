@@ -73,7 +73,7 @@ class Game extends Component {
 
     this.setState({lastSolvedTaskId: solvedTaskId})
 
-    this.props.firebase.solvedGameTasks(game_pin).set(
+    this.props.firebase.solvedGameTasks(game_pin, "0").child(solvedTaskId).set(
       {
         solution: solution,
         solvedBy: player_name
@@ -125,6 +125,7 @@ class Game extends Component {
   )
 
   render() {
+    console.log(this.state.currentTask)
     return (
       <Container className="gameComponent">
       <this.ErrorModal/>
