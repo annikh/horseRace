@@ -59,10 +59,11 @@ class Cards extends Component {
 
   componentDidMount() {
     const game_pin = this.props.cookies.get("game_pin");
+    const team = this.props.cookies.get("game_team");
 
-    this.props.firebase.solvedGameTasks(game_pin, "0").on("value", snapshot => {
+    this.props.firebase.solvedGameTasks(game_pin, team).on("value", snapshot => {
       const solvedTasks = snapshot;
-      let solvedTasksIds = []
+      let solvedTasksIds = [];
       solvedTasks.forEach((task) => {
         solvedTasksIds.push(parseInt(task.key, 10))
       })
