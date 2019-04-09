@@ -11,14 +11,14 @@ cors = CORS(app)
 def run_code():
     code = request.args.get('code')
     task = json.loads(request.args.get('task'))
-    if code == '' or code == '# Enter your code here.':
+    if code == '' or code == '# Skriv inn koden din her.':
         return jsonify(output='', error_message='Skriv din kode i editoren.')
 
-    test_code = code + '\n' + task["test"]
+    code_with_tests = code + '\n' + task["test"]
     
     with stdoutIO() as s:
         try:
-            exec(test_code)
+            exec(code_with_tests, {})
         except AssertionError as error:
             return jsonify(output=s.getvalue(), error_message=str(error))
         except SyntaxError as error:

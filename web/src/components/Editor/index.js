@@ -15,7 +15,7 @@ class Editor extends Component {
         this.handleButtonClick = this.handleButtonClick.bind(this);
 
         this.state = {
-            aceEditorValue: '# Enter your code here.'
+            aceEditorValue: '# Skriv inn koden din her.'
         }
     }
 
