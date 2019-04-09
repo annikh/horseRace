@@ -103,7 +103,7 @@ class Firebase {
 
   // *** Image API ***
   getImagePart = (folder, part) => {
-    const string_part = '/image_part_0' + part + '.jpg'
+    const string_part = 'image_part_0' + part + '.jpg'
     return this.image_storage
       .ref()
       .child(folder)
