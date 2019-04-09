@@ -172,7 +172,7 @@ class Cards extends Component {
   GameBoard = () => (
     Object.keys(this.state.gameBoard).map((key, index) => (
       ((index+1) % 4 === 0) ? (
-        <ButtonGroup>
+        <ButtonGroup key={key}>
           {this.state.gameBoard[key-3]}
           {this.state.gameBoard[key-2]}
           {this.state.gameBoard[key-1]}

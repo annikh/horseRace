@@ -41,10 +41,11 @@ class Editor extends Component {
                     showPrintMargin={true}
                     showGutter={true}
                     highlightActiveLine={true}
+                    editorProps={{$blockScrolling: true}}
                     value={this.state.aceEditorValue}
                     setOptions={{
-                    showLineNumbers: true,
-                    tabSize: 2,
+                      showLineNumbers: true,
+                      tabSize: 2,
                     }}/>
                 <Button variant="success" onClick={this.handleButtonClick} ><FontAwesomeIcon icon="play"/> Run</Button>
             </div>
