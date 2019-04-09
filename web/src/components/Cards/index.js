@@ -35,8 +35,8 @@ class Cards extends Component {
     let board = {}
     cards.forEach((card, i) => {
       board[i] = 
-      (this.taskIsSolved(i) ? (
-        <img src={this.state.imageUrls[i]} className="img" key={i}/>
+      (this.taskIsSolved(i-1) ? (
+        <img src={this.state.imageUrls[i]} className="img" />
       ) : (
         <Button
             key={i}

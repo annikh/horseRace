@@ -13,6 +13,7 @@ class Student extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.pinInput = this.pinInput.bind(this);
     this.namesDropDown = this.namesDropDown.bind(this);
+    this.handleExitGame = this.handleExitGame.bind(this);
 
     this.state = {
       value: "",
@@ -64,6 +65,10 @@ class Student extends Component {
       ? this.handleEnterClassroomPin()
       : this.handleEnterStudentName();
     event.preventDefault();
+  }
+
+  handleExitGame() {
+    this.setState({ game_pin: null });
   }
 
   pinInput = () => {
@@ -124,7 +129,7 @@ class Student extends Component {
         </Row>
       </Form>
     ) : (
-      <StudentGame cookies={cookies} />
+      <StudentGame cookies={cookies} onExit={this.handleExitGame}/>
     );
   }
 }
