@@ -47,7 +47,7 @@ class CreateGame extends Component {
       false,
       authUser.uid,
       this.state.classroomName,
-      new Date(),
+      new Date().getTime(),
       teams,
       this.state.tasks
     );
