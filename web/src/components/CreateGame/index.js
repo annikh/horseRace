@@ -98,7 +98,6 @@ class CreateGame extends Component {
       if (!newTeams[team]) newTeams[team] = { players: {} };
       let newPlayer = {
         isActive: false,
-        points: 0,
         tasks: null,
         team: team,
         startTime: null,
