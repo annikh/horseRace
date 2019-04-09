@@ -36,7 +36,7 @@ class Cards extends Component {
     cards.forEach((card, i) => {
       board[i] = 
       (this.taskIsSolved(i-1) ? (
-        <img src={this.state.imageUrls[i]} className="img" alt={`picture tile ${i}`} />
+        <img src={this.state.imageUrls[i]} className="img" alt="" />
       ) : (
         <Button
             key={i}
@@ -91,7 +91,7 @@ class Cards extends Component {
 
   replaceCardWithImage(taskId, imgUrl) {
     let newGameBoardState = this.state.gameBoard;
-    newGameBoardState[taskId] = <img src={imgUrl} className="img" key={taskId} alt={`picture tile ${taskId}`} />;
+    newGameBoardState[taskId] = <img src={imgUrl} className="img" key={taskId} alt="" />;
     console.log(newGameBoardState)
     this.setState({gameBoard: newGameBoardState})
   }
