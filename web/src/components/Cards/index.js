@@ -10,8 +10,6 @@ import "./style.css";
 
 class Cards extends Component {
 
-  _isMounted = false;
-
   emptyCard = {id: -1, body: {difficulty: 0, test: "", text: "", title: "", error_hint: ""}}
 
   constructor(props) {
@@ -32,36 +30,30 @@ class Cards extends Component {
   }
 
   componentDidMount() {
-    this._isMounted = true;
-    
     const game_pin = this.props.cookies.get("game_pin");
     const team = this.props.cookies.get("game_team");
     let gameBoard = null;
     let cards = null;
 
     this.props.firebase.gameTasks(game_pin).on("value", snapshot => {
-      if (this._isMounted) {
-        cards = snapshot.val();
-        this.setState({cards: cards});
-      }
+      cards = snapshot.val();
+      this.setState({cards: cards});
 
       this.props.firebase.solvedGameTasks(game_pin, team).on("value", snapshot => {
         let solvedTasks = {};
-        
-        if (this._isMounted) {
-          const solvedTasksFromDB = snapshot.val();
-          if (!this.objectIsEmpty(solvedTasksFromDB)) {
-            Object.keys(solvedTasksFromDB).forEach(taskId => {
-              const url = solvedTasksFromDB[taskId].url;
-              solvedTasks[taskId] = url;
-            })
-          }
+        const solvedTasksFromDB = snapshot.val();
+        if (!this.objectIsEmpty(solvedTasksFromDB)) {
+          Object.keys(solvedTasksFromDB).forEach(taskId => {
+            const url = solvedTasksFromDB[taskId].url;
+            solvedTasks[taskId] = url;
+          })
+        }
 
         if (this.objectIsEmpty(this.state.gameBoard)) {
           gameBoard = this.generateInitialBoardState(cards, solvedTasks);
           this.setState({gameBoard: gameBoard})
           this.setState({solvedTasks: solvedTasks})
-        }}
+        }
       })
     })
   }
@@ -81,7 +73,10 @@ class Cards extends Component {
   }
 
   componentWillUnmount() {
-    this._isMounted = false;
+    const gamePin = this.props.cookies.get("game_pin");
+    const team = this.props.cookies.get("game_team");
+    this.props.firebase.gameTasks(gamePin).off();
+    this.props.firebase.solvedGameTasks(gamePin, team).off();
   }
 
   generateInitialBoardState(cards, solvedTasks) {

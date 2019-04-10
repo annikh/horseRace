@@ -19,15 +19,10 @@ class Game extends Component {
   constructor(props) {
     super(props);
 
-    this.setCurrentTask = this.setCurrentTask.bind(this);
     this.runCode = this.runCode.bind(this);
     this.closeErrorModal = this.closeErrorModal.bind(this);
-    this.showErrorModal = this.showErrorModal.bind(this);
     this.closeSolvedModal = this.closeSolvedModal.bind(this);
-    this.showSolvedModal = this.showSolvedModal.bind(this);
-    this.taskIsSolved = this.taskIsSolved.bind(this);
-    this.handleSolvedTask = this.handleSolvedTask.bind(this);
-    this.codeHasError = this.codeHasError.bind(this);
+    this.handleTaskStart = this.handleTaskStart.bind(this);
 
     this.state = {
       figure: "kanelbolle",
@@ -42,17 +37,17 @@ class Game extends Component {
     };
   }
 
-  setCurrentTask(task) {
-    this.setState({currentTask: task })
-  }
-
   runCode(submittedCode) {
     // axios.get('http://python-eval-server.appspot.com/run', { params: { code: submittedCode, task: this.state.currentTask.body } })
     axios.get('http://127.0.0.1:5000/run', { params: { code: submittedCode, task: this.state.currentTask.body } })
     .then( response => {
-      this.setState({output: response.data.output, error_message: response.data.error_message})
+      this.setState({
+        output: response.data.output, 
+        error_message: response.data.error_message
+      })
+      
       if (this.codeHasError()) this.showErrorModal()
-      if (this.taskIsSolved(response.data.solved)) this.handleSolvedTask(submittedCode)
+      this.taskIsSolved(response.data.solved) ? this.handleTaskSolved(submittedCode) : this.updateStudentTaskInDB(submittedCode);
     })
     .catch(function(error) {
       console.log(error);
@@ -62,11 +57,11 @@ class Game extends Component {
   codeHasError() {
     return this.state.error_message !== '';
   }
-
+  
   taskIsSolved(solved) {
     return this.state.currentTask.id !== this.emptyTask.id && solved;
   }
-
+  
   async getImageUrl(key) {
     let figurePart = key < 10 ? "0" + key : key;
     try {
@@ -77,26 +72,61 @@ class Game extends Component {
       console.log(error)
     }
   }
-
-  handleSolvedTask(solution) {
+  
+  handleTaskStart(task) {
+    this.setState({currentTask: task });
+    if (task.id >= 0) this.initiateStudentTaskInDB(task.id);
+  }
+  
+  handleTaskSolved(studentCode) {
     const solvedTaskId = parseInt(this.state.currentTask.id);
-    const game_pin = this.props.cookies.get("game_pin")
-    const player_name = this.props.cookies.get("game_name")
 
     this.getImageUrl(solvedTaskId+1).then(url => {
       this.setState({
         lastSolvedTask: {id: solvedTaskId, url: url}
       })
-      this.props.firebase.solvedGameTasks(game_pin, "0").child(solvedTaskId).set(
-        {
-          solution: solution,
-          solvedBy: player_name,
-          url: url
-        }
-      )
-      this.showSolvedModal()
+      this.solveStudentTaskInDB(solvedTaskId, studentCode, url);
+      this.showSolvedModal();
     })
+  }
 
+  initiateStudentTaskInDB(taskId) {
+    const taskStartTime = new Date().getTime();
+    const gamePin = this.props.cookies.get("game_pin");
+    const team = this.props.cookies.get("game_team");
+    const playerName = this.props.cookies.get("game_name");
+    this.props.firebase.gamePlayer(gamePin, team, playerName).child("tasks").child(taskId).set(
+      {
+        startTime: taskStartTime,
+        endTime: null,
+        studentCode: null
+      }
+    );
+  }
+  
+  updateStudentTaskInDB(studentCode) {
+    const taskId = parseInt(this.state.currentTask.id);
+    const gamePin = this.props.cookies.get("game_pin");
+    const team = this.props.cookies.get("game_team");
+    const playerName = this.props.cookies.get("game_name");
+
+    this.props.firebase.gamePlayer(gamePin, team, playerName).child("tasks").child(taskId).child("studentCode").set(
+      studentCode
+    );
+  }
+
+  solveStudentTaskInDB(taskId, studentCode, imageUrl) {
+    const taskEndTime = new Date().getTime();
+    const gamePin = this.props.cookies.get("game_pin");
+    const team = this.props.cookies.get("game_team");
+    const playerName = this.props.cookies.get("game_name");
+
+    let updates = {};
+    updates['/players/' + playerName + '/tasks/' + taskId +  '/endTime/'] = taskEndTime;
+    updates['/players/' + playerName + '/tasks/' + taskId +'/studentCode/'] = studentCode;
+    updates['/solvedTasks/' + taskId + '/url/'] = imageUrl;
+
+    this.props.firebase.gameTeam(gamePin, team).update(updates);
   }
 
   showErrorModal() {
@@ -153,7 +183,7 @@ class Game extends Component {
           <Console output={this.state.output} />
         </Col>
         <Col>
-          <Cards lastSolvedTask={this.state.lastSolvedTask} onCardSelect={this.setCurrentTask} cookies={this.props.cookies} />
+          <Cards lastSolvedTask={this.state.lastSolvedTask} onCardSelect={this.handleTaskStart} cookies={this.props.cookies} />
         </Col>
       </Row>
       </Container>
