@@ -17,6 +17,7 @@ class GuessFigure extends Component {
     this.state = {
       figure: "kanelbolle",
       showGuessModal: false,
+      showWinModal: false,
       studentGuess: ''
     }
   }
@@ -28,7 +29,7 @@ class GuessFigure extends Component {
 
   handleGuessSubmit(event) {
     event.preventDefault();
-    console.log(this.state.studentGuess === this.state.figure);
+    if (this.state.studentGuess === this.state.figure) this.showWinModal();
   }
 
   showGuessModal() {
@@ -39,21 +40,35 @@ class GuessFigure extends Component {
     this.setState({showGuessModal: false})
   }
 
+  showWinModal() {
+    this.setState({showWinModal: true})
+  }
+
   GuessModal = () => (
     <Modal show={this.state.showGuessModal} onHide={this.closeGuessModal}>
       <Modal.Header closeButton>
         <Modal.Title>
-            {this.state.GuessModalHeaderText}
+            Hva tror du det er på bildet?
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form>
-          <Form.Label>
-            Hva tror du det er på bildet?
-          </Form.Label>
           <Form.Control as="input" onChange={this.handleGuessInput} />
           <Button onClick={this.handleGuessSubmit}>Gjett</Button>
         </Form>
+      </Modal.Body>
+    </Modal>
+  )
+
+  WinModal = () => (
+    <Modal show={this.state.showWinModal} >
+      <Modal.Header >
+        <Modal.Title>
+          Gratulerer
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        Dere vant!
       </Modal.Body>
     </Modal>
   )
@@ -66,6 +81,7 @@ class GuessFigure extends Component {
     return (
       <div>
         <this.GuessModal />
+        <this.WinModal />
         <this.GuessButton />
       </div>
     )
