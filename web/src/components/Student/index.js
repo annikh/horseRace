@@ -13,10 +13,11 @@ class Student extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.pinInput = this.pinInput.bind(this);
     this.namesDropDown = this.namesDropDown.bind(this);
+    this.handleExitGame = this.handleExitGame.bind(this);
 
     this.state = {
       value: "",
-      scoreboard: null,
+      nameList: null,
       game_pin: null,
       buttonValue: "Enter"
     };
@@ -27,20 +28,32 @@ class Student extends Component {
     this.setState({ game_pin: game_pin });
     const { cookies } = this.props;
     cookies.set("game_pin", game_pin);
-    this.props.firebase.gameScoreboard(game_pin).on("value", snapshot => {
-      this.setState({ scoreboard: snapshot.val() });
+    this.props.firebase.gamePlayerList(game_pin).on("value", snapshot => {
+      const teams = snapshot.val();
+      let players = {};
+      teams.forEach(team => {
+        let names = Object.keys(team.players)
+        let values = Object.values(team.players)
+        names.map((name,i) => players[name]=values[i])
+      })
+      this.setState({ nameList: players });
     });
   }
 
   handleEnterStudentName() {
     const name = this.state.value;
+    const team = this.getTeamFromPlayerName(name);
     const { cookies } = this.props;
     cookies.set("game_name", name);
+    cookies.set("game_team", team);
     this.props.firebase
-      .gameScoreboard(this.state.game_pin)
-      .child(name)
+      .gamePlayer(this.state.game_pin, team, name)
       .child("isActive")
       .set(true);
+  }
+
+  getTeamFromPlayerName(name) {
+    return (this.state.nameList !== null) ? this.state.nameList[name].team : "";
   }
 
   handleChange(event) {
@@ -52,6 +65,10 @@ class Student extends Component {
       ? this.handleEnterClassroomPin()
       : this.handleEnterStudentName();
     event.preventDefault();
+  }
+
+  handleExitGame() {
+    this.setState({ game_pin: null });
   }
 
   pinInput = () => {
@@ -66,15 +83,15 @@ class Student extends Component {
   };
 
   namesDropDown = () => {
-    const scoreboard = this.state.scoreboard;
-    console.log("scoreboard: ", scoreboard)
+    const nameList = this.state.nameList;
+    console.log("nameList: ", nameList)
     return (
       <Col md="auto">
         <Form.Control as="select" onChange={this.handleChange}>
           <option>Hva heter du?</option>
-          {Object.keys(scoreboard).map(
+          {Object.keys(nameList).map(
             (player, i) =>
-              !scoreboard[player]["isActive"] && (
+              !nameList[player]["isActive"] && (
                 <option key={i} value={player}>
                   {player}
                 </option>
@@ -99,7 +116,7 @@ class Student extends Component {
           </Col>
         </Row>
         <Row>
-          {this.state.scoreboard ? this.namesDropDown() : this.pinInput()}
+          {this.state.nameList ? this.namesDropDown() : this.pinInput()}
           <Col>
             <Button
               className="btn-classPin"
@@ -112,7 +129,7 @@ class Student extends Component {
         </Row>
       </Form>
     ) : (
-      <StudentGame cookies={cookies} />
+      <StudentGame cookies={cookies} onExit={this.handleExitGame}/>
     );
   }
 }

@@ -31,10 +31,12 @@ class StudentGame extends Component {
   exitGame = () => {
     const name = this.props.cookies.get("game_name");
     const game_pin = this.props.cookies.get("game_pin");
+    const team = this.props.cookies.get("game_team");
     this.props.cookies.remove("game_name");
     this.props.cookies.remove("game_pin");
+    this.props.cookies.remove("game_team");
 
-    this.props.firebase.gamePlayer(game_pin, name).child('isActive').set(
+    this.props.firebase.gamePlayer(game_pin, team, name).child('isActive').set(
       false
     );
     this.setState({

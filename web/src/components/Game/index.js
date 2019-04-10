@@ -51,7 +51,7 @@ class Game extends Component {
     .then( response => {
       this.setState({output: response.data.output, error_message: response.data.error_message})
       if (this.codeHasError()) this.showErrorModal()
-      if (this.taskIsSolved(response)) this.handleSolvedTask(submittedCode)
+      if (this.taskIsSolved(response.data.solved)) this.handleSolvedTask(submittedCode)
     })
     .catch(function(error) {
       console.log(error);
@@ -62,19 +62,22 @@ class Game extends Component {
     return this.state.error_message !== '';
   }
 
-  taskIsSolved(response) {
-    return this.state.currentTask.id !== this.emptyTask.id && response.data.solved;
+  taskIsSolved(solved) {
+    return this.state.currentTask.id !== this.emptyTask.id && solved;
   }
 
   handleSolvedTask(solution) {
     const solvedTaskId = this.state.currentTask.id;
     const game_pin = this.props.cookies.get("game_pin")
-    const game_name = this.props.cookies.get("game_name")
+    const player_name = this.props.cookies.get("game_name")
 
     this.setState({lastSolvedTaskId: solvedTaskId})
 
-    this.props.firebase.gamePlayer(game_pin, game_name).child("solvedTasks").set(
-      {task: solvedTaskId, solution: solution}
+    this.props.firebase.solvedGameTasks(game_pin, "0").child(solvedTaskId).set(
+      {
+        solution: solution,
+        solvedBy: player_name
+      }
     )
     this.showSolvedModal()
   }
@@ -122,6 +125,7 @@ class Game extends Component {
   )
 
   render() {
+    console.log(this.state.currentTask)
     return (
       <Container className="gameComponent">
       <this.ErrorModal/>
