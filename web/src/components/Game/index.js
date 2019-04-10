@@ -5,8 +5,7 @@ import {
   Container,
   Row,
   Col,
-  Modal,
-  Button
+  Modal
 } from "react-bootstrap";
 import Editor from "../Editor";
 import Cards from "../Cards";
@@ -22,22 +21,18 @@ class Game extends Component {
 
     this.closeErrorModal = this.closeErrorModal.bind(this);
     this.closeSolvedModal = this.closeSolvedModal.bind(this);
-    this.closeGuessingModal = this.closeGuessingModal.bind(this);
     this.runCode = this.runCode.bind(this);
-    this.handleImageGuess = this.handleImageGuess.bind(this);
     this.handleTaskStart = this.handleTaskStart.bind(this);
 
     this.state = {
-      figure: "kanelbolle",
       currentTask: this.emptyTask,
       lastSolvedTask: {id: this.emptyTask.id, url: ''},
       output: '',
       error_message: '',
       showErrorModal: false,
       showSolvedModal: false,
-      showGuessingModal: false,
       errorModalHeaders: ['Prøv igjen!', 'Bedre lykke neste gang!', 'Dette gikk visst ikke helt etter planen.', 'Oops..', 'Ikke helt der ennå..'],
-      errorModalHeaderText: '',
+      errorModalHeaderText: ''
     };
   }
 
@@ -56,10 +51,6 @@ class Game extends Component {
     .catch(function(error) {
       console.log(error);
     });
-  }
-
-  handleImageGuess() {
-    this.showGuessingModal();
   }
   
   codeHasError() {
@@ -153,14 +144,6 @@ class Game extends Component {
       this.setState({showSolvedModal: false})
   }
 
-  showGuessingModal() {
-    this.setState({showGuessingModal: true})
-  }
-  
-  closeGuessingModal() {
-      this.setState({showGuessingModal: false})
-  }
-
   SolvedModal = () => (
     <Modal show={this.state.showSolvedModal} onHide={this.closeSolvedModal}>
       <Modal.Header closeButton>
@@ -187,27 +170,14 @@ class Game extends Component {
     </Modal>
   )
 
-  GuessingModal = () => (
-    <Modal show={this.state.showGuessingModal} onHide={this.closeGuessingModal}>
-      <Modal.Header closeButton>
-        <Modal.Title>
-            {this.state.guessingModalHeaderText}
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-      </Modal.Body>
-    </Modal>
-  )
-
   render() {
     return (
       <Container className="gameComponent">
       <this.ErrorModal/>
       <this.SolvedModal/>
-      <this.GuessingModal/>
       <Row>
         <Col>
-          <Editor onRunCode={this.runCode} onImageGuess={this.handleImageGuess} />
+          <Editor onRunCode={this.runCode} />
           <br/>
           <Console output={this.state.output} />
         </Col>
