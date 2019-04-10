@@ -30,8 +30,9 @@ class Game extends Component {
     this.codeHasError = this.codeHasError.bind(this);
 
     this.state = {
+      figure: "kanelbolle",
       currentTask: this.emptyTask,
-      lastSolvedTaskId: this.emptyTask.id,
+      lastSolvedTask: {id: this.emptyTask.id, url: ''},
       output: '',
       error_message: '',
       showErrorModal: false,
@@ -66,20 +67,36 @@ class Game extends Component {
     return this.state.currentTask.id !== this.emptyTask.id && solved;
   }
 
+  async getImageUrl(key) {
+    let figurePart = key < 10 ? "0" + key : key;
+    try {
+      const url = await this.props.firebase.getImagePart(this.state.figure, figurePart).getDownloadURL();
+      return url;
+    }
+    catch (error) {
+      console.log(error)
+    }
+  }
+
   handleSolvedTask(solution) {
-    const solvedTaskId = this.state.currentTask.id;
+    const solvedTaskId = parseInt(this.state.currentTask.id);
     const game_pin = this.props.cookies.get("game_pin")
     const player_name = this.props.cookies.get("game_name")
 
-    this.setState({lastSolvedTaskId: solvedTaskId})
+    this.getImageUrl(solvedTaskId+1).then(url => {
+      this.setState({
+        lastSolvedTask: {id: solvedTaskId, url: url}
+      })
+      this.props.firebase.solvedGameTasks(game_pin, "0").child(solvedTaskId).set(
+        {
+          solution: solution,
+          solvedBy: player_name,
+          url: url
+        }
+      )
+      this.showSolvedModal()
+    })
 
-    this.props.firebase.solvedGameTasks(game_pin, "0").child(solvedTaskId).set(
-      {
-        solution: solution,
-        solvedBy: player_name
-      }
-    )
-    this.showSolvedModal()
   }
 
   showErrorModal() {
@@ -125,7 +142,6 @@ class Game extends Component {
   )
 
   render() {
-    console.log(this.state.currentTask)
     return (
       <Container className="gameComponent">
       <this.ErrorModal/>
@@ -137,7 +153,7 @@ class Game extends Component {
           <Console output={this.state.output} />
         </Col>
         <Col>
-          <Cards lastSolvedTaskId={this.state.lastSolvedTaskId} onCardSelect={this.setCurrentTask} cookies={this.props.cookies} />
+          <Cards lastSolvedTask={this.state.lastSolvedTask} onCardSelect={this.setCurrentTask} cookies={this.props.cookies} />
         </Col>
       </Row>
       </Container>
