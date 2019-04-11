@@ -12,7 +12,7 @@ class Editor extends Component {
         super(props, context);
         
         this.handleChange = this.handleChange.bind(this);
-        this.handleButtonClick = this.handleButtonClick.bind(this);
+        this.handleRunClick = this.handleRunClick.bind(this);
 
         this.state = {
             aceEditorValue: '# Skriv inn koden din her.'
@@ -23,7 +23,7 @@ class Editor extends Component {
         this.setState({ aceEditorValue: value });
     }
 
-    handleButtonClick(event) {
+    handleRunClick(event) {
         event.preventDefault();
         this.props.onRunCode(this.state.aceEditorValue)
     } 
@@ -47,7 +47,7 @@ class Editor extends Component {
                       showLineNumbers: true,
                       tabSize: 2,
                     }}/>
-                <Button variant="success" onClick={this.handleButtonClick} ><FontAwesomeIcon icon="play"/> Run</Button>
+                <Button variant="success" onClick={this.handleRunClick} ><FontAwesomeIcon icon="play"/> Run</Button>
             </div>
         )
     }

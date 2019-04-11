@@ -91,3 +91,6 @@ node_modules/
 
 # python virtual environment
 eval-server/env/
+
+# IDE-config
+.vscode/

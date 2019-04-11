@@ -4,6 +4,7 @@ import { withFirebase } from "../Firebase";
 import * as ROUTES from "../../constants/routes";
 import { Redirect } from "react-router-dom";
 import Game from "../Game";
+import GuessFigure from "../GuessFigure";
 
 class StudentGame extends Component {
 
@@ -48,7 +49,7 @@ class StudentGame extends Component {
   render() {
     return (
       <Container className="studentGame">
-        <Nav className="justify-content-center">
+        <Nav className="studentGameNav">
           <Nav.Item>
             {this.state.exitGame ? (
               <Redirect
@@ -62,6 +63,9 @@ class StudentGame extends Component {
           </Nav.Item>
           <Nav.Item>
             <h3>Hei, {this.props.cookies.get("game_name")} </h3>
+          </Nav.Item>
+          <Nav.Item>
+            <GuessFigure />
           </Nav.Item>
         </Nav>
         {this.state.gamePin && !this.state.gameIsActive ? (

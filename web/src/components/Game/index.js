@@ -19,13 +19,12 @@ class Game extends Component {
   constructor(props) {
     super(props);
 
-    this.runCode = this.runCode.bind(this);
     this.closeErrorModal = this.closeErrorModal.bind(this);
     this.closeSolvedModal = this.closeSolvedModal.bind(this);
+    this.runCode = this.runCode.bind(this);
     this.handleTaskStart = this.handleTaskStart.bind(this);
 
     this.state = {
-      figure: "kanelbolle",
       currentTask: this.emptyTask,
       lastSolvedTask: {id: this.emptyTask.id, url: ''},
       output: '',
@@ -33,7 +32,7 @@ class Game extends Component {
       showErrorModal: false,
       showSolvedModal: false,
       errorModalHeaders: ['Prøv igjen!', 'Bedre lykke neste gang!', 'Dette gikk visst ikke helt etter planen.', 'Oops..', 'Ikke helt der ennå..'],
-      errorModalHeaderText: '',
+      errorModalHeaderText: ''
     };
   }
 
