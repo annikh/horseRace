@@ -39,15 +39,17 @@ class Firebase {
     return this.db.ref("games").child(pin);
   };
   gameState = pin => {
-    return this.db.ref("games")
-    .child(pin)
-    .child("isActive");
-  }
+    return this.db
+      .ref("games")
+      .child(pin)
+      .child("isActive");
+  };
   gamePlayerList = pin => {
-    return this.db.ref("games")
-    .child(pin)
-    .child("teams");
-  }
+    return this.db
+      .ref("games")
+      .child(pin)
+      .child("teams");
+  };
   games = () => {
     return this.db.ref("games");
   };
@@ -75,14 +77,14 @@ class Firebase {
       .ref("games")
       .child(pin)
       .child("tasks");
-  }
+  };
   gameTeam = (pin, team) => {
     return this.db
-    .ref("games")
-    .child(pin)
-    .child("teams")
-    .child(team);
-  }
+      .ref("games")
+      .child(pin)
+      .child("teams")
+      .child(team);
+  };
   solvedGameTasks = (pin, team) => {
     return this.db
       .ref("games")
@@ -90,7 +92,7 @@ class Firebase {
       .child("teams")
       .child(team)
       .child("solvedTasks");
-  }
+  };
   solvedGameTask = (pin, team, taskId) => {
     return this.db
       .ref("games")
@@ -98,8 +100,8 @@ class Firebase {
       .child("teams")
       .child(team)
       .child("solvedTasks")
-      .child(taskId)
-  }
+      .child(taskId);
+  };
 
   // *** Classroom API ***
   addClassroom = (user_id, className) => {
@@ -112,6 +114,14 @@ class Firebase {
     return this.db.ref("classrooms").child(user_id);
   };
 
+  deleteClassroomByTeacher = (user_id, className) => {
+    return this.db
+      .ref("classrooms")
+      .child(user_id)
+      .child(className)
+      .remove();
+  };
+
   // *** Task API ***
   tasks = type => {
     return this.db.ref("tasks").child(type);
@@ -119,12 +129,12 @@ class Firebase {
 
   // *** Image API ***
   getImagePart = (folder, part) => {
-    const string_part = 'image_part_0' + part + '.jpg'
+    const string_part = "image_part_0" + part + ".jpg";
     return this.image_storage
       .ref()
       .child(folder)
-      .child(string_part)
-  }
+      .child(string_part);
+  };
 }
 
 export default Firebase;
