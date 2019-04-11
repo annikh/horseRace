@@ -8,9 +8,9 @@ class TeacherClassrooms extends Component {
   constructor(props) {
     super(props);
     this.showClassroom = this.showClassroom.bind(this);
+    this.closeClassroom = this.closeClassroom.bind(this);
     this.classroomList = this.classroomList.bind(this);
     this.deleteClassroom = this.deleteClassroom.bind(this);
-    this.classroom = this.classroom.bind(this);
     this.nameList = this.nameList.bind(this);
 
     this.state = {
@@ -30,52 +30,33 @@ class TeacherClassrooms extends Component {
   }
 
   showClassroom(event) {
-    console.log(event);
-    event.preventDefault();
-    const classroom = event.target.value;
-    const show = !this.state.showClassroom;
     this.setState({
-      showClassroom: show,
-      selectedClassroom: classroom
+      showClassroom: true,
+      selectedClassroom: event.target.value
     });
   }
 
-  deleteClassroom() {}
+  closeClassroom() {
+    this.setState({
+      showClassroom: false,
+      selectedClassroom: ""
+    });
+  }
 
-  classroom = classroom => {
-    console.log(classroom);
-    return (
-      <Modal onHide={this.showClassroom}>
-        <Modal.Header closeButton>
-          <Modal.Title>{this.state.selectedClassroom}}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>{this.nameList(classroom.names)}</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={this.handleClose}>
-            Close
-          </Button>
-          <Button variant="danger" onClick={this.deleteClassroom}>
-            Slett klasserom
-          </Button>
-        </Modal.Footer>
-      </Modal>
+  deleteClassroom() {
+    this.props.firebase.deleteClassroomByTeacher(
+      this.context.uid,
+      this.state.selectedClassroom
     );
-  };
+    this.setState({ selectedClassroom: "", showClassroom: false });
+  }
 
-  nameList = names => {
-    console.log(names);
+  nameList = classroom => {
     return (
       <ListGroup variant="flush" style={{ width: "80%" }}>
-        {names.map((name, i) => (
-          <ListGroup.Item
-            key={i}
-            style={{ textAlign: "left" }}
-            action
-            variant="warning"
-          >
-            <Row>
-              <Col>{name}</Col>
-            </Row>
+        {classroom.names.map((name, i) => (
+          <ListGroup.Item key={i} style={{ textAlign: "left" }} variant="light">
+            {name}
           </ListGroup.Item>
         ))}
       </ListGroup>
@@ -88,15 +69,12 @@ class TeacherClassrooms extends Component {
         {Object.keys(classrooms).map((name, i) => (
           <ListGroup.Item
             key={i}
-            style={{ textAlign: "left" }}
             action
             variant="warning"
             onClick={this.showClassroom}
             value={name}
           >
-            <Row>
-              <Col>{name}</Col>
-            </Row>
+            {name}
           </ListGroup.Item>
         ))}
       </ListGroup>
@@ -104,7 +82,7 @@ class TeacherClassrooms extends Component {
   };
 
   render() {
-    const { classrooms } = this.state;
+    const { classrooms, showClassroom, selectedClassroom } = this.state;
     return (
       <Container className="accountBody">
         <Row className="rowAccount">
@@ -120,9 +98,24 @@ class TeacherClassrooms extends Component {
               )}
             </Row>
           </Col>
-          {this.state.showClassroom
-            ? this.classroom(this.state.selectedClassroom)
-            : null}
+          {Object.keys(classrooms).length > 0 && selectedClassroom.length > 0 && (
+            <Modal show={showClassroom} onHide={this.closeClassroom}>
+              <Modal.Header closeButton>
+                <Modal.Title>{selectedClassroom}</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                {this.nameList(classrooms[selectedClassroom])}
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant="secondary" onClick={this.closeClassroom}>
+                  Close
+                </Button>
+                <Button variant="danger" onClick={this.deleteClassroom}>
+                  Slett klasserom
+                </Button>
+              </Modal.Footer>
+            </Modal>
+          )}
           <Col className="insideBox">
             <Row className="rowAccount">
               <CreateClassroom />
