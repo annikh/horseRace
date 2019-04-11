@@ -47,7 +47,7 @@ class CreateGame extends Component {
       false,
       authUser.uid,
       this.state.classroomName,
-      new Date(),
+      new Date().getTime(),
       teams,
       this.state.tasks
     );
@@ -98,9 +98,8 @@ class CreateGame extends Component {
       if (!newTeams[team]) newTeams[team] = { players: {} };
       let newPlayer = {
         isActive: false,
-        points: 0,
         tasks: null,
-        team: 0,
+        team: team,
         startTime: null,
         endTime: null
       };

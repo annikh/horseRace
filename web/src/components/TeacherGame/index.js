@@ -83,8 +83,8 @@ class TeacherGame extends Component {
     const { teams } = this.state.game;
     let fullList = [];
     let teamList = [];
-    Object.keys(teams).map(team => {
-      Object.keys(teams[team].players).map((player, i) => {
+    Object.keys(teams).forEach((team, key) => {
+      Object.keys(teams[team].players).forEach((player, i) => {
         teamList.push(
           <Col key={i}>
             <Card
@@ -96,7 +96,7 @@ class TeacherGame extends Component {
               <Card.Body>
                 <Card.Title>{player}</Card.Title>
                 {this.state.isStarted ? (
-                  <Card.Text>
+                  <Card.Text tag="div">
                     <strong>Oppgaver:</strong>
                     {this.taskList(team, player)}
                   </Card.Text>
@@ -107,7 +107,7 @@ class TeacherGame extends Component {
         );
       });
 
-      fullList.push(<Row className="rowAccount">{teamList}</Row>);
+      fullList.push(<Row className="rowAccount" key={key}>{teamList}</Row>);
       teamList = [];
     });
 

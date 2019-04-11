@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { withFirebase } from "../Firebase";
 import CreateGame from "../CreateGame";
 import * as ROUTES from "../../constants/routes";
+import "./style.css";
 
 class TeacherGames extends Component {
   constructor(props) {
@@ -74,7 +75,7 @@ const NoGames = () => (
 );
 
 const GameList = ({ games }) => (
-  <ListGroup variant="flush" style={{ width: "80%" }}>
+  <ListGroup style={{ width: "80%" }}>
     {Object.keys(games).map((pin, i) => (
       <Link
         key={i}
@@ -82,18 +83,23 @@ const GameList = ({ games }) => (
         style={{ textDecoration: "none" }}
       >
         <ListGroup.Item style={{ textAlign: "left" }} action variant="warning">
-          <Row>
-            <Col>{games[pin].classroom_id}</Col>
-          </Row>
-          <Row>
+          <Row className="left">
+            <Col className="bold">PIN:</Col>
             <Col>{pin}</Col>
           </Row>
-          <Row>
+          <Row className="left">
+            <Col className="bold">Klasserom:</Col>
+            <Col>{games[pin].classroom_id}</Col>
+          </Row>
+          <Row className="left">
+            <Col className="bold">Dato opprettet:</Col>
             <Col>
               {new Intl.DateTimeFormat("en-GB", {
                 year: "numeric",
                 month: "long",
-                day: "2-digit"
+                day: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit"
               }).format(games[pin].date)}
             </Col>
           </Row>

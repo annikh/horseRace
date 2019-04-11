@@ -16,6 +16,10 @@
   padding: 20px;
 }
 
+.studentGameNav {
+  justify-content: space-evenly
+}
+
 .btn-classPin {
   background-color: #348654 !important;
   border-color: #3c9b60 !important;

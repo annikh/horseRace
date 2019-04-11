@@ -43,42 +43,68 @@ class Firebase {
     .child(pin)
     .child("isActive");
   }
-  gameScoreboard = pin => {
+  gamePlayerList = pin => {
     return this.db.ref("games")
     .child(pin)
-    .child("scoreboard");
+    .child("teams");
   }
   games = () => {
-    return this.db.ref("games/");
+    return this.db.ref("games");
   };
   addGame = pin => {
-    return this.db.ref("games/").child(pin);
+    return this.db.ref("games").child(pin);
   };
-  gamePlayer = (pin, name) => {
+  gamePlayer = (pin, team, name) => {
     return this.db
       .ref("games")
       .child(pin)
-      .child("scoreboard")
+      .child("teams")
+      .child(team)
+      .child("players")
       .child(name);
   };
   gameTask = (pin, taskId) => {
     return this.db
-      .ref("games/")
+      .ref("games")
       .child(pin)
       .child("tasks")
       .child(taskId);
   };
   gameTasks = pin => {
     return this.db
-      .ref("games/")
+      .ref("games")
       .child(pin)
       .child("tasks");
+  }
+  gameTeam = (pin, team) => {
+    return this.db
+    .ref("games")
+    .child(pin)
+    .child("teams")
+    .child(team);
+  }
+  solvedGameTasks = (pin, team) => {
+    return this.db
+      .ref("games")
+      .child(pin)
+      .child("teams")
+      .child(team)
+      .child("solvedTasks");
+  }
+  solvedGameTask = (pin, team, taskId) => {
+    return this.db
+      .ref("games")
+      .child(pin)
+      .child("teams")
+      .child(team)
+      .child("solvedTasks")
+      .child(taskId)
   }
 
   // *** Classroom API ***
   addClassroom = (user_id, className) => {
     return this.db
-      .ref("classrooms/")
+      .ref("classrooms")
       .child(user_id)
       .child(className);
   };
@@ -93,7 +119,7 @@ class Firebase {
 
   // *** Image API ***
   getImagePart = (folder, part) => {
-    const string_part = '/image_part_0' + part + '.jpg'
+    const string_part = 'image_part_0' + part + '.jpg'
     return this.image_storage
       .ref()
       .child(folder)
