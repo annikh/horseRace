@@ -22,3 +22,7 @@ If this is the first time you run it, or there are new dependencies, install the
 Now you can start the server
 
 ### `python app.py`
+
+If you want to deactivate the virtual environment
+
+### `deactivate`
