@@ -40,6 +40,8 @@ class StudentGame extends Component {
       playerName: null,
       team: 0
     });
+
+    this.props.onExit();
   };
 
   render() {
