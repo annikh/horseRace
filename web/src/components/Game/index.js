@@ -14,8 +14,7 @@ import "./style.css";
 
 class Game extends Component {
 
-  emptyTask = { id: -1, body: {difficulty: 0, test: "", text: "", title: "", error_hint: ""}}
-  defaultErrorMessage = "Trykk på et av kortene for å velge en oppgave"
+  emptyTask = { id: -1, body: {difficulty: 0, test: "", text: "", title: "", error_hint: "", default_code: ""}}
 
   constructor(props) {
     super(props);
@@ -28,6 +27,7 @@ class Game extends Component {
     this.state = {
       currentTask: this.emptyTask,
       lastSolvedTask: {id: this.emptyTask.id, url: ''},
+      newTaskSelected: false,
       output: '',
       error_message: '',
       showErrorModal: false,
@@ -44,10 +44,9 @@ class Game extends Component {
     // axios.get('http://python-eval-server.appspot.com/run', { params: { code: submittedCode, task: this.state.currentTask.body } })
     axios.get('http://127.0.0.1:5000/run', { params: { code: submittedCode, task: this.state.currentTask.body } })
     .then( response => {
-      const error_message = this.aTaskIsSelected ? this.defaultErrorMessage : response.data.error_message;
       this.setState({
         output: response.data.output, 
-        error_message: error_message
+        error_message: response.data.error_message
       })
       
       if (this.codeHasError()) this.showErrorModal()
@@ -60,10 +59,6 @@ class Game extends Component {
   
   codeHasError() {
     return this.state.error_message !== "";
-  }
-
-  aTaskIsSelected() {
-    return this.state.currentTask.id !== this.emptyTask.id;
   }
   
   taskIsSolved(solved) {
@@ -82,8 +77,16 @@ class Game extends Component {
   }
   
   handleTaskStart(task) {
-    this.setState({currentTask: task });
-    if (task.id >= 0) this.initiateStudentTaskInDB(task.id);
+    const newTaskSelected = task.id !== this.state.currentTask.id;
+    this.setState({
+      currentTask: task,
+      newTaskSelected: newTaskSelected
+    })
+    if (task.id >= 0 && newTaskSelected) {
+      this.props.firebase.gamePlayer(this.state.gamePin, this.state.team, this.state.playerName).child("tasks").child(task.id).once("value", snapshot => {
+        if (!snapshot.exists()) this.initiateStudentTaskInDB(task.id);
+      })
+    }
   }
   
   handleTaskSolved(studentCode) {
@@ -178,7 +181,7 @@ class Game extends Component {
       <this.SolvedModal/>
       <Row>
         <Col>
-          <Editor onRunCode={this.runCode} />
+          <Editor onRunCode={this.runCode} defaultCode={this.state.currentTask.body.default_code} newTaskSelected={this.state.newTaskSelected} />
           <br/>
           <Console output={this.state.output} />
         </Col>
