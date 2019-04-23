@@ -11,8 +11,9 @@ cors = CORS(app)
 def run_code():
     code = request.args.get('code')
     task = json.loads(request.args.get('task'))
-    if code == '' or code == '# Skriv inn koden din her.':
-        return jsonify(output='', error_message='Skriv din kode i editoren.')
+    default_code = json.loads(request.args.get('default_code'))
+    if code == '' or code == default_code:
+        return jsonify(output='', error_message='Velg en oppgave og skriv din kode i editoren.')
 
     code_with_tests = code + '\n' + task["test"]
     
