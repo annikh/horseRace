@@ -13,36 +13,32 @@ class StudentGame extends Component {
     this.state = {
       exitGame: false,
       gameIsActive: false, 
-      gamePin: null,
-      player: {
-        tasks: [],
-        points: 0
-      }
+      gamePin: this.props.cookies.get("game_pin"),
+      playerName: this.props.cookies.get("game_name"),
+      team: this.props.cookies.get("game_team")
     };
   }
 
   componentDidMount() {
-    const game_pin = this.props.cookies.get("game_pin");
-    this.setState({ gamePin: game_pin })
-    this.props.firebase.gameState(game_pin).on("value", snapshot => {
+    this.props.firebase.gameState(this.state.gamePin).on("value", snapshot => {
       this.setState({ gameIsActive: snapshot.val() });
     });
   }
 
   exitGame = () => {
-    const name = this.props.cookies.get("game_name");
-    const game_pin = this.props.cookies.get("game_pin");
-    const team = this.props.cookies.get("game_team");
+    this.props.firebase.gamePlayer(this.state.gamePin, this.state.team, this.state.playerName).child('isActive').set(
+      false
+    );
+
     this.props.cookies.remove("game_name");
     this.props.cookies.remove("game_pin");
     this.props.cookies.remove("game_team");
 
-    this.props.firebase.gamePlayer(game_pin, team, name).child('isActive').set(
-      false
-    );
     this.setState({
       exitGame: true,
-      gamePin: null
+      gamePin: null,
+      playerName: null,
+      team: 0
     });
   };
 
@@ -62,7 +58,7 @@ class StudentGame extends Component {
             )}
           </Nav.Item>
           <Nav.Item>
-            <h3>Hei, {this.props.cookies.get("game_name")} </h3>
+            <h3>Hei, {this.state.playerName} </h3>
           </Nav.Item>
           <Nav.Item>
             <GuessFigure />
