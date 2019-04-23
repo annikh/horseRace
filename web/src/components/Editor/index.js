@@ -15,7 +15,14 @@ class Editor extends Component {
         this.handleRunClick = this.handleRunClick.bind(this);
 
         this.state = {
-            aceEditorValue: '# Skriv inn koden din her.'
+            aceEditorValue: this.props.defaultCode
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.props.newTaskSelected && this.props.defaultCode !== prevProps.defaultCode) {
+            console.log("default code",this.props.defaultCode)
+            this.handleChange(this.props.defaultCode)
         }
     }
 
