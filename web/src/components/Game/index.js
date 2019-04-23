@@ -28,6 +28,7 @@ class Game extends Component {
       currentTask: this.emptyTask,
       lastSolvedTask: {id: this.emptyTask.id, url: ''},
       newTaskSelected: false,
+      figure: "kanelbolle",
       output: '',
       error_message: '',
       showErrorModal: false,
@@ -72,7 +73,7 @@ class Game extends Component {
       return url;
     }
     catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }
   
