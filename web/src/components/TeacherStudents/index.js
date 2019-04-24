@@ -13,6 +13,7 @@ import {
 import { withFirebase } from "../Firebase";
 import CreateClassroom from "../CreateClassroom";
 import * as ROUTES from "../../constants/routes";
+import "./style.css";
 
 class TeacherStudents extends Component {
   constructor(props) {
@@ -37,19 +38,15 @@ class TeacherStudents extends Component {
     var students = [];
     classrooms[classroom].names.map((name, i) => {
       students.push(
-        <Link
-          key={i}
-          to={ROUTES.TEACHER_STUDENTS + "/" + name}
-          style={{ textDecoration: "none" }}
-        >
-          <Card
-            style={{
-              backgroundColor: "#ffeeba"
-            }}
+        <Card className="studentCard">
+          <Link
+            key={i}
+            to={ROUTES.TEACHER_STUDENTS + "/" + name}
+            className="studentCardLink"
           >
             <Card.Title>{name}</Card.Title>
-          </Card>
-        </Link>
+          </Link>
+        </Card>
       );
     });
     return (

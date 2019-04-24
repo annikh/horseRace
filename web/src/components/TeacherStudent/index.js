@@ -1,10 +1,5 @@
 import React, { Component } from "react";
 import { AuthUserContext, withAuthorization } from "../Session";
-import ReactHtmlParser, {
-  processNodes,
-  convertNodeToElement,
-  htmlparser2
-} from "react-html-parser";
 import { Container, Row, Col, Card } from "react-bootstrap";
 import { withFirebase } from "../Firebase";
 import CreateClassroom from "../CreateClassroom";
@@ -18,9 +13,7 @@ class TeacherStudent extends Component {
 
     this.state = {
       student: "",
-      games: {},
-      selectedTask: {},
-      taskOpened: false
+      games: {}
     };
   }
 
