@@ -32,31 +32,36 @@ class TeacherStudents extends Component {
     });
   }
 
-  getStudents() {
+  getStudents(classroom, i) {
+    const { classrooms } = this.state;
     var students = [];
-    var i = 0;
-    const classrooms = this.state.classrooms;
-    Object.keys(classrooms).map(classroom => {
-      classrooms[classroom].names.map(name => {
-        students.push(
-          <Link
-            key={i}
-            to={ROUTES.TEACHER_STUDENTS + "/" + name}
-            style={{ textDecoration: "none" }}
+    classrooms[classroom].names.map((name, i) => {
+      students.push(
+        <Link
+          key={i}
+          to={ROUTES.TEACHER_STUDENTS + "/" + name}
+          style={{ textDecoration: "none" }}
+        >
+          <Card
+            style={{
+              backgroundColor: "#ffeeba"
+            }}
           >
-            <Card
-              key={i++}
-              style={{
-                backgroundColor: "#ffeeba"
-              }}
-            >
-              <Card.Title>{name}</Card.Title>
-            </Card>
-          </Link>
-        );
-      });
+            <Card.Title>{name}</Card.Title>
+          </Card>
+        </Link>
+      );
     });
-    return students;
+    return (
+      <Row key={i} style={{ margin: "10px" }}>
+        <Col>
+          <Row>
+            <h5>{classroom}</h5>
+          </Row>
+          <Row>{students}</Row>
+        </Col>
+      </Row>
+    );
   }
 
   render() {
@@ -69,7 +74,12 @@ class TeacherStudents extends Component {
             <Row>
               <h2>Dine elever:</h2>
             </Row>
-            <Row>{classroomsExists && this.getStudents()}</Row>
+            <Row>
+              {classroomsExists &&
+                Object.keys(classrooms).map((classroom, i) =>
+                  this.getStudents(classroom, i)
+                )}
+            </Row>
           </Col>
         </Row>
       </Container>
