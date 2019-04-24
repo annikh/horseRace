@@ -42,8 +42,7 @@ class Game extends Component {
   }
 
   runCode(submittedCode) {
-    // axios.get('http://python-eval-server.appspot.com/run', { params: { code: submittedCode, task: this.state.currentTask.body } })
-    axios.get('http://127.0.0.1:5000/run', { params: { code: submittedCode, task: this.state.currentTask.body } })
+    axios.get('http://35.228.140.69/run', { params: { code: submittedCode, task: this.state.currentTask.body } })
     .then( response => {
       this.setState({
         output: response.data.output, 
