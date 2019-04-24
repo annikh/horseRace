@@ -3,6 +3,7 @@ from flask_cors import CORS
 import sys
 from io import StringIO
 import contextlib
+import logging
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -11,7 +12,7 @@ cors = CORS(app)
 def run_code():
     code = request.args.get('code')
     task = json.loads(request.args.get('task'))
-    default_code = json.loads(request.args.get('default_code'))
+    default_code = task['default_code']
     if code == '' or code == default_code:
         return jsonify(output='', error_message='Velg en oppgave og skriv din kode i editoren.')
 
