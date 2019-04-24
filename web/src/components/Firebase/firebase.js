@@ -3,6 +3,8 @@ import "firebase/auth";
 import "firebase/database";
 import "firebase/storage";
 
+import * as FIGURES from "../../constants/figures.js";
+
 const config = {
   apiKey: process.env.REACT_APP_API_KEY,
   authDomain: process.env.REACT_APP_AUTH_DOMAIN,
@@ -128,11 +130,11 @@ class Firebase {
   };
 
   // *** Image API ***
-  getImagePart = (folder, part) => {
-    const string_part = "image_part_0" + part + ".jpg";
+  getImagePart = (figure, part) => {
+    const string_part = FIGURES.FIGUREPARTS[part] + ".jpg";
     return this.image_storage
       .ref()
-      .child(folder)
+      .child(figure)
       .child(string_part);
   };
 }
