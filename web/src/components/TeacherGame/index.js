@@ -9,7 +9,6 @@ import {
   Modal
 } from "react-bootstrap";
 import { withFirebase } from "../Firebase";
-import ReactHtmlParser from "react-html-parser";
 import { AuthUserContext, withAuthorization } from "../Session";
 import "./style.css";
 
@@ -107,7 +106,11 @@ class TeacherGame extends Component {
         );
       });
 
-      fullList.push(<Row className="rowAccount" key={key}>{teamList}</Row>);
+      fullList.push(
+        <Row className="rowAccount" key={key}>
+          {teamList}
+        </Row>
+      );
       teamList = [];
     });
 
@@ -168,7 +171,7 @@ class TeacherGame extends Component {
               <Modal.Body>
                 <strong>Vanskelighetsgrad:</strong>
                 {task.difficulty} <br />
-                {ReactHtmlParser(task.text)}
+                {task.text}
               </Modal.Body>
               <Modal.Footer>
                 <Button variant="secondary" onClick={this.handleClose}>
