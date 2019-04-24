@@ -137,6 +137,10 @@ class Firebase {
       .child(figure)
       .child(string_part);
   };
+
+  figureChoices = () => {
+    return this.db.ref("figure");
+  }
 }
 
 export default Firebase;
