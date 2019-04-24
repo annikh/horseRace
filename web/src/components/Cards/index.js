@@ -1,16 +1,21 @@
 import React, { Component } from "react";
 import { withFirebase } from "../Firebase";
-import {
-  Button,
-  ButtonGroup,
-  Card,
-} from "react-bootstrap";
+import { Button, ButtonGroup, Card } from "react-bootstrap";
 import * as COLORS from "../../constants/colors";
 import "./style.css";
 
 class Cards extends Component {
-
-  emptyCard = {id: -1, body: {difficulty: 0, test: "", text: "", title: "", error_hint: "", default_code: ""}}
+  emptyCard = {
+    id: -1,
+    body: {
+      difficulty: 0,
+      test: "",
+      text: "",
+      title: "",
+      error_hint: "",
+      default_code: ""
+    }
+  };
 
   constructor(props) {
     super(props);
@@ -37,72 +42,80 @@ class Cards extends Component {
 
     this.props.firebase.gameTasks(this.state.gamePin).on("value", snapshot => {
       cards = snapshot.val();
-      this.setState({cards: cards});
+      this.setState({ cards: cards });
 
-      this.props.firebase.solvedGameTasks(this.state.gamePin, this.state.gameTeam).on("value", snapshot => {
-        let solvedTasks = {};
-        const solvedTasksFromDB = snapshot.val();
-        if (!this.objectIsEmpty(solvedTasksFromDB)) {
-          Object.keys(solvedTasksFromDB).forEach(taskId => {
-            const url = solvedTasksFromDB[taskId].url;
-            solvedTasks[taskId] = url;
-          })
-        }
+      this.props.firebase
+        .solvedGameTasks(this.state.gamePin, this.state.gameTeam)
+        .on("value", snapshot => {
+          let solvedTasks = {};
+          const solvedTasksFromDB = snapshot.val();
+          if (!this.objectIsEmpty(solvedTasksFromDB)) {
+            Object.keys(solvedTasksFromDB).forEach(taskId => {
+              const url = solvedTasksFromDB[taskId].url;
+              solvedTasks[taskId] = url;
+            });
+          }
 
-        if (this.objectIsEmpty(this.state.gameBoard)) {
-          gameBoard = this.generateInitialBoardState(cards, solvedTasks);
-          this.setState({gameBoard: gameBoard})
-          this.setState({solvedTasks: solvedTasks})
-        }
-      })
-    })
+          if (this.objectIsEmpty(this.state.gameBoard)) {
+            gameBoard = this.generateInitialBoardState(cards, solvedTasks);
+            this.setState({ gameBoard: gameBoard });
+            this.setState({ solvedTasks: solvedTasks });
+          }
+        });
+    });
   }
 
   componentDidUpdate(prevProps) {
     const lastSolvedTaskId = this.props.lastSolvedTask.id;
     const previousLastSolvedTaskId = prevProps.lastSolvedTask.id;
     const url = this.props.lastSolvedTask.url;
-    
-    if (lastSolvedTaskId !== previousLastSolvedTaskId && !this.taskIsSolved(lastSolvedTaskId, this.state.solvedTasks)) {
-      this.replaceCardWithImage(lastSolvedTaskId, url, this.state.gameBoard)
+
+    if (
+      lastSolvedTaskId !== previousLastSolvedTaskId &&
+      !this.taskIsSolved(lastSolvedTaskId, this.state.solvedTasks)
+    ) {
+      this.replaceCardWithImage(lastSolvedTaskId, url, this.state.gameBoard);
       let solvedTasks = this.state.solvedTasks;
       solvedTasks[lastSolvedTaskId] = url;
-      this.setState({solvedTasks: solvedTasks});
+      this.setState({ solvedTasks: solvedTasks });
       this.handleCardClose();
     }
   }
 
   componentWillUnmount() {
     this.props.firebase.gameTasks(this.state.gamePin).off();
-    this.props.firebase.solvedGameTasks(this.state.gamePin, this.state.gameTeam).off();
+    this.props.firebase
+      .solvedGameTasks(this.state.gamePin, this.state.gameTeam)
+      .off();
   }
 
   generateInitialBoardState(cards, solvedTasks) {
-    let board = {}
-    Object.keys(cards).forEach((id) => {
-      board[id] = 
-        (this.taskIsSolved(id, solvedTasks) ? (
-          <img src={solvedTasks[id]} className="img" alt="" />
-        ) : (
+    let board = {};
+    Object.keys(cards).forEach(id => {
+      board[id] = this.taskIsSolved(id, solvedTasks) ? (
+        <img src={solvedTasks[id]} className="img" alt="" />
+      ) : (
         <Button
-            key={id}
-            className="card"
-            style={{
-              backgroundColor: this.setCardColorByDiffictuly(cards[id].difficulty)
-            }}
-            onClick={() => this.handleCardOpen(id, cards[id])}
-          >
-            {cards[id].title}
+          key={id}
+          className="card"
+          style={{
+            backgroundColor: this.setCardColorByDiffictuly(cards[id].difficulty)
+          }}
+          onClick={() => this.handleCardOpen(id, cards[id])}
+        >
+          {cards[id].title}
         </Button>
-        ))
-    })
+      );
+    });
     return board;
   }
 
   replaceCardWithImage(taskId, imgUrl, gameBoard) {
     let newGameBoardState = gameBoard;
-    newGameBoardState[taskId] = <img src={imgUrl} className="img" key={taskId} alt="" />;
-    this.setState({gameBoard: newGameBoardState})
+    newGameBoardState[taskId] = (
+      <img src={imgUrl} className="img" key={taskId} alt="" />
+    );
+    this.setState({ gameBoard: newGameBoardState });
   }
 
   objectIsEmpty(obj) {
@@ -118,29 +131,31 @@ class Cards extends Component {
 
   handleCardClose() {
     this.reactivateTaskInDB(this.state.selectedCard.id);
-    this.setState({ showCard: false })
+    this.setState({ showCard: false });
     this.props.onCardSelect(this.state.selectedCard);
   }
 
   handleCardOpen(key, card) {
     this.setState({
-      selectedCard: {id: key, body: card},
+      selectedCard: { id: key, body: card },
       showCard: true
     });
-    this.props.onCardSelect({id: key, body: card});
+    this.props.onCardSelect({ id: key, body: card });
     this.deactivateTaskInDB(key);
   }
 
   deactivateTaskInDB(taskId) {
-    this.props.firebase.gameTask(this.state.gamePin, taskId).child('active').set(
-      false
-    );
+    this.props.firebase
+      .gameTask(this.state.gamePin, taskId)
+      .child("active")
+      .set(false);
   }
 
   reactivateTaskInDB(taskId) {
-    this.props.firebase.gameTask(this.state.gamePin, taskId).child('active').set(
-      true
-    );
+    this.props.firebase
+      .gameTask(this.state.gamePin, taskId)
+      .child("active")
+      .set(true);
   }
 
   setCardColorByDiffictuly(difficulty) {
@@ -163,7 +178,8 @@ class Cards extends Component {
         backgroundColor: this.setCardColorByDiffictuly(
           this.state.selectedCard.body.difficulty
         )
-      }}>
+      }}
+    >
       <Card.Body>
         <Card.Title>{this.state.selectedCard.body.title}</Card.Title>
         <Card.Text>{this.state.selectedCard.body.text}</Card.Text>
@@ -172,21 +188,19 @@ class Cards extends Component {
         </Button>
       </Card.Body>
     </Card>
-  )
+  );
 
-  GameBoard = () => (
-    Object.keys(this.state.gameBoard).map((key, index) => (
-      ((index+1) % 4 === 0) ? (
+  GameBoard = () =>
+    Object.keys(this.state.gameBoard).map((key, index) =>
+      (index + 1) % 4 === 0 ? (
         <ButtonGroup key={key}>
-          {this.state.gameBoard[key-3]}
-          {this.state.gameBoard[key-2]}
-          {this.state.gameBoard[key-1]}
+          {this.state.gameBoard[key - 3]}
+          {this.state.gameBoard[key - 2]}
+          {this.state.gameBoard[key - 1]}
           {this.state.gameBoard[key]}
         </ButtonGroup>
-      ) : 
-      null
-    ))
-  )
+      ) : null
+    );
 
   render() {
     return (

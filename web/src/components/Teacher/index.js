@@ -28,7 +28,7 @@ const Teacher = () => (
     <Route exact path={ROUTES.TEACHER_STUDENTS} component={TeacherStudents} />
     <Route
       exact
-      path={ROUTES.TEACHER_STUDENTS + "/:name"}
+      path={ROUTES.TEACHER_STUDENTS + "/:student"}
       component={TeacherStudent}
     />
   </div>
