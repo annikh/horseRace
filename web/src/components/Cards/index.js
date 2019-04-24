@@ -25,21 +25,21 @@ class Cards extends Component {
       selectedCard: this.emptyCard,
       figure: "kanelbolle",
       solvedTasks: {},
-      gameBoard: {}
+      gameBoard: {},
+      gameTeam: this.props.cookies.get("game_team"),
+      gamePin: this.props.cookies.get("game_pin")
     };
   }
 
   componentDidMount() {
-    const game_pin = this.props.cookies.get("game_pin");
-    const team = this.props.cookies.get("game_team");
     let gameBoard = null;
     let cards = null;
 
-    this.props.firebase.gameTasks(game_pin).on("value", snapshot => {
+    this.props.firebase.gameTasks(this.state.gamePin).on("value", snapshot => {
       cards = snapshot.val();
       this.setState({cards: cards});
 
-      this.props.firebase.solvedGameTasks(game_pin, team).on("value", snapshot => {
+      this.props.firebase.solvedGameTasks(this.state.gamePin, this.state.gameTeam).on("value", snapshot => {
         let solvedTasks = {};
         const solvedTasksFromDB = snapshot.val();
         if (!this.objectIsEmpty(solvedTasksFromDB)) {
@@ -73,10 +73,8 @@ class Cards extends Component {
   }
 
   componentWillUnmount() {
-    const gamePin = this.props.cookies.get("game_pin");
-    const team = this.props.cookies.get("game_team");
-    this.props.firebase.gameTasks(gamePin).off();
-    this.props.firebase.solvedGameTasks(gamePin, team).off();
+    this.props.firebase.gameTasks(this.state.gamePin).off();
+    this.props.firebase.solvedGameTasks(this.state.gamePin, this.state.gameTeam).off();
   }
 
   generateInitialBoardState(cards, solvedTasks) {
@@ -134,13 +132,13 @@ class Cards extends Component {
   }
 
   deactivateTaskInDB(taskId) {
-    this.props.firebase.gameTask(this.props.cookies.get("game_pin"), taskId).child('active').set(
+    this.props.firebase.gameTask(this.state.gamePin, taskId).child('active').set(
       false
     );
   }
 
   reactivateTaskInDB(taskId) {
-    this.props.firebase.gameTask(this.props.cookies.get("game_pin"), taskId).child('active').set(
+    this.props.firebase.gameTask(this.state.gamePin, taskId).child('active').set(
       true
     );
   }

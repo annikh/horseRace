@@ -15,6 +15,7 @@ import "./style.css";
 class Game extends Component {
 
   emptyTask = { id: -1, body: {difficulty: 0, test: "", text: "", title: "", error_hint: ""}}
+  defaultErrorMessage = "Trykk på et av kortene for å velge en oppgave"
 
   constructor(props) {
     super(props);
@@ -32,7 +33,10 @@ class Game extends Component {
       showErrorModal: false,
       showSolvedModal: false,
       errorModalHeaders: ['Prøv igjen!', 'Bedre lykke neste gang!', 'Dette gikk visst ikke helt etter planen.', 'Oops..', 'Ikke helt der ennå..'],
-      errorModalHeaderText: ''
+      errorModalHeaderText: '',
+      playerName: this.props.cookies.get("game_name"),
+      team: this.props.cookies.get("game_team"),
+      gamePin: this.props.cookies.get("game_pin")
     };
   }
 
@@ -40,9 +44,10 @@ class Game extends Component {
     // axios.get('http://python-eval-server.appspot.com/run', { params: { code: submittedCode, task: this.state.currentTask.body } })
     axios.get('http://127.0.0.1:5000/run', { params: { code: submittedCode, task: this.state.currentTask.body } })
     .then( response => {
+      const error_message = this.aTaskIsSelected ? this.defaultErrorMessage : response.data.error_message;
       this.setState({
         output: response.data.output, 
-        error_message: response.data.error_message
+        error_message: error_message
       })
       
       if (this.codeHasError()) this.showErrorModal()
@@ -54,11 +59,15 @@ class Game extends Component {
   }
   
   codeHasError() {
-    return this.state.error_message !== '';
+    return this.state.error_message !== "";
+  }
+
+  aTaskIsSelected() {
+    return this.state.currentTask.id !== this.emptyTask.id;
   }
   
   taskIsSolved(solved) {
-    return this.state.currentTask.id !== this.emptyTask.id && solved;
+    return parseInt(this.state.currentTask.id) !== this.emptyTask.id && solved;
   }
   
   async getImageUrl(key) {
@@ -91,10 +100,7 @@ class Game extends Component {
 
   initiateStudentTaskInDB(taskId) {
     const taskStartTime = new Date().getTime();
-    const gamePin = this.props.cookies.get("game_pin");
-    const team = this.props.cookies.get("game_team");
-    const playerName = this.props.cookies.get("game_name");
-    this.props.firebase.gamePlayer(gamePin, team, playerName).child("tasks").child(taskId).set(
+    this.props.firebase.gamePlayer(this.state.gamePin, this.state.team, this.state.playerName).child("tasks").child(taskId).set(
       {
         startTime: taskStartTime,
         endTime: null,
@@ -105,27 +111,22 @@ class Game extends Component {
   
   updateStudentTaskInDB(studentCode) {
     const taskId = parseInt(this.state.currentTask.id);
-    const gamePin = this.props.cookies.get("game_pin");
-    const team = this.props.cookies.get("game_team");
-    const playerName = this.props.cookies.get("game_name");
-
-    this.props.firebase.gamePlayer(gamePin, team, playerName).child("tasks").child(taskId).child("studentCode").set(
-      studentCode
-    );
+    if (taskId >= 0) {
+      this.props.firebase.gamePlayer(this.state.gamePin, this.state.team, this.state.playerName).child("tasks").child(taskId).child("studentCode").set(
+        studentCode
+      );
+    }
   }
 
   solveStudentTaskInDB(taskId, studentCode, imageUrl) {
     const taskEndTime = new Date().getTime();
-    const gamePin = this.props.cookies.get("game_pin");
-    const team = this.props.cookies.get("game_team");
-    const playerName = this.props.cookies.get("game_name");
 
     let updates = {};
-    updates['/players/' + playerName + '/tasks/' + taskId +  '/endTime/'] = taskEndTime;
-    updates['/players/' + playerName + '/tasks/' + taskId +'/studentCode/'] = studentCode;
+    updates['/players/' + this.state.playerName + '/tasks/' + taskId +  '/endTime/'] = taskEndTime;
+    updates['/players/' + this.state.playerName + '/tasks/' + taskId +'/studentCode/'] = studentCode;
     updates['/solvedTasks/' + taskId + '/url/'] = imageUrl;
 
-    this.props.firebase.gameTeam(gamePin, team).update(updates);
+    this.props.firebase.gameTeam(this.state.gamePin, this.state.team).update(updates);
   }
 
   showErrorModal() {

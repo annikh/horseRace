@@ -26,9 +26,9 @@ class Student extends Component {
   handleEnterClassroomPin() {
     const game_pin = this.state.value;
     this.setState({ game_pin: game_pin });
-    const { cookies } = this.props;
-    cookies.set("game_pin", game_pin);
-    this.props.firebase.gamePlayerList(game_pin).on("value", snapshot => {
+    this.props.cookies.set("game_pin", game_pin);
+
+    this.props.firebase.gamePlayerList(game_pin).once("value", snapshot => {
       const teams = snapshot.val();
       let players = {};
       teams.forEach(team => {
@@ -68,7 +68,10 @@ class Student extends Component {
   }
 
   handleExitGame() {
-    this.setState({ game_pin: null });
+    this.setState({ 
+      game_pin: null,
+      nameList: null
+    });
   }
 
   pinInput = () => {
