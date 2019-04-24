@@ -10,7 +10,7 @@ import "./style.css";
 
 class Cards extends Component {
 
-  emptyCard = {id: -1, body: {difficulty: 0, test: "", text: "", title: "", error_hint: ""}}
+  emptyCard = {id: -1, body: {difficulty: 0, test: "", text: "", title: "", error_hint: "", default_code: ""}}
 
   constructor(props) {
     super(props);
@@ -118,8 +118,8 @@ class Cards extends Component {
 
   handleCardClose() {
     this.reactivateTaskInDB(this.state.selectedCard.id);
-    this.setState({ showCard: false, selectedCard: this.emptyCard });
-    this.props.onCardSelect(this.emptyCard);
+    this.setState({ showCard: false })
+    this.props.onCardSelect(this.state.selectedCard);
   }
 
   handleCardOpen(key, card) {
