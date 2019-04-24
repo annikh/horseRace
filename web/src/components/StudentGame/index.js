@@ -15,7 +15,8 @@ class StudentGame extends Component {
       gameIsActive: false, 
       gamePin: this.props.cookies.get("game_pin"),
       playerName: this.props.cookies.get("game_name"),
-      team: this.props.cookies.get("game_team")
+      team: this.props.cookies.get("game_team"),
+      figure: ""
     };
   }
 
@@ -23,6 +24,11 @@ class StudentGame extends Component {
     this.props.firebase.gameState(this.state.gamePin).on("value", snapshot => {
       this.setState({ gameIsActive: snapshot.val() });
     });
+
+    this.props.firebase.gameFigure(this.state.gamePin).once("value", snapshot => {
+      this.setState({ figure: snapshot.val()})
+      console.log(snapshot.val())
+    })
   }
 
   exitGame = () => {
@@ -63,7 +69,7 @@ class StudentGame extends Component {
             <h3>Hei, {this.state.playerName} </h3>
           </Nav.Item>
           <Nav.Item>
-            <GuessFigure />
+            <GuessFigure figure={this.state.figure}/>
           </Nav.Item>
         </Nav>
         {this.state.gamePin && !this.state.gameIsActive ? (
@@ -71,7 +77,7 @@ class StudentGame extends Component {
             Venter på at spillet skal starte..
           </Row>
         ) : (
-          <Game cookies={this.props.cookies} />
+          <Game figure={this.state.figure} cookies={this.props.cookies} />
         )}
       </Container>
     );

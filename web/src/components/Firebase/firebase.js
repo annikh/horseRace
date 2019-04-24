@@ -104,6 +104,12 @@ class Firebase {
       .child("solvedTasks")
       .child(taskId);
   };
+  gameFigure = pin => {
+    return this.db
+      .ref("games")
+      .child(pin)
+      .child("figure");
+  }
 
   // *** Classroom API ***
   addClassroom = (user_id, className) => {

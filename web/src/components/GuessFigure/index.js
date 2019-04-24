@@ -4,6 +4,7 @@ import {
   Modal, 
   Form
 } from "react-bootstrap";
+import * as FIGURES from "../../constants/figures.js";
 
 class GuessFigure extends Component {
   constructor(props) {
@@ -15,7 +16,6 @@ class GuessFigure extends Component {
     this.handleGuessInput = this.handleGuessInput.bind(this);
 
     this.state = {
-      figure: "kanelbolle",
       showGuessModal: false,
       showWinModal: false,
       studentGuess: ''
@@ -29,7 +29,11 @@ class GuessFigure extends Component {
 
   handleGuessSubmit(event) {
     event.preventDefault();
-    if (this.state.studentGuess === this.state.figure) this.showWinModal();
+    if (this.state.studentGuess === FIGURES.FIGUREPARTS[this.props.figure]) {
+      console.log("wihu")
+      this.showWinModal();
+
+    }
   }
 
   showGuessModal() {

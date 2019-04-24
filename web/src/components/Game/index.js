@@ -11,7 +11,6 @@ import Editor from "../Editor";
 import Cards from "../Cards";
 import Console from "../Console";
 import "./style.css";
-import * as FIGURES from "../../constants/figures.js";
 
 class Game extends Component {
 
@@ -29,7 +28,6 @@ class Game extends Component {
       currentTask: this.emptyTask,
       lastSolvedTask: {id: this.emptyTask.id, url: ''},
       newTaskSelected: false,
-      figure: FIGURES.FIGURE1,
       output: '',
       error_message: '',
       showErrorModal: false,
@@ -68,7 +66,7 @@ class Game extends Component {
   
   async getImageUrl(key) {
     try {
-      const url = await this.props.firebase.getImagePart(this.state.figure, key).getDownloadURL();
+      const url = await this.props.firebase.getImagePart(this.props.figure, key).getDownloadURL();
       return url;
     }
     catch (error) {
