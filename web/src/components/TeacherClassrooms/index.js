@@ -22,14 +22,12 @@ class TeacherClassrooms extends Component {
     this.classroomList = this.classroomList.bind(this);
     this.deleteClassroom = this.deleteClassroom.bind(this);
     this.nameList = this.nameList.bind(this);
-    this.getStudents = this.getStudents.bind(this);
 
     this.state = {
       classroomName: "",
       classrooms: [],
       showClassroom: false,
-      selectedClassroom: "",
-      students: {}
+      selectedClassroom: ""
     };
   }
 
@@ -38,33 +36,6 @@ class TeacherClassrooms extends Component {
     this.props.firebase.classroomsByTeacher(user_id).on("value", snapshot => {
       this.setState({ loading: false, classrooms: snapshot.val() });
     });
-  }
-
-  getStudents() {
-    var students = [];
-    var i = 0;
-    const classrooms = this.state.classrooms;
-    Object.keys(classrooms).map(classroom => {
-      classrooms[classroom].names.map(name => {
-        students.push(
-          <Link
-            key={i}
-            to={ROUTES.TEACHER_STUDENTS + "/" + name}
-            style={{ textDecoration: "none" }}
-          >
-            <Card
-              key={i++}
-              style={{
-                backgroundColor: "#ffeeba"
-              }}
-            >
-              <Card.Title>{name}</Card.Title>
-            </Card>
-          </Link>
-        );
-      });
-    });
-    return students;
   }
 
   showClassroom(event) {
@@ -159,14 +130,6 @@ class TeacherClassrooms extends Component {
             <Row className="rowAccount">
               <CreateClassroom />
             </Row>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <Row>
-              <h2>Dine elever:</h2>
-            </Row>
-            <Row>{classroomsExists && this.getStudents()}</Row>
           </Col>
         </Row>
       </Container>

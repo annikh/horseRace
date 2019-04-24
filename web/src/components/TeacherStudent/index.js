@@ -4,7 +4,7 @@ import { Container, Row, Col } from "react-bootstrap";
 import { withFirebase } from "../Firebase";
 import CreateClassroom from "../CreateClassroom";
 
-class TeacherStudentStats extends Component {
+class TeacherStudent extends Component {
   constructor(props) {
     super(props);
 
@@ -19,14 +19,14 @@ class TeacherStudentStats extends Component {
     return (
       <Container className="accountBody">
         <Row className="rowAccount">
-          <Col className="insideBox" />
+          <Col className="insideBox">Student View</Col>
         </Row>
       </Container>
     );
   }
 }
-TeacherClassrooms.contextType = AuthUserContext;
+TeacherStudent.contextType = AuthUserContext;
 
 const condition = authUser => !!authUser;
 
-export default withFirebase(withAuthorization(condition)(TeacherStudentStats));
+export default withFirebase(withAuthorization(condition)(TeacherStudent));
