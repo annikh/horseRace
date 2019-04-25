@@ -11,7 +11,7 @@
   font-size: 14px;
 }
 
-.list-group-item {
+.taskList {
   padding: 0px;
   justify-content: space-around;
 }
@@ -24,4 +24,13 @@
 
 .card:active {
   border: 1px solid rgba(0, 0, 0, 0.125) !important;
+}
+
+.startGame {
+  width: 10rem;
+  height: 5rem;
+}
+
+.gameTitle {
+  position: absolute;
 }

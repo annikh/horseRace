@@ -10,6 +10,7 @@ import {
 } from "react-bootstrap";
 import { withFirebase } from "../Firebase";
 import { AuthUserContext, withAuthorization } from "../Session";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./style.css";
 
 class TeacherGame extends Component {
@@ -111,7 +112,6 @@ class TeacherGame extends Component {
 
   taskList(team, player) {
     const playerTasks = this.state.game.teams[team].players[player].tasks;
-    console.log(player, " tasks ", playerTasks);
     return (
       <span>
         {playerTasks ? (
@@ -120,7 +120,7 @@ class TeacherGame extends Component {
               playerTasks.map((task, i) => (
                 <ListGroup.Item
                   key={i}
-                  style={{ textAlign: "left" }}
+                  className="taskList"
                   action
                   variant="dark"
                   onClick={() => this.handleShow(task)}
@@ -130,10 +130,23 @@ class TeacherGame extends Component {
                       <Col>Oppgavetittel</Col>
                       <Col>Lett</Col>
                       <Col>
-                        {new Intl.DateTimeFormat("en-GB", {
-                          minute: "2-digit",
-                          second: "2-digit"
-                        }).format(task.endTime - task.startTime)}
+                        {task.endTime ? (
+                          <span>
+                            <FontAwesomeIcon icon="check" color="black" />
+                            {new Intl.DateTimeFormat("en-GB", {
+                              minute: "2-digit",
+                              second: "2-digit"
+                            }).format(task.endTime - task.startTime)}
+                          </span>
+                        ) : (
+                          <span>
+                            <FontAwesomeIcon icon="clock" color="black" />{" "}
+                            {new Intl.DateTimeFormat("en-GB", {
+                              minute: "2-digit",
+                              second: "2-digit"
+                            }).format(task.startTime)}
+                          </span>
+                        )}
                       </Col>
                     </Row>
                   </Container>
@@ -141,7 +154,10 @@ class TeacherGame extends Component {
               ))}
           </ListGroup>
         ) : (
-          <span>Fant ingen oppgaver..</span>
+          <span>
+            <br />
+            Fant ingen oppgaver
+          </span>
         )}
       </span>
     );
@@ -149,14 +165,31 @@ class TeacherGame extends Component {
 
   render() {
     const { game, game_pin, task, show_task } = this.state;
-    console.log(task);
     return (
       game && (
         <Container className="accountBody">
           <Row className="rowAccount">
-            <h5>
-              <strong>Spill-PIN: </strong> {game_pin}
-            </h5>
+            {!game.isFinished && (
+              <Col className="left">
+                <Button
+                  className="startGame btn-orange"
+                  style={
+                    game.isActive || game.isFinished
+                      ? { pointerEvents: "none" }
+                      : null
+                  }
+                  onClick={this.startGame}
+                  disabled={game.isActive || game.isFinished}
+                >
+                  Start spillet!
+                </Button>
+              </Col>
+            )}
+            <Col className="gameTitle">
+              <h5>
+                <strong>Spill-PIN: </strong> {game_pin}
+              </h5>
+            </Col>
           </Row>
           {game.isFinished && (
             <Row className="rowAccount">
@@ -173,13 +206,6 @@ class TeacherGame extends Component {
             </Row>
           )}
           {this.playerList()}
-          {!game.isFinished && (
-            <Row className="rowAccount">
-              <Button className="btn-orange" onClick={this.startGame}>
-                Start spillet!
-              </Button>
-            </Row>
-          )}
           {task && (
             <Modal show={show_task} onHide={this.handleClose}>
               <Modal.Header closeButton>
