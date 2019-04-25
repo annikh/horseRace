@@ -87,7 +87,6 @@ class Student extends Component {
 
   namesDropDown = () => {
     const nameList = this.state.nameList;
-    console.log("nameList: ", nameList);
     return (
       <Col md="auto">
         <Form.Control as="select" onChange={this.handleChange}>
@@ -119,7 +118,9 @@ class Student extends Component {
           </Col>
         </Row>
         <Row>
-          {this.state.nameList ? this.namesDropDown() : this.pinInput()}
+          {this.props.cookies.get("game_pin") && this.state.nameList
+            ? this.namesDropDown()
+            : this.pinInput()}
           <Col>
             <Button
               className="btn-classPin"
