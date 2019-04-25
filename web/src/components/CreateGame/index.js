@@ -57,7 +57,8 @@ class CreateGame extends Component {
       new Date().getTime(),
       teams,
       this.state.tasks,
-      this.state.figure
+      this.state.figure,
+      false
     );
     this.props.firebase.addGame(newGamePin).set(game);
     this.setState({
