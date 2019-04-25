@@ -38,6 +38,7 @@ class Game extends Component {
       playerName: this.props.cookies.get("game_name"),
       team: this.props.cookies.get("game_team"),
       figure: "",
+      solution: "",
       currentTask: this.emptyTask,
       lastSolvedTask: { id: this.emptyTask.id, url: "" },
       newTaskSelected: false,
@@ -61,11 +62,19 @@ class Game extends Component {
       this.setState({ gameIsActive: snapshot.val() });
     });
 
+    let figure = "";
+
     this.props.firebase
       .gameFigure(this.state.gamePin)
       .once("value", snapshot => {
-        this.setState({ figure: snapshot.val() });
-        console.log(snapshot.val());
+        figure = snapshot.val();
+        this.setState({ figure: figure });
+
+        this.props.firebase
+          .getFigureSolution(figure)
+          .once("value", snapshot => {
+            this.setState({ solution: snapshot.val() });
+          });
       });
   }
 
@@ -287,6 +296,7 @@ class Game extends Component {
       <Nav.Item>
         <GuessFigure
           figure={this.state.figure}
+          solution={this.state.solution}
           cookies={this.props.cookies}
           onGameOver={this.props.onGameOver}
         />
