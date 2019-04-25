@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { Button, Modal, Form } from "react-bootstrap";
 import { withFirebase } from "../Firebase";
+import * as ROUTES from "../../constants/routes";
+import { Redirect } from "react-router-dom";
 
 class GuessFigure extends Component {
   constructor(props) {
@@ -11,11 +13,12 @@ class GuessFigure extends Component {
     this.closeWrongGuessModal = this.closeWrongGuessModal.bind(this);
     this.handleGuessSubmit = this.handleGuessSubmit.bind(this);
     this.handleGuessInput = this.handleGuessInput.bind(this);
+    this.handleExitOnGameOver = this.handleExitOnGameOver.bind(this);
 
     this.state = {
+      gamePin: this.props.cookies.get("game_pin"),
+      gameTeam: this.props.cookies.get("game_team"),
       showGuessModal: false,
-      showWinModal: false,
-      showLoseModal: false,
       showWrongGuessModal: false,
       studentGuess: "",
       solution: "",
@@ -26,21 +29,21 @@ class GuessFigure extends Component {
 
   componentDidMount() {
     this.props.firebase
-      .gameFinished(this.props.gamePin)
+      .gameFinished(this.state.gamePin)
       .on("value", snapshot => {
         this.setState({ gameIsFinished: snapshot.val() });
       });
 
     this.props.firebase
-      .gameWinningTeam(this.props.gamePin)
+      .gameWinningTeam(this.state.gamePin)
       .on("value", snapshot => {
         this.setState({ winnerTeam: snapshot.val() });
       });
   }
 
   componentWillUnmount() {
-    this.props.firebase.gameFinished(this.props.gamePin).off();
-    this.props.firebase.gameWinningTeam(this.props.gamePin).off();
+    this.props.firebase.gameFinished(this.state.gamePin).off();
+    this.props.firebase.gameWinningTeam(this.state.gamePin).off();
   }
 
   handleGuessInput(event) {
@@ -69,13 +72,13 @@ class GuessFigure extends Component {
 
   handleWin() {
     //this.showWinModal();
-    this.props.firebase.gameFinished(this.props.gamePin).set(true);
+    this.props.firebase.gameFinished(this.state.gamePin).set(true);
     this.props.firebase
-      .gameWinningTeam(this.props.gamePin)
-      .set(this.props.gameTeam);
+      .gameWinningTeam(this.state.gamePin)
+      .set(this.state.gameTeam);
 
     this.setState({
-      winnerTeam: this.props.gameTeam,
+      winnerTeam: this.state.gameTeam,
       gameIsFinished: true
     });
   }
@@ -88,16 +91,11 @@ class GuessFigure extends Component {
     this.setState({ showGuessModal: false });
   }
 
-  showWinModal() {
-    this.setState({ showWinModal: true });
-  }
-
-  showLoseModal() {
-    this.setState({ showLoseModal: true });
-  }
-
-  closeLoseModal() {
-    this.setState({ showLoseModal: false });
+  handleExitOnGameOver() {
+    this.props.cookies.remove("game_pin");
+    this.props.cookies.remove("game_team");
+    this.props.cookies.remove("game_name");
+    return <Redirect to={ROUTES.STUDENT} />;
   }
 
   showWrongGuessModal() {
@@ -128,8 +126,8 @@ class GuessFigure extends Component {
   );
 
   WinModal = () => (
-    <Modal show={true}>
-      <Modal.Header>
+    <Modal show={true} onHide={this.handleExitOnGameOver}>
+      <Modal.Header closeButton>
         <Modal.Title>Gratulerer</Modal.Title>
       </Modal.Header>
       <Modal.Body>Dere vant!</Modal.Body>
@@ -137,12 +135,12 @@ class GuessFigure extends Component {
   );
 
   LoseModal = () => (
-    <Modal show={true}>
-      <Modal.Header>
+    <Modal show={true} onHide={this.handleExitOnGameOver}>
+      <Modal.Header closeButton>
         <Modal.Title>Game Over</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        Et annet lag har gjettet riktig.\nLøsningen var: {this.state.solution}
+        Et annet lag har gjettet riktig. Løsningen var: {this.state.solution}
       </Modal.Body>
     </Modal>
   );
@@ -176,7 +174,7 @@ class GuessFigure extends Component {
             <this.GuessModal />
             <this.WrongGuessModal />
           </div>
-        ) : this.state.winnerTeam === this.props.gameTeam ? (
+        ) : this.state.winnerTeam === this.state.gameTeam ? (
           <this.WinModal />
         ) : (
           <this.LoseModal />

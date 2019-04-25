@@ -77,8 +77,7 @@ class StudentGame extends Component {
           <Nav.Item>
             <GuessFigure
               figure={this.state.figure}
-              gamePin={this.state.gamePin}
-              gameTeam={this.state.team}
+              cookies={this.props.cookies}
             />
           </Nav.Item>
         </Nav>
