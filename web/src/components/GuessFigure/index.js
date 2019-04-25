@@ -15,15 +15,36 @@ class GuessFigure extends Component {
     this.state = {
       showGuessModal: false,
       showWinModal: false,
+      showLoseModal: false,
       showWrongGuessModal: false,
       studentGuess: "",
-      solution: ""
+      solution: "",
+      gameIsFinished: false,
+      winnerTeam: ""
     };
   }
 
+  componentDidMount() {
+    this.props.firebase
+      .gameFinished(this.props.gamePin)
+      .on("value", snapshot => {
+        this.setState({ gameIsFinished: snapshot.val() });
+      });
+
+    this.props.firebase
+      .gameWinningTeam(this.props.gamePin)
+      .on("value", snapshot => {
+        this.setState({ winnerTeam: snapshot.val() });
+      });
+  }
+
+  componentWillUnmount() {
+    this.props.firebase.gameFinished(this.props.gamePin).off();
+    this.props.firebase.gameWinningTeam(this.props.gamePin).off();
+  }
+
   handleGuessInput(event) {
-    const guess = event.target.value;
-    this.setState({ studentGuess: guess });
+    this.setState({ studentGuess: event.target.value });
   }
 
   handleGuessSubmit(event) {
@@ -47,8 +68,16 @@ class GuessFigure extends Component {
   }
 
   handleWin() {
-    this.showWinModal();
+    //this.showWinModal();
     this.props.firebase.gameFinished(this.props.gamePin).set(true);
+    this.props.firebase
+      .gameWinningTeam(this.props.gamePin)
+      .set(this.props.gameTeam);
+
+    this.setState({
+      winnerTeam: this.props.gameTeam,
+      gameIsFinished: true
+    });
   }
 
   showGuessModal() {
@@ -61,6 +90,14 @@ class GuessFigure extends Component {
 
   showWinModal() {
     this.setState({ showWinModal: true });
+  }
+
+  showLoseModal() {
+    this.setState({ showLoseModal: true });
+  }
+
+  closeLoseModal() {
+    this.setState({ showLoseModal: false });
   }
 
   showWrongGuessModal() {
@@ -91,11 +128,22 @@ class GuessFigure extends Component {
   );
 
   WinModal = () => (
-    <Modal show={this.state.showWinModal}>
+    <Modal show={true}>
       <Modal.Header>
         <Modal.Title>Gratulerer</Modal.Title>
       </Modal.Header>
       <Modal.Body>Dere vant!</Modal.Body>
+    </Modal>
+  );
+
+  LoseModal = () => (
+    <Modal show={true}>
+      <Modal.Header>
+        <Modal.Title>Game Over</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        Et annet lag har gjettet riktig.\nLøsningen var: {this.state.solution}
+      </Modal.Body>
     </Modal>
   );
 
@@ -122,10 +170,17 @@ class GuessFigure extends Component {
   render() {
     return (
       <div>
-        <this.GuessModal />
-        <this.WinModal />
-        <this.WrongGuessModal />
         <this.GuessButton />
+        {!this.state.gameIsFinished ? (
+          <div>
+            <this.GuessModal />
+            <this.WrongGuessModal />
+          </div>
+        ) : this.state.winnerTeam === this.props.gameTeam ? (
+          <this.WinModal />
+        ) : (
+          <this.LoseModal />
+        )}
       </div>
     );
   }

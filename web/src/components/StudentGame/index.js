@@ -32,6 +32,10 @@ class StudentGame extends Component {
       });
   }
 
+  componentWillUnmount() {
+    this.props.firebase.gameState(this.state.gamePin).off();
+  }
+
   exitGame = () => {
     this.props.firebase
       .gamePlayer(this.state.gamePin, this.state.team, this.state.playerName)
@@ -74,6 +78,7 @@ class StudentGame extends Component {
             <GuessFigure
               figure={this.state.figure}
               gamePin={this.state.gamePin}
+              gameTeam={this.state.team}
             />
           </Nav.Item>
         </Nav>

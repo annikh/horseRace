@@ -52,6 +52,12 @@ class Firebase {
       .child(pin)
       .child("isFinished");
   };
+  gameWinningTeam = pin => {
+    return this.db
+      .ref("games")
+      .child(pin)
+      .child("winningTeam");
+  };
   gamePlayerList = pin => {
     return this.db
       .ref("games")
