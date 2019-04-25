@@ -68,7 +68,6 @@ class Student extends Component {
   }
 
   handleExitGame() {
-    console.log("jass");
     this.setState({
       game_pin: null,
       nameList: null
