@@ -71,7 +71,10 @@ class StudentGame extends Component {
             <h3>Hei, {this.state.playerName} </h3>
           </Nav.Item>
           <Nav.Item>
-            <GuessFigure figure={this.state.figure} />
+            <GuessFigure
+              figure={this.state.figure}
+              gamePin={this.state.gamePin}
+            />
           </Nav.Item>
         </Nav>
         {this.state.gamePin && !this.state.gameIsActive ? (

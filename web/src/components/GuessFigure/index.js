@@ -48,6 +48,7 @@ class GuessFigure extends Component {
 
   handleWin() {
     this.showWinModal();
+    this.props.firebase.gameFinished(this.props.gamePin).set(true);
   }
 
   showGuessModal() {
@@ -63,7 +64,6 @@ class GuessFigure extends Component {
   }
 
   showWrongGuessModal() {
-    console.log("halloen");
     this.setState({
       showWrongGuessModal: true,
       showGuessModal: false
