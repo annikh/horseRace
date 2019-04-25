@@ -169,17 +169,11 @@ class TeacherGame extends Component {
       game && (
         <Container className="accountBody">
           <Row className="rowAccount">
-            {!game.isFinished && (
+            {!game.isFinished && !game.isActive && (
               <Col className="left">
                 <Button
                   className="startGame btn-orange"
-                  style={
-                    game.isActive || game.isFinished
-                      ? { pointerEvents: "none" }
-                      : null
-                  }
                   onClick={this.startGame}
-                  disabled={game.isActive || game.isFinished}
                 >
                   Start spillet!
                 </Button>
@@ -195,6 +189,21 @@ class TeacherGame extends Component {
             <Row className="rowAccount">
               <span>
                 Dette spillet ble ferdig{" "}
+                {new Intl.DateTimeFormat("en-GB", {
+                  year: "numeric",
+                  month: "long",
+                  day: "2-digit",
+                  hour: "2-digit",
+                  minute: "2-digit"
+                }).format(game.date)}
+              </span>
+            </Row>
+          )}
+          {game.isActive && !game.isFinished && (
+            <Row className="rowAccount">
+              <span>
+                <FontAwesomeIcon icon="clock" color="black" /> Dette spillet
+                begynte{" "}
                 {new Intl.DateTimeFormat("en-GB", {
                   year: "numeric",
                   month: "long",
