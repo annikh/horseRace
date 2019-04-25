@@ -10,21 +10,20 @@ import {
 } from "react-bootstrap";
 import { withFirebase } from "../Firebase";
 import { AuthUserContext, withAuthorization } from "../Session";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./style.css";
 
 class TeacherGame extends Component {
   constructor(props) {
     super(props);
     this.playerList = this.playerList.bind(this);
-    this.startStopGame = this.startStopGame.bind(this);
+    this.startGame = this.startGame.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleShow = this.handleShow.bind(this);
 
     this.state = {
       game: null,
       game_pin: "",
-      isStarted: false,
-      button_value: "Start Spill",
       show_task: false,
       task: null
     };
@@ -39,18 +38,11 @@ class TeacherGame extends Component {
     });
   }
 
-  startStopGame() {
-    this.state.isStarted
-      ? this.setState({ isStarted: false, button_value: "Start Spill" }) &&
-        this.props.firebase
-          .game(this.state.game_pin)
-          .child("isActive")
-          .set(false)
-      : this.setState({ isStarted: true, button_value: "Avslutt Spill" }) &&
-        this.props.firebase
-          .game(this.state.game_pin)
-          .child("isActive")
-          .set(true);
+  startGame() {
+    this.props.firebase
+      .game(this.state.game_pin)
+      .child("isActive")
+      .set(true);
   }
 
   handleClose() {
@@ -79,7 +71,8 @@ class TeacherGame extends Component {
   };
 
   playerList() {
-    const { teams } = this.state.game;
+    const { game } = this.state;
+    const teams = game.teams;
     let fullList = [];
     let teamList = [];
     Object.keys(teams).forEach((team, key) => {
@@ -94,9 +87,9 @@ class TeacherGame extends Component {
             >
               <Card.Body>
                 <Card.Title>{player}</Card.Title>
-                {this.state.isStarted ? (
+                {game.isActive || game.isFinished ? (
                   <Card.Text tag="div">
-                    <strong>Oppgaver:</strong>
+                    <strong>Oppgaver</strong>
                     {this.taskList(team, player)}
                   </Card.Text>
                 ) : null}
@@ -119,59 +112,127 @@ class TeacherGame extends Component {
 
   taskList(team, player) {
     const playerTasks = this.state.game.teams[team].players[player].tasks;
-    console.log(playerTasks);
     return (
-      <div>
+      <span>
         {playerTasks ? (
           <ListGroup variant="dark" style={{ width: "100%" }}>
             {playerTasks.length > 0 &&
               playerTasks.map((task, i) => (
                 <ListGroup.Item
                   key={i}
-                  style={{ textAlign: "left" }}
+                  className="taskList"
                   action
-                  variant="warning"
+                  variant="dark"
                   onClick={() => this.handleShow(task)}
                 >
-                  {task.title}
+                  <Container>
+                    <Row>
+                      <Col>Oppgavetittel</Col>
+                      <Col>Lett</Col>
+                      <Col style={{ padding: "2px" }}>
+                        {task.endTime ? (
+                          <span>
+                            <FontAwesomeIcon icon="check" color="black" />
+                            {new Intl.DateTimeFormat("en-GB", {
+                              minute: "2-digit",
+                              second: "2-digit"
+                            }).format(task.endTime - task.startTime)}
+                          </span>
+                        ) : (
+                          <span>
+                            <FontAwesomeIcon icon="clock" color="black" />{" "}
+                            {new Intl.DateTimeFormat("en-GB", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                              second: "2-digit"
+                            }).format(task.startTime)}
+                          </span>
+                        )}
+                      </Col>
+                    </Row>
+                  </Container>
                 </ListGroup.Item>
               ))}
           </ListGroup>
         ) : (
-          <div>Fant ingen oppgaver..</div>
+          <span>
+            <br />
+            Fant ingen oppgaver
+          </span>
         )}
-      </div>
+      </span>
     );
   }
 
   render() {
-    const { game_pin, button_value, task } = this.state;
-
+    const { game, game_pin, task, show_task } = this.state;
     return (
-      this.state.game && (
+      game && (
         <Container className="accountBody">
           <Row className="rowAccount">
-            <h5>
-              <strong>Spill-PIN: </strong> {game_pin}
-            </h5>
+            {!game.isFinished && !game.isActive && (
+              <Col className="left">
+                <Button
+                  className="startGame btn-orange"
+                  onClick={this.startGame}
+                >
+                  Start spillet!
+                </Button>
+              </Col>
+            )}
+            <Col className="gameTitle">
+              <h5>
+                <strong>Spill-PIN: </strong> {game_pin}
+              </h5>
+            </Col>
           </Row>
-
+          {game.isFinished && (
+            <Row className="rowAccount">
+              <span>
+                Dette spillet ble ferdig{" "}
+                {new Intl.DateTimeFormat("en-GB", {
+                  year: "numeric",
+                  month: "long",
+                  day: "2-digit",
+                  hour: "2-digit",
+                  minute: "2-digit"
+                }).format(game.date)}
+              </span>
+            </Row>
+          )}
+          {game.isActive && !game.isFinished && (
+            <Row className="rowAccount">
+              <span>
+                <FontAwesomeIcon icon="clock" color="black" /> Dette spillet
+                begynte{" "}
+                {new Intl.DateTimeFormat("en-GB", {
+                  year: "numeric",
+                  month: "long",
+                  day: "2-digit",
+                  hour: "2-digit",
+                  minute: "2-digit"
+                }).format(game.date)}
+              </span>
+            </Row>
+          )}
           {this.playerList()}
-
-          <Row className="rowAccount">
-            <Button className="btn-orange" onClick={this.startStopGame}>
-              {button_value}
-            </Button>
-          </Row>
-          {this.state.task && (
-            <Modal show={this.state.show_task} onHide={this.handleClose}>
+          {task && (
+            <Modal show={show_task} onHide={this.handleClose}>
               <Modal.Header closeButton>
-                <Modal.Title>{task.title}</Modal.Title>
+                <Modal.Title>Oppgavetittel</Modal.Title>
               </Modal.Header>
               <Modal.Body>
-                <strong>Vanskelighetsgrad:</strong>
-                {task.difficulty} <br />
-                {task.text}
+                <strong>Vanskelighetsgrad:</strong> Lett
+                <br />
+                <strong>Tid brukt:</strong>{" "}
+                {new Intl.DateTimeFormat("en-GB", {
+                  minute: "2-digit",
+                  second: "2-digit"
+                }).format(task.endTime - task.startTime)}
+                <br />
+                <br />
+                <strong>Løsningskode:</strong> <br />
+                <span className="display-linebreak">{task.studentCode}</span>
               </Modal.Body>
               <Modal.Footer>
                 <Button variant="secondary" onClick={this.handleClose}>

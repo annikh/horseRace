@@ -1,9 +1,19 @@
 .player {
   background-color: rgb(245, 157, 57);
-  width: 15rem;
+  width: 23rem;
+  margin: 5px;
   text-decoration: none;
   color: black;
   display: inline-table;
+}
+
+.card {
+  font-size: 14px;
+}
+
+.taskList {
+  padding: 0px;
+  justify-content: space-around;
 }
 
 .card:hover {
@@ -14,4 +24,13 @@
 
 .card:active {
   border: 1px solid rgba(0, 0, 0, 0.125) !important;
+}
+
+.startGame {
+  width: 10rem;
+  height: 5rem;
+}
+
+.gameTitle {
+  position: absolute;
 }

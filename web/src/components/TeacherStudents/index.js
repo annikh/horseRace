@@ -1,17 +1,8 @@
 import React, { Component } from "react";
 import { AuthUserContext, withAuthorization } from "../Session";
 import { Link } from "react-router-dom";
-import {
-  Container,
-  Row,
-  Col,
-  ListGroup,
-  Modal,
-  Button,
-  Card
-} from "react-bootstrap";
+import { Container, Row, Col, Card } from "react-bootstrap";
 import { withFirebase } from "../Firebase";
-import CreateClassroom from "../CreateClassroom";
 import * as ROUTES from "../../constants/routes";
 import "./style.css";
 

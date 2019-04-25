@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import { AuthUserContext, withAuthorization } from "../Session";
-import { Container, Row, Col, Card } from "react-bootstrap";
+import { Container, Row, Card } from "react-bootstrap";
 import { withFirebase } from "../Firebase";
-import CreateClassroom from "../CreateClassroom";
 import "./style.css";
 
 class TeacherStudent extends Component {
