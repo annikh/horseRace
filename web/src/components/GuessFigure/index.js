@@ -8,12 +8,14 @@ class GuessFigure extends Component {
 
     this.closeGuessModal = this.closeGuessModal.bind(this);
     this.showGuessModal = this.showGuessModal.bind(this);
+    this.closeWrongGuessModal = this.closeWrongGuessModal.bind(this);
     this.handleGuessSubmit = this.handleGuessSubmit.bind(this);
     this.handleGuessInput = this.handleGuessInput.bind(this);
 
     this.state = {
       showGuessModal: false,
       showWinModal: false,
+      showWrongGuessModal: false,
       studentGuess: "",
       solution: ""
     };
@@ -31,12 +33,16 @@ class GuessFigure extends Component {
       this.props.firebase
         .getFigureSolution(this.props.figure)
         .once("value", snapshot => {
-          if (snapshot.val() === this.state.studentGuess) this.handleWin();
+          snapshot.val() === this.state.studentGuess
+            ? this.handleWin()
+            : this.showWrongGuessModal();
           this.setState({ solution: snapshot.val() });
         });
     } else {
       // validate against db value on consequent guesses
-      if (this.state.solution === this.state.studentGuess) this.handleWin();
+      this.state.solution === this.state.studentGuess
+        ? this.handleWin()
+        : this.showWrongGuessModal();
     }
   }
 
@@ -54,6 +60,20 @@ class GuessFigure extends Component {
 
   showWinModal() {
     this.setState({ showWinModal: true });
+  }
+
+  showWrongGuessModal() {
+    console.log("halloen");
+    this.setState({
+      showWrongGuessModal: true,
+      showGuessModal: false
+    });
+  }
+
+  closeWrongGuessModal() {
+    this.setState({
+      showWrongGuessModal: false
+    });
   }
 
   GuessModal = () => (
@@ -79,6 +99,20 @@ class GuessFigure extends Component {
     </Modal>
   );
 
+  WrongGuessModal = () => (
+    <Modal
+      show={this.state.showWrongGuessModal}
+      onHide={this.closeWrongGuessModal}
+    >
+      <Modal.Header closeButton>
+        <Modal.Title>Det var dessverre feil..</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        Prøv deg på noen flere oppgaver for å se mer av bildet :)
+      </Modal.Body>
+    </Modal>
+  );
+
   GuessButton = () => (
     <Button variant="primary" onClick={this.showGuessModal}>
       Gjett hva som er på bildet
@@ -90,6 +124,7 @@ class GuessFigure extends Component {
       <div>
         <this.GuessModal />
         <this.WinModal />
+        <this.WrongGuessModal />
         <this.GuessButton />
       </div>
     );
