@@ -28,7 +28,6 @@ class Cards extends Component {
       cards: [],
       showCard: false,
       selectedCard: this.emptyCard,
-      figure: "kanelbolle",
       solvedTasks: {},
       gameBoard: {},
       gameTeam: this.props.cookies.get("game_team"),
