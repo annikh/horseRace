@@ -4,6 +4,7 @@ import {
   Modal, 
   Form
 } from "react-bootstrap";
+import { withFirebase } from "../Firebase";
 import * as FIGURES from "../../constants/figures.js";
 
 class GuessFigure extends Component {
@@ -29,11 +30,13 @@ class GuessFigure extends Component {
 
   handleGuessSubmit(event) {
     event.preventDefault();
-    if (this.state.studentGuess === FIGURES.FIGUREPARTS[this.props.figure]) {
-      console.log("wihu")
-      this.showWinModal();
+    this.props.firebase.getFigureSolution(this.props.figure).once("value", snapshot => {
+      if (snapshot.val() === this.state.studentGuess) this.handleWin();
+    })
+  }
 
-    }
+  handleWin() {
+    this.showWinModal();
   }
 
   showGuessModal() {
@@ -92,4 +95,4 @@ class GuessFigure extends Component {
   }
 }
 
-export default GuessFigure;
+export default withFirebase(GuessFigure);

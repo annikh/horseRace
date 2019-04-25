@@ -147,6 +147,10 @@ class Firebase {
   figureChoices = () => {
     return this.db.ref("figure");
   }
+
+  getFigureSolution = (figureKey) => {
+    return this.db.ref("figure").child(figureKey);
+  }
 }
 
 export default Firebase;
