@@ -5,7 +5,6 @@ import {
   Form
 } from "react-bootstrap";
 import { withFirebase } from "../Firebase";
-import * as FIGURES from "../../constants/figures.js";
 
 class GuessFigure extends Component {
   constructor(props) {
@@ -19,7 +18,8 @@ class GuessFigure extends Component {
     this.state = {
       showGuessModal: false,
       showWinModal: false,
-      studentGuess: ''
+      studentGuess: '',
+      solution: ''
     }
   }
 
@@ -30,9 +30,14 @@ class GuessFigure extends Component {
 
   handleGuessSubmit(event) {
     event.preventDefault();
-    this.props.firebase.getFigureSolution(this.props.figure).once("value", snapshot => {
-      if (snapshot.val() === this.state.studentGuess) this.handleWin();
-    })
+    if (this.state.solution === '') { // validate against db value on first guess
+      this.props.firebase.getFigureSolution(this.props.figure).once("value", snapshot => {
+        if (snapshot.val() === this.state.studentGuess) this.handleWin();
+        this.setState({ solution: snapshot.val() })
+      })
+    } else { // validate against db value on consequent guesses
+      if (this.state.solution === this.state.studentGuess) this.handleWin();
+    }
   }
 
   handleWin() {
