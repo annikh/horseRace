@@ -91,6 +91,7 @@ class GuessFigure extends Component {
   }
 
   handleExitOnGameOver() {
+    this.props.onGameOver();
     this.props.cookies.remove("game_pin");
     this.props.cookies.remove("game_team");
     this.props.cookies.remove("game_name");

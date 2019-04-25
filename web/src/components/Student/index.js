@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Button, Form, Row, Col } from "react-bootstrap";
 import { withFirebase } from "../Firebase";
-import StudentGame from "../StudentGame";
+import Game from "../Game";
 import "./style.css";
 
 class Student extends Component {
@@ -118,9 +118,7 @@ class Student extends Component {
           </Col>
         </Row>
         <Row>
-          {this.props.cookies.get("game_pin") && this.state.nameList
-            ? this.namesDropDown()
-            : this.pinInput()}
+          {this.state.nameList ? this.namesDropDown() : this.pinInput()}
           <Col>
             <Button
               className="btn-classPin"
@@ -133,7 +131,11 @@ class Student extends Component {
         </Row>
       </Form>
     ) : (
-      <StudentGame cookies={cookies} onExit={this.handleExitGame} />
+      <Game
+        cookies={cookies}
+        onExit={this.handleExitGame}
+        onGameOver={this.handleExitGame}
+      />
     );
   }
 }
