@@ -37,8 +37,8 @@ class CreateGame extends Component {
     });
 
     this.props.firebase.figureChoices().once("value", snapshot => {
-      this.setState({ figureChoices: snapshot.val() })
-    })
+      this.setState({ figureChoices: snapshot.val() });
+    });
   }
 
   addGame() {
@@ -220,12 +220,12 @@ class CreateGame extends Component {
           <Col>
             <Form.Control as="select" onChange={this.handleFigureChoice}>
               <option disabled={this.state.figure !== null}>Velg...</option>
-                {figureChoices.length > 0 &&
-                  figureChoices.map((id, i) => (
-                    <option key={i} value={id}>
-                      {this.state.figureChoices[id]}
-                    </option>
-                  ))}
+              {figureChoices.length > 0 &&
+                figureChoices.map((id, i) => (
+                  <option key={i} value={id}>
+                    {this.state.figureChoices[id]}
+                  </option>
+                ))}
             </Form.Control>
           </Col>
         </Row>

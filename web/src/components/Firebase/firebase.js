@@ -109,7 +109,7 @@ class Firebase {
       .ref("games")
       .child(pin)
       .child("figure");
-  }
+  };
 
   // *** Classroom API ***
   addClassroom = (user_id, className) => {
@@ -146,11 +146,11 @@ class Firebase {
 
   figureChoices = () => {
     return this.db.ref("figure");
-  }
+  };
 
-  getFigureSolution = (figureKey) => {
+  getFigureSolution = figureKey => {
     return this.db.ref("figure").child(figureKey);
-  }
+  };
 }
 
 export default Firebase;

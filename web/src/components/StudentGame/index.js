@@ -7,12 +7,11 @@ import Game from "../Game";
 import GuessFigure from "../GuessFigure";
 
 class StudentGame extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
       exitGame: false,
-      gameIsActive: false, 
+      gameIsActive: false,
       gamePin: this.props.cookies.get("game_pin"),
       playerName: this.props.cookies.get("game_name"),
       team: this.props.cookies.get("game_team"),
@@ -25,16 +24,19 @@ class StudentGame extends Component {
       this.setState({ gameIsActive: snapshot.val() });
     });
 
-    this.props.firebase.gameFigure(this.state.gamePin).once("value", snapshot => {
-      this.setState({ figure: snapshot.val()})
-      console.log(snapshot.val())
-    })
+    this.props.firebase
+      .gameFigure(this.state.gamePin)
+      .once("value", snapshot => {
+        this.setState({ figure: snapshot.val() });
+        console.log(snapshot.val());
+      });
   }
 
   exitGame = () => {
-    this.props.firebase.gamePlayer(this.state.gamePin, this.state.team, this.state.playerName).child('isActive').set(
-      false
-    );
+    this.props.firebase
+      .gamePlayer(this.state.gamePin, this.state.team, this.state.playerName)
+      .child("isActive")
+      .set(false);
 
     this.props.cookies.remove("game_name");
     this.props.cookies.remove("game_pin");
@@ -69,7 +71,7 @@ class StudentGame extends Component {
             <h3>Hei, {this.state.playerName} </h3>
           </Nav.Item>
           <Nav.Item>
-            <GuessFigure figure={this.state.figure}/>
+            <GuessFigure figure={this.state.figure} />
           </Nav.Item>
         </Nav>
         {this.state.gamePin && !this.state.gameIsActive ? (

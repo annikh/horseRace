@@ -1,5 +1,14 @@
 export default class Game {
-  constructor(isActive, user_id, classroom_id, date, teams, tasks, figure, isFinished) {
+  constructor(
+    isActive,
+    user_id,
+    classroom_id,
+    date,
+    teams,
+    tasks,
+    figure,
+    isFinished
+  ) {
     this.isActive = isActive;
     this.date = date;
     this.teams = teams;
