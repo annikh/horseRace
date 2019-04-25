@@ -9,7 +9,6 @@ import {
   Modal
 } from "react-bootstrap";
 import { withFirebase } from "../Firebase";
-import ReactHtmlParser from "react-html-parser";
 import { AuthUserContext, withAuthorization } from "../Session";
 import "./style.css";
 
@@ -114,7 +113,7 @@ class TeacherGame extends Component {
     const playerTasks = this.state.game.teams[team].players[player].tasks;
     console.log(player, " tasks ", playerTasks);
     return (
-      <div>
+      <span>
         {playerTasks ? (
           <ListGroup variant="dark" style={{ width: "100%" }}>
             {playerTasks.length > 0 &&
@@ -142,14 +141,14 @@ class TeacherGame extends Component {
               ))}
           </ListGroup>
         ) : (
-          <div>Fant ingen oppgaver..</div>
+          <span>Fant ingen oppgaver..</span>
         )}
-      </div>
+      </span>
     );
   }
 
   render() {
-    const { game, game_pin, button_value, task, show_task } = this.state;
+    const { game, game_pin, task, show_task } = this.state;
     console.log(task);
     return (
       game && (
@@ -161,7 +160,7 @@ class TeacherGame extends Component {
           </Row>
           {game.isFinished && (
             <Row className="rowAccount">
-              <h7>
+              <span>
                 Dette spillet ble ferdig{" "}
                 {new Intl.DateTimeFormat("en-GB", {
                   year: "numeric",
@@ -170,7 +169,7 @@ class TeacherGame extends Component {
                   hour: "2-digit",
                   minute: "2-digit"
                 }).format(game.date)}
-              </h7>
+              </span>
             </Row>
           )}
           {this.playerList()}
@@ -195,8 +194,9 @@ class TeacherGame extends Component {
                   second: "2-digit"
                 }).format(task.endTime - task.startTime)}
                 <br />
+                <br />
                 <strong>Løsningskode:</strong> <br />
-                {ReactHtmlParser(task.studentCode)}
+                <span className="display-linebreak">{task.studentCode}</span>
               </Modal.Body>
               <Modal.Footer>
                 <Button variant="secondary" onClick={this.handleClose}>

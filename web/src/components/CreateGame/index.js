@@ -17,6 +17,7 @@ class CreateGame extends Component {
     this.updateTeams = this.updateTeams.bind(this);
     this.handleNewTeam = this.handleNewTeam.bind(this);
     this.handleNumberOfTeams = this.handleNumberOfTeams.bind(this);
+    this.handleFigureChoice = this.handleFigureChoice.bind(this);
 
     this.state = {
       loading: false,
@@ -24,13 +25,19 @@ class CreateGame extends Component {
       tasks: null,
       teams: {},
       chosenClass: false,
-      numberOfTeams: 1
+      numberOfTeams: 1,
+      figureChoices: {},
+      figure: null
     };
   }
 
   componentDidMount() {
     this.props.firebase.tasks("variables").once("value", snapshot => {
       this.setState({ tasks: snapshot.val() });
+    });
+
+    this.props.firebase.figureChoices().once("value", snapshot => {
+      this.setState({ figureChoices: snapshot.val() });
     });
   }
 
@@ -49,12 +56,15 @@ class CreateGame extends Component {
       this.state.classroomName,
       new Date().getTime(),
       teams,
-      this.state.tasks
+      this.state.tasks,
+      this.state.figure,
+      false
     );
     this.props.firebase.addGame(newGamePin).set(game);
     this.setState({
       classroomName: "",
-      chosenClass: false
+      chosenClass: false,
+      figure: null
     });
   }
 
@@ -142,8 +152,13 @@ class CreateGame extends Component {
     }));
   }
 
+  handleFigureChoice(event) {
+    this.setState({ figure: event.target.value });
+  }
+
   render() {
     const classroomNames = Object.keys(this.props.classrooms);
+    const figureChoices = Object.keys(this.state.figureChoices);
     return (
       <Form>
         <Row>
@@ -195,6 +210,22 @@ class CreateGame extends Component {
               <option key={6} value={6}>
                 6
               </option>
+            </Form.Control>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <Form.Label>Velg løsningsfigur:</Form.Label>
+          </Col>
+          <Col>
+            <Form.Control as="select" onChange={this.handleFigureChoice}>
+              <option disabled={this.state.figure !== null}>Velg...</option>
+              {figureChoices.length > 0 &&
+                figureChoices.map((id, i) => (
+                  <option key={i} value={id}>
+                    {this.state.figureChoices[id]}
+                  </option>
+                ))}
             </Form.Control>
           </Col>
         </Row>
