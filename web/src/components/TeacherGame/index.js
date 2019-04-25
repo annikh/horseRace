@@ -17,15 +17,13 @@ class TeacherGame extends Component {
   constructor(props) {
     super(props);
     this.playerList = this.playerList.bind(this);
-    this.startStopGame = this.startStopGame.bind(this);
+    this.startGame = this.startGame.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleShow = this.handleShow.bind(this);
 
     this.state = {
       game: null,
       game_pin: "",
-      isStarted: false,
-      button_value: "Start Spill",
       show_task: false,
       task: null
     };
@@ -40,18 +38,11 @@ class TeacherGame extends Component {
     });
   }
 
-  startStopGame() {
-    this.state.isStarted
-      ? this.setState({ isStarted: false, button_value: "Start Spill" }) &&
-        this.props.firebase
-          .game(this.state.game_pin)
-          .child("isActive")
-          .set(false)
-      : this.setState({ isStarted: true, button_value: "Avslutt Spill" }) &&
-        this.props.firebase
-          .game(this.state.game_pin)
-          .child("isActive")
-          .set(true);
+  startGame() {
+    this.props.firebase
+      .game(this.state.game_pin)
+      .child("isActive")
+      .set(true);
   }
 
   handleClose() {
@@ -80,7 +71,8 @@ class TeacherGame extends Component {
   };
 
   playerList() {
-    const { teams } = this.state.game;
+    const { game } = this.state;
+    const teams = game.teams;
     let fullList = [];
     let teamList = [];
     Object.keys(teams).forEach((team, key) => {
@@ -95,9 +87,9 @@ class TeacherGame extends Component {
             >
               <Card.Body>
                 <Card.Title>{player}</Card.Title>
-                {this.state.isStarted ? (
+                {game.isActive || game.isFinished ? (
                   <Card.Text tag="div">
-                    <strong>Oppgaver:</strong>
+                    <strong>Oppgaver</strong>
                     {this.taskList(team, player)}
                   </Card.Text>
                 ) : null}
@@ -107,7 +99,11 @@ class TeacherGame extends Component {
         );
       });
 
-      fullList.push(<Row className="rowAccount" key={key}>{teamList}</Row>);
+      fullList.push(
+        <Row className="rowAccount" key={key}>
+          {teamList}
+        </Row>
+      );
       teamList = [];
     });
 
@@ -116,7 +112,7 @@ class TeacherGame extends Component {
 
   taskList(team, player) {
     const playerTasks = this.state.game.teams[team].players[player].tasks;
-    console.log(playerTasks);
+    console.log(player, " tasks ", playerTasks);
     return (
       <div>
         {playerTasks ? (
@@ -127,10 +123,21 @@ class TeacherGame extends Component {
                   key={i}
                   style={{ textAlign: "left" }}
                   action
-                  variant="warning"
+                  variant="dark"
                   onClick={() => this.handleShow(task)}
                 >
-                  {task.title}
+                  <Container>
+                    <Row>
+                      <Col>Oppgavetittel</Col>
+                      <Col>Lett</Col>
+                      <Col>
+                        {new Intl.DateTimeFormat("en-GB", {
+                          minute: "2-digit",
+                          second: "2-digit"
+                        }).format(task.endTime - task.startTime)}
+                      </Col>
+                    </Row>
+                  </Container>
                 </ListGroup.Item>
               ))}
           </ListGroup>
@@ -142,33 +149,54 @@ class TeacherGame extends Component {
   }
 
   render() {
-    const { game_pin, button_value, task } = this.state;
-
+    const { game, game_pin, button_value, task, show_task } = this.state;
+    console.log(task);
     return (
-      this.state.game && (
+      game && (
         <Container className="accountBody">
           <Row className="rowAccount">
             <h5>
               <strong>Spill-PIN: </strong> {game_pin}
             </h5>
           </Row>
-
+          {game.isFinished && (
+            <Row className="rowAccount">
+              <h7>
+                Dette spillet ble ferdig{" "}
+                {new Intl.DateTimeFormat("en-GB", {
+                  year: "numeric",
+                  month: "long",
+                  day: "2-digit",
+                  hour: "2-digit",
+                  minute: "2-digit"
+                }).format(game.date)}
+              </h7>
+            </Row>
+          )}
           {this.playerList()}
-
-          <Row className="rowAccount">
-            <Button className="btn-orange" onClick={this.startStopGame}>
-              {button_value}
-            </Button>
-          </Row>
-          {this.state.task && (
-            <Modal show={this.state.show_task} onHide={this.handleClose}>
+          {!game.isFinished && (
+            <Row className="rowAccount">
+              <Button className="btn-orange" onClick={this.startGame}>
+                Start spillet!
+              </Button>
+            </Row>
+          )}
+          {task && (
+            <Modal show={show_task} onHide={this.handleClose}>
               <Modal.Header closeButton>
-                <Modal.Title>{task.title}</Modal.Title>
+                <Modal.Title>Oppgavetittel</Modal.Title>
               </Modal.Header>
               <Modal.Body>
-                <strong>Vanskelighetsgrad:</strong>
-                {task.difficulty} <br />
-                {ReactHtmlParser(task.text)}
+                <strong>Vanskelighetsgrad:</strong> Lett
+                <br />
+                <strong>Tid brukt:</strong>{" "}
+                {new Intl.DateTimeFormat("en-GB", {
+                  minute: "2-digit",
+                  second: "2-digit"
+                }).format(task.endTime - task.startTime)}
+                <br />
+                <strong>Løsningskode:</strong> <br />
+                {ReactHtmlParser(task.studentCode)}
               </Modal.Body>
               <Modal.Footer>
                 <Button variant="secondary" onClick={this.handleClose}>

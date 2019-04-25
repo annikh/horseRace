@@ -1,9 +1,19 @@
 .player {
   background-color: rgb(245, 157, 57);
-  width: 15rem;
+  width: 23rem;
+  margin: 5px;
   text-decoration: none;
   color: black;
   display: inline-table;
+}
+
+.card {
+  font-size: 14px;
+}
+
+.list-group-item {
+  padding: 0px;
+  justify-content: space-around;
 }
 
 .card:hover {

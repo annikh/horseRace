@@ -5,3 +5,16 @@
 .bold {
   font-weight: bold;
 }
+
+.disabled-link {
+  pointer-events: none;
+  background-color: grey;
+}
+
+.active-link {
+  text-decoration: none;
+}
+
+.active-link:hover {
+  text-decoration: none;
+}
