@@ -1,8 +1,18 @@
 import React, { Component } from "react";
 import { AuthUserContext, withAuthorization } from "../Session";
-import { Container, Row, Col, ListGroup, Modal, Button } from "react-bootstrap";
+import { Link } from "react-router-dom";
+import {
+  Container,
+  Row,
+  Col,
+  ListGroup,
+  Modal,
+  Button,
+  Card
+} from "react-bootstrap";
 import { withFirebase } from "../Firebase";
 import CreateClassroom from "../CreateClassroom";
+import * as ROUTES from "../../constants/routes";
 
 class TeacherClassrooms extends Component {
   constructor(props) {
@@ -23,7 +33,6 @@ class TeacherClassrooms extends Component {
 
   componentDidMount() {
     const user_id = this.context.uid;
-
     this.props.firebase.classroomsByTeacher(user_id).on("value", snapshot => {
       this.setState({ loading: false, classrooms: snapshot.val() });
     });
@@ -83,6 +92,7 @@ class TeacherClassrooms extends Component {
 
   render() {
     const { classrooms, showClassroom, selectedClassroom } = this.state;
+    const classroomsExists = Object.keys(classrooms).length > 0;
     return (
       <Container className="accountBody">
         <Row className="rowAccount">
@@ -91,14 +101,14 @@ class TeacherClassrooms extends Component {
               <h2 style={{ textAlign: "left" }}>Dine klasserom:</h2>
             </Row>
             <Row className="rowAccount">
-              {Object.keys(classrooms).length > 0 ? (
+              {classroomsExists ? (
                 this.classroomList(classrooms)
               ) : (
                 <NoClassrooms />
               )}
             </Row>
           </Col>
-          {Object.keys(classrooms).length > 0 && selectedClassroom.length > 0 && (
+          {classroomsExists && selectedClassroom.length > 0 && (
             <Modal show={showClassroom} onHide={this.closeClassroom}>
               <Modal.Header closeButton>
                 <Modal.Title>{selectedClassroom}</Modal.Title>

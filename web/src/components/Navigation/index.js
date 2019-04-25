@@ -29,6 +29,11 @@ const Navigation = () => (
             </Link>
           </Nav.Item>
           <Nav.Item>
+            <Link to={ROUTES.TEACHER_STUDENTS} className="link">
+              Studenter
+            </Link>
+          </Nav.Item>
+          <Nav.Item>
             <SignOutButton />
           </Nav.Item>
         </Nav>

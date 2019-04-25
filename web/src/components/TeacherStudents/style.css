@@ -1,0 +1,26 @@
+.studentCard {
+  background-color: #ffeeba;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.studentCard:hover {
+  cursor: pointer !important;
+  background-color: #f3da8d;
+  text-decoration: none;
+}
+
+.studentCardLink {
+  text-decoration: none;
+  color: inherit;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.studentCardLink:hover {
+  text-decoration: none;
+  color: inherit;
+}

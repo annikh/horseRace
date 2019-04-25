@@ -44,7 +44,7 @@ class TeacherGames extends Component {
         <Row className="rowAccount">
           <Col className="insideBox">
             <Row className="rowAccount">
-              <h2 style={{ textAlign: "left" }}>Dine spill:</h2>
+              <h2>Dine spill:</h2>
             </Row>
             <Row className="rowAccount">
               {Object.keys(games).length > 0 ? (
