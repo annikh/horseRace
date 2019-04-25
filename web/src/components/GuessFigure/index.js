@@ -1,9 +1,6 @@
 import React, { Component } from "react";
-import {
-  Button,
-  Modal, 
-  Form
-} from "react-bootstrap";
+import { Button, Modal, Form } from "react-bootstrap";
+import { withFirebase } from "../Firebase";
 
 class GuessFigure extends Component {
   constructor(props) {
@@ -15,41 +12,54 @@ class GuessFigure extends Component {
     this.handleGuessInput = this.handleGuessInput.bind(this);
 
     this.state = {
-      figure: "kanelbolle",
       showGuessModal: false,
       showWinModal: false,
-      studentGuess: ''
-    }
+      studentGuess: "",
+      solution: ""
+    };
   }
 
   handleGuessInput(event) {
     const guess = event.target.value;
-    this.setState({studentGuess: guess});
+    this.setState({ studentGuess: guess });
   }
 
   handleGuessSubmit(event) {
     event.preventDefault();
-    if (this.state.studentGuess === this.state.figure) this.showWinModal();
+    if (this.state.solution === "") {
+      // validate against db value on first guess
+      this.props.firebase
+        .getFigureSolution(this.props.figure)
+        .once("value", snapshot => {
+          if (snapshot.val() === this.state.studentGuess) this.handleWin();
+          this.setState({ solution: snapshot.val() });
+        });
+    } else {
+      // validate against db value on consequent guesses
+      if (this.state.solution === this.state.studentGuess) this.handleWin();
+    }
+  }
+
+  handleWin() {
+    this.showWinModal();
   }
 
   showGuessModal() {
-    this.setState({showGuessModal: true})
+    this.setState({ showGuessModal: true });
   }
-  
+
   closeGuessModal() {
-    this.setState({showGuessModal: false})
+    this.setState({ showGuessModal: false });
   }
 
   showWinModal() {
-    this.setState({showWinModal: true})
+    this.setState({ showWinModal: true });
   }
 
   GuessModal = () => (
     <Modal show={this.state.showGuessModal} onHide={this.closeGuessModal}>
       <Modal.Header closeButton>
-        <Modal.Title>
-            Hva tror du det er på bildet?
-        </Modal.Title>
+        <Modal.Title>Hva tror du det er på bildet?</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form>
@@ -58,24 +68,22 @@ class GuessFigure extends Component {
         </Form>
       </Modal.Body>
     </Modal>
-  )
+  );
 
   WinModal = () => (
-    <Modal show={this.state.showWinModal} >
-      <Modal.Header >
-        <Modal.Title>
-          Gratulerer
-        </Modal.Title>
+    <Modal show={this.state.showWinModal}>
+      <Modal.Header>
+        <Modal.Title>Gratulerer</Modal.Title>
       </Modal.Header>
-      <Modal.Body>
-        Dere vant!
-      </Modal.Body>
+      <Modal.Body>Dere vant!</Modal.Body>
     </Modal>
-  )
+  );
 
   GuessButton = () => (
-    <Button variant="primary" onClick={this.showGuessModal}>Gjett hva som er på bildet</Button>
-  )
+    <Button variant="primary" onClick={this.showGuessModal}>
+      Gjett hva som er på bildet
+    </Button>
+  );
 
   render() {
     return (
@@ -84,8 +92,8 @@ class GuessFigure extends Component {
         <this.WinModal />
         <this.GuessButton />
       </div>
-    )
+    );
   }
 }
 
-export default GuessFigure;
+export default withFirebase(GuessFigure);
