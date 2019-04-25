@@ -129,7 +129,7 @@ class TeacherGame extends Component {
                     <Row>
                       <Col>Oppgavetittel</Col>
                       <Col>Lett</Col>
-                      <Col>
+                      <Col style={{ padding: "2px" }}>
                         {task.endTime ? (
                           <span>
                             <FontAwesomeIcon icon="check" color="black" />
@@ -142,6 +142,7 @@ class TeacherGame extends Component {
                           <span>
                             <FontAwesomeIcon icon="clock" color="black" />{" "}
                             {new Intl.DateTimeFormat("en-GB", {
+                              hour: "2-digit",
                               minute: "2-digit",
                               second: "2-digit"
                             }).format(task.startTime)}
