@@ -68,6 +68,7 @@ class Student extends Component {
   }
 
   handleExitGame() {
+    console.log("jass");
     this.setState({
       game_pin: null,
       nameList: null
@@ -118,9 +119,7 @@ class Student extends Component {
           </Col>
         </Row>
         <Row>
-          {this.props.cookies.get("game_pin") && this.state.nameList
-            ? this.namesDropDown()
-            : this.pinInput()}
+          {this.state.nameList ? this.namesDropDown() : this.pinInput()}
           <Col>
             <Button
               className="btn-classPin"
@@ -133,7 +132,11 @@ class Student extends Component {
         </Row>
       </Form>
     ) : (
-      <Game cookies={cookies} onExit={this.handleExitGame} />
+      <Game
+        cookies={cookies}
+        onExit={this.handleExitGame}
+        onGameOver={this.handleExitGame}
+      />
     );
   }
 }

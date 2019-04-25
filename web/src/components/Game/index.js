@@ -265,6 +265,7 @@ class Game extends Component {
             <GuessFigure
               figure={this.state.figure}
               cookies={this.props.cookies}
+              onGameOver={this.props.onGameOver}
             />
           </Nav.Item>
         </Nav>
