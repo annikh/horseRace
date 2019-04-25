@@ -71,7 +71,6 @@ class GuessFigure extends Component {
   }
 
   handleWin() {
-    //this.showWinModal();
     this.props.firebase.gameFinished(this.state.gamePin).set(true);
     this.props.firebase
       .gameWinningTeam(this.state.gamePin)
