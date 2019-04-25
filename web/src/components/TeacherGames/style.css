@@ -17,4 +17,10 @@
 
 .active-link:hover {
   text-decoration: none;
+  filter: brightness(85%);
+}
+
+.active-link:active {
+  text-decoration: none;
+  filter: brightness(75%);
 }

@@ -10,6 +10,8 @@ import "./style.css";
 class TeacherGames extends Component {
   constructor(props) {
     super(props);
+    this.setGameStateColor = this.setGameStateColor.bind(this);
+    this.setGameState = this.setGameState.bind(this);
 
     this.state = {
       loading: false,
@@ -37,6 +39,27 @@ class TeacherGames extends Component {
     });
   }
 
+  setGameStateColor = status => {
+    switch (status) {
+      case "inProgress":
+        return "#CBE9EF"; // blue
+      case "isFinished":
+        return "#CEEAD5"; //green
+      default:
+        return "#FFF1C6"; //isReady = yellow
+    }
+  };
+
+  setGameState = game => {
+    if (game.isFinished) {
+      return this.setGameStateColor("isFinished");
+    } else if (game.isActive) {
+      return this.setGameStateColor("inProgress");
+    } else {
+      return this.setGameStateColor("isReady");
+    }
+  };
+
   render() {
     const { games, classrooms } = this.state;
     return (
@@ -47,8 +70,28 @@ class TeacherGames extends Component {
               <h2>Dine spill:</h2>
             </Row>
             <Row className="rowAccount">
+              <Col>
+                <svg height="51" width="51">
+                  <circle cx="25" cy="25" r="10" fill="#FFF1C6" />
+                </svg>{" "}
+                Klart spill
+              </Col>
+              <Col>
+                <svg height="51" width="51">
+                  <circle cx="25" cy="25" r="10" fill="#CBE9EF" />
+                </svg>{" "}
+                Spill pågår
+              </Col>
+              <Col>
+                <svg height="51" width="51">
+                  <circle cx="25" cy="25" r="10" fill="#CEEAD5" />
+                </svg>
+                Ferdig spill
+              </Col>
+            </Row>
+            <Row className="rowAccount">
               {Object.keys(games).length > 0 ? (
-                <GameList games={games} />
+                <GameList games={games} setGameState={this.setGameState} />
               ) : (
                 <NoGames />
               )}
@@ -74,15 +117,18 @@ const NoGames = () => (
   <p style={{ textAlign: "left" }}>Du har ingen spill ennå</p>
 );
 
-const GameList = ({ games }) => (
+const GameList = ({ games, setGameState }) => (
   <ListGroup style={{ width: "80%" }}>
     {Object.keys(games).map((pin, i) => (
       <Link
         key={i}
         to={ROUTES.TEACHER_GAMES + "/" + pin}
-        style={{ textDecoration: "none" }}
+        className="active-link"
       >
-        <ListGroup.Item style={{ textAlign: "left" }} action variant="warning">
+        <ListGroup.Item
+          action
+          style={{ backgroundColor: setGameState(games[pin]) }}
+        >
           <Row className="left">
             <Col className="bold">PIN:</Col>
             <Col>{pin}</Col>
