@@ -1,11 +1,14 @@
 import React, { Component } from "react";
 import axios from "axios";
 import { withFirebase } from "../Firebase";
-import { Container, Row, Col, Modal } from "react-bootstrap";
+import { Container, Row, Col, Modal, Nav, Button } from "react-bootstrap";
+import { Redirect } from "react-router-dom";
 import Editor from "../Editor";
 import Cards from "../Cards";
 import Console from "../Console";
+import GuessFigure from "../GuessFigure";
 import "./style.css";
+import * as ROUTES from "../../constants/routes";
 
 class Game extends Component {
   emptyTask = {
@@ -29,6 +32,12 @@ class Game extends Component {
     this.handleTaskStart = this.handleTaskStart.bind(this);
 
     this.state = {
+      exitGame: false,
+      gameIsActive: false,
+      gamePin: this.props.cookies.get("game_pin"),
+      playerName: this.props.cookies.get("game_name"),
+      team: this.props.cookies.get("game_team"),
+      figure: "",
       currentTask: this.emptyTask,
       lastSolvedTask: { id: this.emptyTask.id, url: "" },
       newTaskSelected: false,
@@ -43,12 +52,46 @@ class Game extends Component {
         "Oops..",
         "Ikke helt der ennå.."
       ],
-      errorModalHeaderText: "",
-      playerName: this.props.cookies.get("game_name"),
-      team: this.props.cookies.get("game_team"),
-      gamePin: this.props.cookies.get("game_pin")
+      errorModalHeaderText: ""
     };
   }
+
+  componentDidMount() {
+    this.props.firebase.gameState(this.state.gamePin).on("value", snapshot => {
+      this.setState({ gameIsActive: snapshot.val() });
+    });
+
+    this.props.firebase
+      .gameFigure(this.state.gamePin)
+      .once("value", snapshot => {
+        this.setState({ figure: snapshot.val() });
+        console.log(snapshot.val());
+      });
+  }
+
+  componentWillUnmount() {
+    this.props.firebase.gameState(this.state.gamePin).off();
+  }
+
+  exitGame = () => {
+    this.props.firebase
+      .gamePlayer(this.state.gamePin, this.state.team, this.state.playerName)
+      .child("isActive")
+      .set(false);
+
+    this.props.cookies.remove("game_name");
+    this.props.cookies.remove("game_pin");
+    this.props.cookies.remove("game_team");
+
+    this.setState({
+      exitGame: true,
+      gamePin: null,
+      playerName: null,
+      team: 0
+    });
+
+    this.props.onExit();
+  };
 
   runCode(submittedCode) {
     axios
@@ -202,27 +245,54 @@ class Game extends Component {
 
   render() {
     return (
-      <Container className="gameComponent">
-        <this.ErrorModal />
-        <this.SolvedModal />
-        <Row>
-          <Col>
-            <Editor
-              onRunCode={this.runCode}
-              defaultCode={this.state.currentTask.body.default_code}
-              newTaskSelected={this.state.newTaskSelected}
-            />
-            <br />
-            <Console output={this.state.output} />
-          </Col>
-          <Col>
-            <Cards
-              lastSolvedTask={this.state.lastSolvedTask}
-              onCardSelect={this.handleTaskStart}
-              cookies={this.props.cookies}
-            />
-          </Col>
-        </Row>
+      <Container className="studentGame">
+        <Nav className="studentGameNav">
+          <Nav.Item>
+            {this.state.exitGame ? (
+              <Redirect
+                to={{
+                  pathname: ROUTES.STUDENT
+                }}
+              />
+            ) : (
+              <Button onClick={this.exitGame}>Avslutt spill</Button>
+            )}
+          </Nav.Item>
+          <Nav.Item>
+            <h3>Hei, {this.state.playerName} </h3>
+          </Nav.Item>
+          <Nav.Item>
+            <GuessFigure figure={this.state.figure} />
+          </Nav.Item>
+        </Nav>
+        {this.state.gamePin && !this.state.gameIsActive ? (
+          <Row style={{ justifyContent: "center" }}>
+            Venter på at spillet skal starte..
+          </Row>
+        ) : (
+          <Container className="gameComponent">
+            <this.ErrorModal />
+            <this.SolvedModal />
+            <Row>
+              <Col>
+                <Editor
+                  onRunCode={this.runCode}
+                  defaultCode={this.state.currentTask.body.default_code}
+                  newTaskSelected={this.state.newTaskSelected}
+                />
+                <br />
+                <Console output={this.state.output} />
+              </Col>
+              <Col>
+                <Cards
+                  lastSolvedTask={this.state.lastSolvedTask}
+                  onCardSelect={this.handleTaskStart}
+                  cookies={this.props.cookies}
+                />
+              </Col>
+            </Row>
+          </Container>
+        )}
       </Container>
     );
   }

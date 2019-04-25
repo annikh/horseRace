@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Button, Form, Row, Col } from "react-bootstrap";
 import { withFirebase } from "../Firebase";
-import StudentGame from "../StudentGame";
+import Game from "../Game";
 import "./style.css";
 
 class Student extends Component {
@@ -32,10 +32,10 @@ class Student extends Component {
       const teams = snapshot.val();
       let players = {};
       teams.forEach(team => {
-        let names = Object.keys(team.players)
-        let values = Object.values(team.players)
-        names.map((name,i) => players[name]=values[i])
-      })
+        let names = Object.keys(team.players);
+        let values = Object.values(team.players);
+        names.map((name, i) => (players[name] = values[i]));
+      });
       this.setState({ nameList: players });
     });
   }
@@ -53,7 +53,7 @@ class Student extends Component {
   }
 
   getTeamFromPlayerName(name) {
-    return (this.state.nameList !== null) ? this.state.nameList[name].team : "";
+    return this.state.nameList !== null ? this.state.nameList[name].team : "";
   }
 
   handleChange(event) {
@@ -68,7 +68,7 @@ class Student extends Component {
   }
 
   handleExitGame() {
-    this.setState({ 
+    this.setState({
       game_pin: null,
       nameList: null
     });
@@ -87,7 +87,7 @@ class Student extends Component {
 
   namesDropDown = () => {
     const nameList = this.state.nameList;
-    console.log("nameList: ", nameList)
+    console.log("nameList: ", nameList);
     return (
       <Col md="auto">
         <Form.Control as="select" onChange={this.handleChange}>
@@ -132,7 +132,7 @@ class Student extends Component {
         </Row>
       </Form>
     ) : (
-      <StudentGame cookies={cookies} onExit={this.handleExitGame}/>
+      <Game cookies={cookies} onExit={this.handleExitGame} />
     );
   }
 }
