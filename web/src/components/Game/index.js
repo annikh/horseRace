@@ -83,15 +83,6 @@ class Game extends Component {
   }
 
   exitGame = () => {
-    this.props.firebase
-      .gamePlayer(this.state.gamePin, this.state.team, this.state.playerName)
-      .child("isActive")
-      .set(false);
-
-    this.props.cookies.remove("game_name");
-    this.props.cookies.remove("game_pin");
-    this.props.cookies.remove("game_team");
-
     this.setState({
       exitGame: true,
       gamePin: null,
