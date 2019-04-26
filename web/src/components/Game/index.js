@@ -104,7 +104,8 @@ class Game extends Component {
 
   runCode(submittedCode) {
     axios
-      .get("http://35.228.140.69/run", {
+      //.get("http://35.228.140.69/run", { bytte ut med riktig IP
+      .get("http://localhost:5000/run", {
         params: { code: submittedCode, task: this.state.currentTask.body }
       })
       .then(response => {
