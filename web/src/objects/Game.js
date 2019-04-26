@@ -5,7 +5,6 @@ export default class Game {
     classroom_id,
     date,
     teams,
-    tasks,
     figure,
     isFinished
   ) {
@@ -14,7 +13,7 @@ export default class Game {
     this.teams = teams;
     this.user_id = user_id;
     this.classroom_id = classroom_id;
-    this.tasks = tasks;
+
     this.figure = figure;
     this.isFinished = isFinished;
   }

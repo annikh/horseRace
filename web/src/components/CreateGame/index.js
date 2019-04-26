@@ -32,7 +32,7 @@ class CreateGame extends Component {
   }
 
   componentDidMount() {
-    this.props.firebase.tasks("variables").once("value", snapshot => {
+    this.props.firebase.tasks().once("value", snapshot => {
       this.setState({ tasks: snapshot.val() });
     });
 
@@ -56,7 +56,6 @@ class CreateGame extends Component {
       this.state.classroomName,
       new Date().getTime(),
       teams,
-      this.state.tasks,
       this.state.figure,
       false
     );
@@ -103,9 +102,10 @@ class CreateGame extends Component {
 
   updateTeams() {
     let newTeams = {};
+    const { tasks } = this.state;
     Object.keys(this.state.teams).forEach(name => {
       let team = this.state.teams[name].team;
-      if (!newTeams[team]) newTeams[team] = { players: {} };
+      if (!newTeams[team]) newTeams[team] = { players: {}, tasks: tasks };
       let newPlayer = {
         isActive: false,
         tasks: null,

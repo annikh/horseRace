@@ -144,7 +144,7 @@ class Firebase {
 
   // *** Task API ***
   tasks = type => {
-    return this.db.ref("tasks").child(type);
+    return this.db.ref("tasks");
   };
 
   // *** Image API ***
