@@ -79,17 +79,21 @@ class Firebase {
       .child("players")
       .child(name);
   };
-  gameTask = (pin, taskId) => {
+  gameTask = (pin, team, taskId) => {
     return this.db
       .ref("games")
       .child(pin)
+      .child("teams")
+      .child(team)
       .child("tasks")
       .child(taskId);
   };
-  gameTasks = pin => {
+  gameTasks = (pin, team) => {
     return this.db
       .ref("games")
       .child(pin)
+      .child("teams")
+      .child(team)
       .child("tasks");
   };
   gameTeam = (pin, team) => {
@@ -98,23 +102,6 @@ class Firebase {
       .child(pin)
       .child("teams")
       .child(team);
-  };
-  solvedGameTasks = (pin, team) => {
-    return this.db
-      .ref("games")
-      .child(pin)
-      .child("teams")
-      .child(team)
-      .child("solvedTasks");
-  };
-  solvedGameTask = (pin, team, taskId) => {
-    return this.db
-      .ref("games")
-      .child(pin)
-      .child("teams")
-      .child(team)
-      .child("solvedTasks")
-      .child(taskId);
   };
   gameFigure = pin => {
     return this.db
