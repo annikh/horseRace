@@ -39,3 +39,10 @@
 .openedCard:hover {
   filter: brightness(100%);
 }
+
+.disabled {
+  filter: brightness(75%);
+  pointer-events: none;
+  border: none;
+  color: inherit !important;
+}
