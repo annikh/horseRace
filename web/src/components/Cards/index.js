@@ -26,29 +26,28 @@ class Cards extends Component {
 
   componentDidMount() {
     this.props.firebase
-      .gameTasks(this.state.gamePin)
-      .once("value", snapshot => {
-        const cards = snapshot.val();
-        this.setState({
-          cards: cards
-        });
-      });
-    this.props.firebase
-      .solvedGameTasks(this.state.gamePin, this.state.gameTeam)
+      .gameTasks(this.state.gamePin, this.state.gameTeam)
       .on("value", snapshot => {
-        const solvedTasks = snapshot.val();
+        const cards = snapshot.val();
+        let solvedTasks = {};
+        Object.keys(cards).map(card => {
+          if (cards[card].solved) {
+            solvedTasks[card] = cards[card];
+          }
+        });
         this.setState({
+          cards: cards,
           solvedTasks: solvedTasks
         });
       });
   }
 
-  /*componentWillUnmount() {
+  componentWillUnmount() {
     this.props.firebase.gameTasks(this.state.gamePin).off();
     this.props.firebase
       .solvedGameTasks(this.state.gamePin, this.state.gameTeam)
       .off();
-  }*/
+  }
 
   getBoard() {
     const { cards, solvedTasks } = this.state;
@@ -57,24 +56,33 @@ class Cards extends Component {
     Object.keys(cards).forEach((id, index) => {
       this.taskIsSolved(id, solvedTasks)
         ? row.push(
-            <img key={index} src={solvedTasks[id].url} className="img" alt="" />
+            <img
+              key={index}
+              src={solvedTasks[id].solved}
+              className="img"
+              alt=""
+            />
           )
         : row.push(
             <Button
               key={index}
-              className="card"
+              className={cards[id].active ? "card" : "card disabled"}
               style={{
                 backgroundColor: this.setCardColorByDiffictuly(
                   cards[id].difficulty
                 )
               }}
-              onClick={() => this.handleCardOpen(id, cards[id])}
+              onClick={() => this.handleCardOpen(id, cards[id], index)}
             >
               {cards[id].title}
             </Button>
           );
       if ((index + 1) % 4 === 0) {
-        board.push(<Row style={{ padding: "0px", margin: "0px" }}>{row}</Row>);
+        board.push(
+          <Row key={index} style={{ padding: "0px", margin: "0px" }}>
+            {row}
+          </Row>
+        );
         row = [];
       }
     });
@@ -104,26 +112,25 @@ class Cards extends Component {
     this.props.onCardSelect(this.state.selectedCard);
   }
 
-  handleCardOpen(key, card) {
-    console.log("handle open");
+  handleCardOpen(key, card, index) {
+    this.props.onCardSelect({ id: key, body: card }, index);
+    this.deactivateTaskInDB(key);
     this.setState({
       selectedCard: { id: key, body: card },
       showCard: true
     });
-    this.props.onCardSelect({ id: key, body: card });
-    this.deactivateTaskInDB(key);
   }
 
-  deactivateTaskInDB(taskId, teamId) {
+  deactivateTaskInDB(taskId) {
     this.props.firebase
-      .gameTask(this.state.gamePin, taskId)
+      .gameTask(this.state.gamePin, this.state.gameTeam, taskId)
       .child("active")
       .set(false);
   }
 
-  reactivateTaskInDB(taskId, teamId) {
+  reactivateTaskInDB(taskId) {
     this.props.firebase
-      .gameTask(this.state.gamePin, taskId)
+      .gameTask(this.state.gamePin, this.state.gameTeam, taskId)
       .child("active")
       .set(true);
   }
@@ -162,14 +169,9 @@ class Cards extends Component {
 
   render() {
     const { cards, showCard, solvedTasks } = this.state;
-    console.log("solved", solvedTasks);
-    console.log("cards", cards);
-    console.log("showCard", showCard);
     return (
       <span>
-        {Object.keys(solvedTasks).length > 0 &&
-        Object.keys(cards).length > 0 &&
-        showCard ? (
+        {Object.keys(cards).length > 0 && this.props.showCard ? (
           <this.OpenedCard />
         ) : (
           this.getBoard()
