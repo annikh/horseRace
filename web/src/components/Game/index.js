@@ -34,11 +34,13 @@ class Game extends Component {
     this.state = {
       exitGame: false,
       gameIsActive: false,
+      showCard: false,
       gamePin: this.props.cookies.get("game_pin"),
       playerName: this.props.cookies.get("game_name"),
       team: this.props.cookies.get("game_team"),
       figure: "",
       currentTask: this.emptyTask,
+      boardIndex: -1,
       lastSolvedTask: { id: this.emptyTask.id, url: "" },
       newTaskSelected: false,
       output: "",
@@ -65,7 +67,6 @@ class Game extends Component {
       .gameFigure(this.state.gamePin)
       .once("value", snapshot => {
         this.setState({ figure: snapshot.val() });
-        console.log(snapshot.val());
       });
   }
 
@@ -95,7 +96,7 @@ class Game extends Component {
 
   runCode(submittedCode) {
     axios
-      .get("http://35.228.140.69/run", {
+      .get("http://localhost:5000/run", {
         params: { code: submittedCode, task: this.state.currentTask.body }
       })
       .then(response => {
@@ -119,13 +120,13 @@ class Game extends Component {
   }
 
   taskIsSolved(solved) {
-    return parseInt(this.state.currentTask.id) !== this.emptyTask.id && solved;
+    return this.state.currentTask.id !== this.emptyTask.id && solved;
   }
 
   async getImageUrl(key) {
     try {
       const url = await this.props.firebase
-        .getImagePart(this.props.figure, key)
+        .getImagePart(this.state.figure, key)
         .getDownloadURL();
       return url;
     } catch (error) {
@@ -133,11 +134,13 @@ class Game extends Component {
     }
   }
 
-  handleTaskStart(task) {
+  handleTaskStart(task, boardIndex = -1) {
     const newTaskSelected = task.id !== this.state.currentTask.id;
     this.setState({
       currentTask: task,
-      newTaskSelected: newTaskSelected
+      boardIndex: boardIndex,
+      newTaskSelected: newTaskSelected,
+      showCard: newTaskSelected
     });
     if (task.id >= 0 && newTaskSelected) {
       this.props.firebase
@@ -151,15 +154,17 @@ class Game extends Component {
   }
 
   handleTaskSolved(studentCode) {
-    const solvedTaskId = parseInt(this.state.currentTask.id);
-
-    this.getImageUrl(solvedTaskId).then(url => {
-      this.setState({
-        lastSolvedTask: { id: solvedTaskId, url: url }
+    const boardIndex = this.state.boardIndex;
+    if (boardIndex > -1) {
+      this.getImageUrl(boardIndex).then(url => {
+        this.setState({
+          lastSolvedTask: { id: this.state.currentTask.id, url: url },
+          showCard: false
+        });
+        this.solveStudentTaskInDB(this.state.currentTask.id, studentCode, url);
+        this.showSolvedModal();
       });
-      this.solveStudentTaskInDB(solvedTaskId, studentCode, url);
-      this.showSolvedModal();
-    });
+    }
   }
 
   initiateStudentTaskInDB(taskId) {
@@ -189,7 +194,6 @@ class Game extends Component {
 
   solveStudentTaskInDB(taskId, studentCode, imageUrl) {
     const taskEndTime = new Date().getTime();
-
     let updates = {};
     updates[
       "/players/" + this.state.playerName + "/tasks/" + taskId + "/endTime/"
@@ -197,7 +201,7 @@ class Game extends Component {
     updates[
       "/players/" + this.state.playerName + "/tasks/" + taskId + "/studentCode/"
     ] = studentCode;
-    updates["/solvedTasks/" + taskId + "/url/"] = imageUrl;
+    updates["/tasks/" + taskId + "/solved/"] = imageUrl;
 
     this.props.firebase
       .gameTeam(this.state.gamePin, this.state.team)
@@ -292,6 +296,7 @@ class Game extends Component {
                   lastSolvedTask={this.state.lastSolvedTask}
                   onCardSelect={this.handleTaskStart}
                   cookies={this.props.cookies}
+                  showCard={this.state.showCard}
                 />
               </Col>
             </Row>
