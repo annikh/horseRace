@@ -38,6 +38,7 @@ class Game extends Component {
       playerName: this.props.cookies.get("game_name"),
       team: this.props.cookies.get("game_team"),
       figure: "",
+      solution: "",
       currentTask: this.emptyTask,
       lastSolvedTask: { id: this.emptyTask.id, url: "" },
       newTaskSelected: false,
@@ -61,11 +62,19 @@ class Game extends Component {
       this.setState({ gameIsActive: snapshot.val() });
     });
 
+    let figure = "";
+
     this.props.firebase
       .gameFigure(this.state.gamePin)
       .once("value", snapshot => {
-        this.setState({ figure: snapshot.val() });
-        console.log(snapshot.val());
+        figure = snapshot.val();
+        this.setState({ figure: figure });
+
+        this.props.firebase
+          .getFigureSolution(figure)
+          .once("value", snapshot => {
+            this.setState({ solution: snapshot.val() });
+          });
       });
   }
 
@@ -74,15 +83,6 @@ class Game extends Component {
   }
 
   exitGame = () => {
-    this.props.firebase
-      .gamePlayer(this.state.gamePin, this.state.team, this.state.playerName)
-      .child("isActive")
-      .set(false);
-
-    this.props.cookies.remove("game_name");
-    this.props.cookies.remove("game_pin");
-    this.props.cookies.remove("game_team");
-
     this.setState({
       exitGame: true,
       gamePin: null,
@@ -95,7 +95,8 @@ class Game extends Component {
 
   runCode(submittedCode) {
     axios
-      .get("http://35.228.140.69/run", {
+      //.get("http://35.228.140.69/run", { bytte ut med riktig IP
+      .get("http://localhost:5000/run", {
         params: { code: submittedCode, task: this.state.currentTask.body }
       })
       .then(response => {
@@ -243,59 +244,68 @@ class Game extends Component {
     </Modal>
   );
 
+  GamePlayElements = () => (
+    <Container className="gameComponent">
+      <this.ErrorModal />
+      <this.SolvedModal />
+      <Row>
+        <Col>
+          <Editor
+            onRunCode={this.runCode}
+            defaultCode={this.state.currentTask.body.default_code}
+            newTaskSelected={this.state.newTaskSelected}
+          />
+          <br />
+          <Console output={this.state.output} />
+        </Col>
+        <Col>
+          <Cards
+            lastSolvedTask={this.state.lastSolvedTask}
+            onCardSelect={this.handleTaskStart}
+            cookies={this.props.cookies}
+          />
+        </Col>
+      </Row>
+    </Container>
+  );
+
+  GameNavigation = () => (
+    <Nav className="studentGameNav">
+      <Nav.Item>
+        {this.state.exitGame ? (
+          <Redirect
+            to={{
+              pathname: ROUTES.STUDENT
+            }}
+          />
+        ) : (
+          <Button onClick={this.exitGame}>Avslutt spill</Button>
+        )}
+      </Nav.Item>
+      <Nav.Item>
+        <h3>Hei, {this.state.playerName} </h3>
+      </Nav.Item>
+      <Nav.Item>
+        <GuessFigure
+          figure={this.state.figure}
+          solution={this.state.solution}
+          cookies={this.props.cookies}
+          onGameOver={this.props.onGameOver}
+        />
+      </Nav.Item>
+    </Nav>
+  );
+
   render() {
     return (
       <Container className="studentGame">
-        <Nav className="studentGameNav">
-          <Nav.Item>
-            {this.state.exitGame ? (
-              <Redirect
-                to={{
-                  pathname: ROUTES.STUDENT
-                }}
-              />
-            ) : (
-              <Button onClick={this.exitGame}>Avslutt spill</Button>
-            )}
-          </Nav.Item>
-          <Nav.Item>
-            <h3>Hei, {this.state.playerName} </h3>
-          </Nav.Item>
-          <Nav.Item>
-            <GuessFigure
-              figure={this.state.figure}
-              cookies={this.props.cookies}
-              onGameOver={this.props.onGameOver}
-            />
-          </Nav.Item>
-        </Nav>
+        <this.GameNavigation />
         {this.state.gamePin && !this.state.gameIsActive ? (
           <Row style={{ justifyContent: "center" }}>
             Venter på at spillet skal starte..
           </Row>
         ) : (
-          <Container className="gameComponent">
-            <this.ErrorModal />
-            <this.SolvedModal />
-            <Row>
-              <Col>
-                <Editor
-                  onRunCode={this.runCode}
-                  defaultCode={this.state.currentTask.body.default_code}
-                  newTaskSelected={this.state.newTaskSelected}
-                />
-                <br />
-                <Console output={this.state.output} />
-              </Col>
-              <Col>
-                <Cards
-                  lastSolvedTask={this.state.lastSolvedTask}
-                  onCardSelect={this.handleTaskStart}
-                  cookies={this.props.cookies}
-                />
-              </Col>
-            </Row>
-          </Container>
+          <this.GamePlayElements />
         )}
       </Container>
     );
