@@ -24,7 +24,8 @@ class TeacherClassrooms extends Component {
   componentDidMount() {
     const user_id = this.context.uid;
     this.props.firebase.classroomsByTeacher(user_id).on("value", snapshot => {
-      this.setState({ loading: false, classrooms: snapshot.val() });
+      if (snapshot.val() != null)
+        this.setState({ loading: false, classrooms: snapshot.val() });
     });
   }
 
