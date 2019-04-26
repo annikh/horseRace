@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { Button, Modal, Form } from "react-bootstrap";
 import { withFirebase } from "../Firebase";
+import * as ROUTES from "../../constants/routes";
+import { Redirect } from "react-router-dom";
 
 class GuessFigure extends Component {
   constructor(props) {
@@ -11,19 +13,41 @@ class GuessFigure extends Component {
     this.closeWrongGuessModal = this.closeWrongGuessModal.bind(this);
     this.handleGuessSubmit = this.handleGuessSubmit.bind(this);
     this.handleGuessInput = this.handleGuessInput.bind(this);
+    this.handleExitOnGameOver = this.handleExitOnGameOver.bind(this);
 
     this.state = {
+      gamePin: this.props.cookies.get("game_pin"),
+      gameTeam: this.props.cookies.get("game_team"),
       showGuessModal: false,
-      showWinModal: false,
       showWrongGuessModal: false,
       studentGuess: "",
-      solution: ""
+      solution: "",
+      gameIsFinished: false,
+      winnerTeam: ""
     };
   }
 
+  componentDidMount() {
+    this.props.firebase
+      .gameFinished(this.state.gamePin)
+      .on("value", snapshot => {
+        this.setState({ gameIsFinished: snapshot.val() });
+      });
+
+    this.props.firebase
+      .gameWinningTeam(this.state.gamePin)
+      .on("value", snapshot => {
+        this.setState({ winnerTeam: snapshot.val() });
+      });
+  }
+
+  componentWillUnmount() {
+    this.props.firebase.gameFinished(this.state.gamePin).off();
+    this.props.firebase.gameWinningTeam(this.state.gamePin).off();
+  }
+
   handleGuessInput(event) {
-    const guess = event.target.value;
-    this.setState({ studentGuess: guess });
+    this.setState({ studentGuess: event.target.value });
   }
 
   handleGuessSubmit(event) {
@@ -47,7 +71,15 @@ class GuessFigure extends Component {
   }
 
   handleWin() {
-    this.showWinModal();
+    this.props.firebase.gameFinished(this.state.gamePin).set(true);
+    this.props.firebase
+      .gameWinningTeam(this.state.gamePin)
+      .set(this.state.gameTeam);
+
+    this.setState({
+      winnerTeam: this.state.gameTeam,
+      gameIsFinished: true
+    });
   }
 
   showGuessModal() {
@@ -58,12 +90,15 @@ class GuessFigure extends Component {
     this.setState({ showGuessModal: false });
   }
 
-  showWinModal() {
-    this.setState({ showWinModal: true });
+  handleExitOnGameOver() {
+    this.props.onGameOver();
+    this.props.cookies.remove("game_pin");
+    this.props.cookies.remove("game_team");
+    this.props.cookies.remove("game_name");
+    return <Redirect to={ROUTES.STUDENT} />;
   }
 
   showWrongGuessModal() {
-    console.log("halloen");
     this.setState({
       showWrongGuessModal: true,
       showGuessModal: false
@@ -91,11 +126,22 @@ class GuessFigure extends Component {
   );
 
   WinModal = () => (
-    <Modal show={this.state.showWinModal}>
-      <Modal.Header>
+    <Modal show={true} onHide={this.handleExitOnGameOver}>
+      <Modal.Header closeButton>
         <Modal.Title>Gratulerer</Modal.Title>
       </Modal.Header>
       <Modal.Body>Dere vant!</Modal.Body>
+    </Modal>
+  );
+
+  LoseModal = () => (
+    <Modal show={true} onHide={this.handleExitOnGameOver}>
+      <Modal.Header closeButton>
+        <Modal.Title>Game Over</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        Et annet lag har gjettet riktig. Løsningen var: {this.state.solution}
+      </Modal.Body>
     </Modal>
   );
 
@@ -122,10 +168,17 @@ class GuessFigure extends Component {
   render() {
     return (
       <div>
-        <this.GuessModal />
-        <this.WinModal />
-        <this.WrongGuessModal />
         <this.GuessButton />
+        {!this.state.gameIsFinished ? (
+          <div>
+            <this.GuessModal />
+            <this.WrongGuessModal />
+          </div>
+        ) : this.state.winnerTeam === this.state.gameTeam ? (
+          <this.WinModal />
+        ) : (
+          <this.LoseModal />
+        )}
       </div>
     );
   }

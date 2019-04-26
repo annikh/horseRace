@@ -9,8 +9,13 @@ import Firebase, { FirebaseContext } from "./components/Firebase";
 import { CookiesProvider } from "react-cookie";
 /* Add Font Awesome Icons */
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faUser, faPlay } from "@fortawesome/free-solid-svg-icons";
-library.add(faUser, faPlay);
+import {
+  faUser,
+  faPlay,
+  faClock,
+  faCheck
+} from "@fortawesome/free-solid-svg-icons";
+library.add(faUser, faPlay, faClock, faCheck);
 
 ReactDOM.render(
   <CookiesProvider>
