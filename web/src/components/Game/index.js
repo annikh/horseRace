@@ -268,6 +268,7 @@ class Game extends Component {
             lastSolvedTask={this.state.lastSolvedTask}
             onCardSelect={this.handleTaskStart}
             cookies={this.props.cookies}
+            showCard={this.state.showCard}
           />
         </Col>
       </Row>

@@ -42,9 +42,8 @@ class Cards extends Component {
   }
 
   componentWillUnmount() {
-    this.props.firebase.gameTasks(this.state.gamePin).off();
     this.props.firebase
-      .solvedGameTasks(this.state.gamePin, this.state.gameTeam)
+      .gameTasks(this.state.gamePin, this.state.gameTeam)
       .off();
   }
 
@@ -167,7 +166,7 @@ class Cards extends Component {
   );
 
   render() {
-    const { cards, showCard, solvedTasks } = this.state;
+    const { cards } = this.state;
     return (
       <span>
         {Object.keys(cards).length > 0 && this.props.showCard ? (
