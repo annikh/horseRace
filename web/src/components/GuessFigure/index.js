@@ -126,7 +126,8 @@ class GuessFigure extends Component {
         <Modal.Title>Game Over</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        Et annet lag har gjettet riktig. Løsningen var: {this.props.solution}
+        Et annet lag har gjettet riktig. <br /> <b>Løsningsord: </b>
+        {this.props.solution}
       </Modal.Body>
     </Modal>
   );
