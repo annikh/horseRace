@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { withFirebase } from "../Firebase";
-import { Button, Card, Row, Container } from "react-bootstrap";
+import { Button, ButtonGroup, Card, Row, Container } from "react-bootstrap";
 import * as COLORS from "../../constants/colors";
 import "./style.css";
 
@@ -77,9 +77,9 @@ class Cards extends Component {
           );
       if ((index + 1) % 4 === 0) {
         board.push(
-          <Row key={index} style={{ padding: "0px", margin: "0px" }}>
+          <ButtonGroup key={index} style={{ padding: "0px", margin: "0px" }}>
             {row}
-          </Row>
+          </ButtonGroup>
         );
         row = [];
       }
