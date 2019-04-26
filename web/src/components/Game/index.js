@@ -144,7 +144,7 @@ class Game extends Component {
       newTaskSelected: newTaskSelected,
       showCard: newTaskSelected
     });
-    if (task.id >= 0 && newTaskSelected) {
+    if (boardIndex >= 0 && newTaskSelected) {
       this.props.firebase
         .gamePlayer(this.state.gamePin, this.state.team, this.state.playerName)
         .child("tasks")
@@ -170,6 +170,7 @@ class Game extends Component {
   }
 
   initiateStudentTaskInDB(taskId) {
+    console.log("set starttime");
     const taskStartTime = new Date().getTime();
     this.props.firebase
       .gamePlayer(this.state.gamePin, this.state.team, this.state.playerName)

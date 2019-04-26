@@ -77,9 +77,9 @@ class Cards extends Component {
           );
       if ((index + 1) % 4 === 0) {
         board.push(
-          <Row key={index} style={{ padding: "0px", margin: "0px" }}>
+          <ButtonGroup key={index} style={{ padding: "0px", margin: "0px" }}>
             {row}
-          </Row>
+          </ButtonGroup>
         );
         row = [];
       }
