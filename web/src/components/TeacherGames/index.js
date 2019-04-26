@@ -35,7 +35,8 @@ class TeacherGames extends Component {
       });
     });
     this.props.firebase.classroomsByTeacher(user_id).on("value", snapshot => {
-      this.setState({ loading: false, classrooms: snapshot.val() });
+      if (snapshot.val() != null)
+        this.setState({ loading: false, classrooms: snapshot.val() });
     });
   }
 
@@ -99,8 +100,12 @@ class TeacherGames extends Component {
           </Col>
           <Col className="insideBox">
             <Row className="rowAccount">
-              {Object.keys(this.state.classrooms).length > 0 && (
+              {Object.keys(this.state.classrooms).length > 0 ? (
                 <CreateGame classrooms={classrooms} />
+              ) : (
+                <div>
+                  Du må opprette et klasserom før du kan opprette et spill
+                </div>
               )}
             </Row>
           </Col>
