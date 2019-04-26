@@ -17,7 +17,6 @@ class Cards extends Component {
       cards: [],
       showCard: false,
       selectedCard: null,
-      figure: "kanelbolle",
       solvedTasks: {},
       gameTeam: this.props.cookies.get("game_team"),
       gamePin: this.props.cookies.get("game_pin")

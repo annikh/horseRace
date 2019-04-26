@@ -21,7 +21,6 @@ class GuessFigure extends Component {
       showGuessModal: false,
       showWrongGuessModal: false,
       studentGuess: "",
-      solution: "",
       gameIsFinished: false,
       winnerTeam: ""
     };
@@ -52,22 +51,9 @@ class GuessFigure extends Component {
 
   handleGuessSubmit(event) {
     event.preventDefault();
-    if (this.state.solution === "") {
-      // validate against db value on first guess
-      this.props.firebase
-        .getFigureSolution(this.props.figure)
-        .once("value", snapshot => {
-          snapshot.val() === this.state.studentGuess
-            ? this.handleWin()
-            : this.showWrongGuessModal();
-          this.setState({ solution: snapshot.val() });
-        });
-    } else {
-      // validate against db value on consequent guesses
-      this.state.solution === this.state.studentGuess
-        ? this.handleWin()
-        : this.showWrongGuessModal();
-    }
+    this.props.solution === this.state.studentGuess
+      ? this.handleWin()
+      : this.showWrongGuessModal();
   }
 
   handleWin() {
@@ -92,9 +78,6 @@ class GuessFigure extends Component {
 
   handleExitOnGameOver() {
     this.props.onGameOver();
-    this.props.cookies.remove("game_pin");
-    this.props.cookies.remove("game_team");
-    this.props.cookies.remove("game_name");
     return <Redirect to={ROUTES.STUDENT} />;
   }
 
@@ -140,7 +123,8 @@ class GuessFigure extends Component {
         <Modal.Title>Game Over</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        Et annet lag har gjettet riktig. Løsningen var: {this.state.solution}
+        Et annet lag har gjettet riktig. <br /> <b>Løsningsord: </b>
+        {this.props.solution}
       </Modal.Body>
     </Modal>
   );

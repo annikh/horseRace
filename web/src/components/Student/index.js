@@ -18,17 +18,17 @@ class Student extends Component {
     this.state = {
       value: "",
       nameList: null,
-      game_pin: null,
+      gamePin: null,
       buttonValue: "Enter"
     };
   }
 
   handleEnterClassroomPin() {
-    const game_pin = this.state.value;
-    this.setState({ game_pin: game_pin });
-    this.props.cookies.set("game_pin", game_pin);
+    const gamePin = this.state.value;
+    this.setState({ gamePin: gamePin });
+    this.props.cookies.set("game_pin", gamePin);
 
-    this.props.firebase.gamePlayerList(game_pin).once("value", snapshot => {
+    this.props.firebase.gamePlayerList(gamePin).once("value", snapshot => {
       const teams = snapshot.val();
       let players = {};
       teams.forEach(team => {
@@ -47,7 +47,7 @@ class Student extends Component {
     cookies.set("game_name", name);
     cookies.set("game_team", team);
     this.props.firebase
-      .gamePlayer(this.state.game_pin, team, name)
+      .gamePlayer(this.state.gamePin, team, name)
       .child("isActive")
       .set(true);
   }
@@ -61,15 +61,28 @@ class Student extends Component {
   }
 
   handleSubmit(event) {
-    this.state.game_pin === null
+    this.state.gamePin === null
       ? this.handleEnterClassroomPin()
       : this.handleEnterStudentName();
     event.preventDefault();
   }
 
   handleExitGame() {
+    const team = this.props.cookies.get("game_team");
+    const playerName = this.props.cookies.get("game_name");
+    const gamePin = this.props.cookies.get("game_pin");
+
+    this.props.firebase
+      .gamePlayer(gamePin, team, playerName)
+      .child("isActive")
+      .set(false);
+
+    this.props.cookies.remove("game_name");
+    this.props.cookies.remove("game_pin");
+    this.props.cookies.remove("game_team");
+
     this.setState({
-      game_pin: null,
+      gamePin: null,
       nameList: null
     });
   }
