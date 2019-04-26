@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { withFirebase } from "../Firebase";
-import { Button, Card, Row, Container } from "react-bootstrap";
+import { Button, ButtonGroup, Card, Row, Container } from "react-bootstrap";
 import * as COLORS from "../../constants/colors";
 import "./style.css";
 
