@@ -19,7 +19,8 @@ class Game extends Component {
       text: "",
       title: "",
       error_hint: "",
-      default_code: ""
+      default_code: "",
+      required_output: ""
     }
   };
 
