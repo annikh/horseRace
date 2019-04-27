@@ -26,8 +26,9 @@ def run_code():
     with stdoutIO() as s:
         try:
             exec(code_with_tests, {})
-            if len(output_requirement) > 0 and output_requirement not in s.getvalue():
-                return jsonify(output=s.getvalue(), error_message=task["error_hint"])
+            if len(output_requirement) > 0:
+                if output_requirement not in s.getvalue():
+                    return jsonify(output=s.getvalue(), error_message=str("Sjekk at du printer det du skal"))
         except AssertionError as error:
             return jsonify(output=s.getvalue(), error_message=str(error))
         except IndentationError:
