@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { withFirebase } from "../Firebase";
-import { Button, ButtonGroup, Card, Row, Container } from "react-bootstrap";
+import { Button, ButtonGroup, Card, Container } from "react-bootstrap";
 import * as COLORS from "../../constants/colors";
 import "./style.css";
 
@@ -29,7 +29,7 @@ class Cards extends Component {
       .on("value", snapshot => {
         const cards = snapshot.val();
         let solvedTasks = {};
-        Object.keys(cards).map(card => {
+        Object.keys(cards).forEach(card => {
           if (cards[card].solved) {
             solvedTasks[card] = cards[card];
           }

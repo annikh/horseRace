@@ -20,14 +20,19 @@ class TeacherStudents extends Component {
   componentDidMount() {
     const user_id = this.context.uid;
     this.props.firebase.classroomsByTeacher(user_id).on("value", snapshot => {
-      this.setState({ classrooms: snapshot.val() });
+      if (snapshot.val() != null) this.setState({ classrooms: snapshot.val() });
     });
+  }
+
+  componentWillUnmount() {
+    const user_id = this.context.uid;
+    this.props.firebase.classroomsByTeacher(user_id).off();
   }
 
   getStudents(classroom, i) {
     const { classrooms } = this.state;
     var students = [];
-    classrooms[classroom].names.map((name, i) => {
+    classrooms[classroom].names.forEach((name, i) => {
       students.push(
         <Card className="studentCard">
           <Link
@@ -63,10 +68,13 @@ class TeacherStudents extends Component {
               <h2>Dine elever:</h2>
             </Row>
             <Row>
-              {classroomsExists &&
-                Object.keys(classrooms).map((classroom, i) =>
+              {classroomsExists ? (
+                Object.keys(classrooms).forEach((classroom, i) =>
                   this.getStudents(classroom, i)
-                )}
+                )
+              ) : (
+                <div>Du har ikke lagt til noen klasserom med elever ennå..</div>
+              )}
             </Row>
           </Col>
         </Row>

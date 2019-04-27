@@ -13,7 +13,6 @@ export default class Game {
     this.teams = teams;
     this.user_id = user_id;
     this.classroom_id = classroom_id;
-
     this.figure = figure;
     this.isFinished = isFinished;
   }

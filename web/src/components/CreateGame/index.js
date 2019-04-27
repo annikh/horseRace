@@ -43,9 +43,7 @@ class CreateGame extends Component {
 
   addGame() {
     let newGamePin = shortid.generate();
-    const teams = this.updateTeams(
-      this.props.classrooms[this.state.classroomName]["names"]
-    );
+    const teams = this.updateTeams();
     while (!this.isValidPin(newGamePin)) {
       newGamePin = shortid.generate();
     }
@@ -102,9 +100,9 @@ class CreateGame extends Component {
 
   updateTeams() {
     let newTeams = {};
-    const { tasks } = this.state;
-    Object.keys(this.state.teams).forEach(name => {
-      let team = this.state.teams[name].team;
+    const { tasks, teams } = this.state;
+    Object.keys(teams).forEach(name => {
+      let team = teams[name].team;
       if (!newTeams[team]) newTeams[team] = { players: {}, tasks: tasks };
       let newPlayer = {
         isActive: false,

@@ -39,13 +39,15 @@ class TeacherStudent extends Component {
   getTasks() {
     const { games } = this.state;
     var taskList = [];
-    Object.keys(games).map(game => {
-      Object.values(games[game].teams).map(team => {
-        Object.keys(team.players).map(student => {
+    Object.keys(games).forEach(game => {
+      Object.values(games[game].teams).forEach(team => {
+        Object.keys(team.players).forEach(student => {
           if (student === this.state.student) {
             const tasks = team.players[student].tasks;
             if (tasks !== undefined) {
-              tasks.map((task, i) => taskList.push(this.getTaskCard(task, i)));
+              tasks.forEach((task, i) =>
+                taskList.push(this.getTaskCard(task, i))
+              );
             }
           }
         });
