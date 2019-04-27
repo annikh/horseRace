@@ -28,7 +28,7 @@ class Student extends Component {
     this.setState({ gamePin: gamePin });
     this.props.cookies.set("game_pin", gamePin);
 
-    this.props.firebase.gamePlayerList(gamePin).once("value", snapshot => {
+    this.props.firebase.gamePlayerList(gamePin).on("value", snapshot => {
       const teams = snapshot.val();
       let players = {};
       teams.forEach(team => {
