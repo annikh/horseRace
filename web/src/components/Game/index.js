@@ -42,9 +42,7 @@ class Game extends Component {
       figure: "",
       solution: "",
       currentTask: this.emptyTask,
-      boardIndex: -1,
       lastSolvedTask: { id: this.emptyTask.id, url: "" },
-      newTaskSelected: false,
       output: "",
       error_message: "",
       showErrorModal: false,
@@ -97,6 +95,7 @@ class Game extends Component {
   };
 
   runCode(submittedCode) {
+    console.log(this.state.currentTask.body);
     axios
       //.get("http://35.228.140.69/run", { bytte ut med riktig IP
       .get("http://localhost:5000/run", {
@@ -138,14 +137,15 @@ class Game extends Component {
   }
 
   handleTaskStart(task, boardIndex = -1) {
-    const newTaskSelected = task.id !== this.state.currentTask.id;
+    let currentTaskBody;
+    boardIndex == -1
+      ? (currentTaskBody = this.emptyTask.body)
+      : (currentTaskBody = task.body);
     this.setState({
-      currentTask: task,
-      boardIndex: boardIndex,
-      newTaskSelected: newTaskSelected,
-      showCard: newTaskSelected
+      currentTask: { id: boardIndex, body: currentTaskBody },
+      showCard: boardIndex >= 0
     });
-    if (boardIndex >= 0 && newTaskSelected) {
+    if (boardIndex >= 0) {
       this.props.firebase
         .gamePlayer(this.state.gamePin, this.state.team, this.state.playerName)
         .child("tasks")
@@ -157,7 +157,7 @@ class Game extends Component {
   }
 
   handleTaskSolved(studentCode) {
-    const boardIndex = this.state.boardIndex;
+    const boardIndex = this.state.currentTask.id;
     if (boardIndex > -1) {
       this.getImageUrl(boardIndex).then(url => {
         this.setState({
@@ -260,7 +260,6 @@ class Game extends Component {
           <Editor
             onRunCode={this.runCode}
             defaultCode={this.state.currentTask.body.default_code}
-            newTaskSelected={this.state.newTaskSelected}
           />
           <br />
           <Console output={this.state.output} />
