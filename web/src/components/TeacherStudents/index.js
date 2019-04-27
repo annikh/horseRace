@@ -12,7 +12,7 @@ class TeacherStudents extends Component {
     this.getStudents = this.getStudents.bind(this);
 
     this.state = {
-      classrooms: [],
+      classrooms: {},
       students: {}
     };
   }
@@ -31,12 +31,12 @@ class TeacherStudents extends Component {
 
   getStudents(classroom, i) {
     const { classrooms } = this.state;
-    var students = [];
+    let students = [];
+    console.log(classrooms[classroom].names);
     classrooms[classroom].names.forEach((name, i) => {
       students.push(
-        <Card className="studentCard">
+        <Card key={i} className="studentCard">
           <Link
-            key={i}
             to={ROUTES.TEACHER_STUDENTS + "/" + name}
             className="studentCardLink"
           >
@@ -45,6 +45,7 @@ class TeacherStudents extends Component {
         </Card>
       );
     });
+    console.log(students);
     return (
       <Row key={i} style={{ margin: "10px" }}>
         <Col>
@@ -69,7 +70,7 @@ class TeacherStudents extends Component {
             </Row>
             <Row>
               {classroomsExists ? (
-                Object.keys(classrooms).forEach((classroom, i) =>
+                Object.keys(classrooms).map((classroom, i) =>
                   this.getStudents(classroom, i)
                 )
               ) : (
