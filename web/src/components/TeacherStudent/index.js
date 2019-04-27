@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { AuthUserContext, withAuthorization } from "../Session";
 import { Container, Row, Card } from "react-bootstrap";
 import { withFirebase } from "../Firebase";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./style.css";
 
 class TeacherStudent extends Component {
@@ -9,10 +10,12 @@ class TeacherStudent extends Component {
     super(props);
     this.getTasks = this.getTasks.bind(this);
     this.getTaskCard = this.getTaskCard.bind(this);
+    this.timeStamp = this.timeStamp.bind(this);
 
     this.state = {
       student: "",
-      games: {}
+      games: {},
+      team: ""
     };
   }
 
@@ -32,7 +35,10 @@ class TeacherStudent extends Component {
           games[pin] = allGames[pin];
         }
       });
-      this.setState({ games: games, student: params.student });
+      this.setState({
+        games: games,
+        student: params.student
+      });
     });
   }
 
@@ -40,35 +46,47 @@ class TeacherStudent extends Component {
     const { games } = this.state;
     var taskList = [];
     Object.keys(games).forEach(game => {
-      Object.values(games[game].teams).forEach(team => {
-        Object.keys(team.players).forEach(student => {
+      let teams = games[game].teams;
+      teams.forEach((team, teamId) => {
+        let players = team.players;
+        Object.keys(players).forEach(student => {
           if (student === this.state.student) {
-            const tasks = team.players[student].tasks;
+            let tasks = players[student].tasks;
             if (tasks !== undefined) {
-              tasks.forEach((task, i) =>
-                taskList.push(this.getTaskCard(task, i))
+              Object.keys(tasks).forEach((task, i) =>
+                taskList.push(
+                  this.getTaskCard(
+                    { id: task, task: tasks[task] },
+                    teamId,
+                    games[game],
+                    i
+                  )
+                )
               );
             }
           }
         });
       });
     });
-    return taskList.length > 0 ? (
+    return Object.keys(taskList).length > 0 ? (
       taskList
     ) : (
       <div>Finner ingen oppgaver løst av {this.state.student}</div>
     );
   }
 
-  getTaskCard(task, i) {
-    console.log(task);
+  getTaskCard(taskObject, team, game, i) {
+    const tasks = game.teams[team].tasks;
+    const taskId = taskObject.id;
+    const task = taskObject.task;
     return (
       <Card key={i} className="taskCard">
-        <Card.Header>"Oppgavetittel"</Card.Header>
+        <Card.Header>{tasks[taskId].title}</Card.Header>
         <Card.Body className="taskCard-body">
           <Card.Title style={{ fontSize: "14px" }}>
             <span className="blockLeft">
-              <strong>Vanskelighetsgrad:</strong>2
+              <strong>Vanskelighetsgrad:</strong>
+              {tasks[taskId].difficulty}
             </span>
             <span className="blockLeft">
               <strong> Dato: </strong>
@@ -80,13 +98,13 @@ class TeacherStudent extends Component {
             </span>
             <span className="blockLeft">
               <strong>Tid:</strong>
-              {new Intl.DateTimeFormat("default", {
-                minute: "numeric",
-                second: "numeric"
-              }).format(task.endTime - task.startTime)}
+              {this.timeStamp(task.startTime, task.endTime)}
             </span>
           </Card.Title>
           <Card.Text>
+            <strong className="blockLeft">Oppgave:</strong>
+            <span className="display-linebreak">{tasks[taskId].text}</span>
+            <br />
             <strong className="blockLeft">Løsning:</strong>
             <span className="display-linebreak">{task.studentCode}</span>
           </Card.Text>
@@ -95,10 +113,29 @@ class TeacherStudent extends Component {
     );
   }
 
+  timeStamp = (startTime, endTime) => {
+    return endTime ? (
+      <span>
+        <FontAwesomeIcon icon="check" color="black" />
+        {new Intl.DateTimeFormat("en-GB", {
+          minute: "2-digit",
+          second: "2-digit"
+        }).format(endTime - startTime)}
+      </span>
+    ) : (
+      <span>
+        <FontAwesomeIcon icon="clock" color="black" />{" "}
+        {new Intl.DateTimeFormat("en-GB", {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit"
+        }).format(startTime)}
+      </span>
+    );
+  };
+
   render() {
     const { student, games } = this.state;
-    console.log("student", student);
-    console.log("games", games);
     return (
       <Container className="accountBody">
         <Row className="rowAccount">

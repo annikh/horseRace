@@ -32,7 +32,6 @@ class TeacherStudents extends Component {
   getStudents(classroom, i) {
     const { classrooms } = this.state;
     let students = [];
-    console.log(classrooms[classroom].names);
     classrooms[classroom].names.forEach((name, i) => {
       students.push(
         <Card key={i} className="studentCard">
@@ -45,7 +44,6 @@ class TeacherStudents extends Component {
         </Card>
       );
     });
-    console.log(students);
     return (
       <Row key={i} style={{ margin: "10px" }}>
         <Col>
