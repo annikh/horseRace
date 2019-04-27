@@ -32,5 +32,8 @@
 }
 
 .gameTitle {
-  position: absolute;
+  width: 100%;
+  text-align: center;
+  padding: 2px;
+  display: block;
 }
