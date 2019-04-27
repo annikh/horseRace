@@ -18,9 +18,6 @@ def run_code():
     if 'output_requirement' in task:
         output_requirement = task['output_requirement']
 
-    if code == '' or code == default_code:
-        return jsonify(output='', error_message='Velg en oppgave og skriv din kode i editoren.')
-
     code_with_tests = code + '\n' + task["test"]
     
     with stdoutIO() as s:
@@ -28,7 +25,7 @@ def run_code():
             exec(code_with_tests, {})
             if len(output_requirement) > 0:
                 if output_requirement not in s.getvalue():
-                    return jsonify(output=s.getvalue(), error_message=str("Sjekk at du printer det du skal"))
+                    return jsonify(output=s.getvalue(), error_message=task["error_hint"])
         except AssertionError as error:
             return jsonify(output=s.getvalue(), error_message=str(error))
         except IndentationError:
