@@ -10,7 +10,6 @@ import Teacher from "../../components/Teacher";
 import SignUpPage from "../../components/SignUp";
 import SignInPage from "../../components/SignIn";
 import PasswordForgetPage from "../../components/PasswordForget";
-import TestDatabase from "../../components/TestDatabase";
 
 class App extends Component {
   render() {
@@ -30,11 +29,6 @@ class App extends Component {
             render={() => <Student cookies={this.props.cookies} />}
           />
           <Route path={ROUTES.TEACHER} component={Teacher} />
-          <Route
-            exact
-            path={"/test"}
-            render={() => <TestDatabase cookies={this.props.cookies} />}
-          />
         </div>
       </BrowserRouter>
     );
