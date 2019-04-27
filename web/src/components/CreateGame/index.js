@@ -92,7 +92,8 @@ class CreateGame extends Component {
     this.setState({
       numberOfTeams: event.target.value
     });
-    this.handleChange({ target: { value: this.state.classroomName } });
+    if (this.state.chosenClass)
+      this.handleChange({ target: { value: this.state.classroomName } });
   }
 
   handleChange(event) {
@@ -263,6 +264,7 @@ class CreateGame extends Component {
         </Row>
         {this.state.classroomName !== "" &&
           this.state.teams !== {} &&
+          this.state.chosenClass &&
           this.state.numberOfTeams > 1 && (
             <PlayerList
               teams={this.state.teams}
