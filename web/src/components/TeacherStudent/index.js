@@ -42,6 +42,10 @@ class TeacherStudent extends Component {
     });
   }
 
+  componentWillUnmount() {
+    this.props.firebase.games().off();
+  }
+
   getTasks() {
     const { games } = this.state;
     var taskList = [];

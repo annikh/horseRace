@@ -40,6 +40,12 @@ class TeacherGames extends Component {
     });
   }
 
+  componentWillUnmount() {
+    const user_id = this.context.uid;
+    this.props.firebase.games().off();
+    this.props.firebase.classroomsByTeacher(user_id).off();
+  }
+
   setGameStateColor = status => {
     switch (status) {
       case "inProgress":

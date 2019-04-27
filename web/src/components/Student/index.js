@@ -40,6 +40,10 @@ class Student extends Component {
     });
   }
 
+  componentWillUnmount() {
+    this.props.firebase.gamePlayerList(this.state.gamePin).off();
+  }
+
   handleEnterStudentName() {
     const name = this.state.value;
     const team = this.getTeamFromPlayerName(name);
