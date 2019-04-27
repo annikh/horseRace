@@ -13,6 +13,11 @@ def run_code():
     code = request.args.get('code')
     task = json.loads(request.args.get('task'))
     default_code = task['default_code']
+    
+    output_requirement = ''
+    if 'output_requirement' in task:
+        output_requirement = task['output_requirement']
+
     if code == '' or code == default_code:
         return jsonify(output='', error_message='Velg en oppgave og skriv din kode i editoren.')
 
@@ -21,16 +26,18 @@ def run_code():
     with stdoutIO() as s:
         try:
             exec(code_with_tests, {})
+            if len(output_requirement) > 0 and output_requirement not in s.getvalue():
+                return jsonify(output=s.getvalue(), error_message=task["error_hint"])
         except AssertionError as error:
             return jsonify(output=s.getvalue(), error_message=str(error))
-        except SyntaxError as error:
-            return jsonify(output=s.getvalue(), error_message=str(error))
-        except IndentationError as error:
-            return jsonify(output=s.getvalue(), error_message=str(error))
-        except NameError as error:
+        except IndentationError:
+            return jsonify(output=s.getvalue(), error_message=str("Det ser ut til å være en feil med innrykkene dine"))
+        except NameError:
             return jsonify(output=s.getvalue(), error_message=task["error_hint"])
-        except TypeError as error:
-            return jsonify(output=s.getvalue(), error_message=str(error))
+        except TypeError:
+            return jsonify(output=s.getvalue(), error_message=str("Kontrollér at du bruker riktige datatyper"))
+        except SyntaxError:
+            return jsonify(output=s.getvalue(), error_message=str("Noe er ikke helt som det skal med syntaxen"))
     return jsonify(output=s.getvalue(), error_message='', solved=True)
 
 
