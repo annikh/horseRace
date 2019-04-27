@@ -27,7 +27,8 @@ class CreateGame extends Component {
       chosenClass: false,
       numberOfTeams: 1,
       figureChoices: {},
-      figure: null
+      figure: null,
+      formValidated: false
     };
   }
 
@@ -75,16 +76,22 @@ class CreateGame extends Component {
   }
 
   handleSubmit(event) {
+    const form = event.currentTarget;
     event.preventDefault();
-    this.addGame();
-    alert("Spill opprettet");
+    if (form.checkValidity() === false) {
+      event.stopPropagation();
+    } else {
+      this.addGame();
+    }
+    this.setState({ formValidated: true });
   }
 
   handleNumberOfTeams(event) {
     this.setState({
       numberOfTeams: event.target.value
     });
-    this.handleChange({ target: { value: this.state.classroomName } });
+    if (this.state.chosenClass)
+      this.handleChange({ target: { value: this.state.classroomName } });
   }
 
   handleChange(event) {
@@ -155,10 +162,15 @@ class CreateGame extends Component {
   }
 
   render() {
+    const formValidated = this.state.formValidated;
     const classroomNames = Object.keys(this.props.classrooms);
     const figureChoices = Object.keys(this.state.figureChoices);
     return (
-      <Form>
+      <Form
+        noValidate
+        validated={formValidated}
+        onSubmit={e => this.handleSubmit(e)}
+      >
         <Row>
           <Col>
             <Form.Label>
@@ -173,8 +185,10 @@ class CreateGame extends Component {
             </Form.Label>
           </Col>
           <Col>
-            <Form.Control as="select" onChange={this.handleChange}>
-              <option disabled={this.state.chosenClass}>Velg...</option>
+            <Form.Control required as="select" onChange={this.handleChange}>
+              <option disabled={this.state.chosenClass} value="">
+                Velg...
+              </option>
               {classroomNames.length > 0 &&
                 classroomNames.map((name, i) => (
                   <option key={i} value={name}>
@@ -182,6 +196,9 @@ class CreateGame extends Component {
                   </option>
                 ))}
             </Form.Control>
+            <Form.Control.Feedback type="invalid">
+              Vennligst velg et klasserom fra listen.
+            </Form.Control.Feedback>
           </Col>
         </Row>
         <Row>
@@ -189,9 +206,13 @@ class CreateGame extends Component {
             <Form.Label>Velg antall lag:</Form.Label>
           </Col>
           <Col>
-            <Form.Control as="select" onChange={this.handleNumberOfTeams}>
-              <option key={1} value={1}>
-                1
+            <Form.Control
+              required
+              as="select"
+              onChange={this.handleNumberOfTeams}
+            >
+              <option disabled={this.state.numberOfTeams > 1} key={1} value="">
+                Velg..
               </option>
               <option key={2} value={2}>
                 2
@@ -209,6 +230,9 @@ class CreateGame extends Component {
                 6
               </option>
             </Form.Control>
+            <Form.Control.Feedback type="invalid">
+              Vennligst velg antall lag.
+            </Form.Control.Feedback>
           </Col>
         </Row>
         <Row>
@@ -216,8 +240,14 @@ class CreateGame extends Component {
             <Form.Label>Velg løsningsfigur:</Form.Label>
           </Col>
           <Col>
-            <Form.Control as="select" onChange={this.handleFigureChoice}>
-              <option disabled={this.state.figure !== null}>Velg...</option>
+            <Form.Control
+              required
+              as="select"
+              onChange={this.handleFigureChoice}
+            >
+              <option disabled={this.state.figure !== null} value="">
+                Velg...
+              </option>
               {figureChoices.length > 0 &&
                 figureChoices.map((id, i) => (
                   <option key={i} value={id}>
@@ -225,20 +255,23 @@ class CreateGame extends Component {
                   </option>
                 ))}
             </Form.Control>
+            <Form.Control.Feedback type="invalid">
+              Vennligst velg en løsningsfigur fra listen.
+            </Form.Control.Feedback>
           </Col>
         </Row>
         {this.state.classroomName !== "" &&
           this.state.teams !== {} &&
+          this.state.chosenClass &&
           this.state.numberOfTeams > 1 && (
             <PlayerList
               teams={this.state.teams}
               handleNewTeam={this.handleNewTeam}
             />
           )}
-
         <Row>
           <Col>
-            <Button className="btn-orange" onClick={this.handleSubmit} block>
+            <Button type="submit" className="btn-orange" block>
               Opprett spill
             </Button>
           </Col>
