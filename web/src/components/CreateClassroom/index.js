@@ -63,23 +63,22 @@ class CreateClassroom extends Component {
           </Col>
         </Row>
         <Row>
-          <Col>
-            <Form.Control
-              placeholder={"Skriv inn navn på klassen"}
-              value={this.state.classname}
-              onChange={this.handleClassNameChange}
-            />
-          </Col>
-          <Col>
-            <Form.Control
-              as="textarea"
-              rows="3"
-              placeholder={"Navn1\nNavn2\nNavn3"}
-              value={this.state.names}
-              onChange={this.handleNamesChange}
-            />
-          </Col>
+          <Form.Control
+            placeholder={"Skriv inn navn på klassen"}
+            value={this.state.classname}
+            onChange={this.handleClassNameChange}
+          />
         </Row>
+        <Row>
+          <Form.Control
+            as="textarea"
+            rows="3"
+            placeholder={"Navn1\nNavn2\nNavn3"}
+            value={this.state.names}
+            onChange={this.handleNamesChange}
+          />
+        </Row>
+
         <Row>
           <Col>
             <Button

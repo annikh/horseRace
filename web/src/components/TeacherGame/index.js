@@ -41,6 +41,10 @@ class TeacherGame extends Component {
     });
   }
 
+  componentWillUnmount() {
+    this.props.firebase.game(this.state.game_pin).off();
+  }
+
   startGame() {
     this.props.firebase
       .game(this.state.game_pin)

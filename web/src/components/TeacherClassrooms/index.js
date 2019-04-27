@@ -29,6 +29,11 @@ class TeacherClassrooms extends Component {
     });
   }
 
+  componentWillUnmount() {
+    const user_id = this.context.uid;
+    this.props.firebase.classroomsByTeacher(user_id).off();
+  }
+
   showClassroom(event) {
     this.setState({
       showClassroom: true,
