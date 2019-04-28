@@ -48,6 +48,8 @@ def run_code():
             return jsonify(output=s.getvalue(), error_message=str(error))
         except SyntaxError as error:
             return jsonify(output=s.getvalue(), error_message=str(error))
+        except IndexError as error:
+            return jsonify(output=s.getvalue(), error_message=str(error))
     return jsonify(output=s.getvalue(), error_message='', solved=True)
 
 

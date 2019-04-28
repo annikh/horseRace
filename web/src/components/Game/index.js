@@ -253,7 +253,9 @@ class Game extends Component {
       <Modal.Header closeButton>
         <Modal.Title>{this.state.errorModalHeaderText}</Modal.Title>
       </Modal.Header>
-      <Modal.Body>{this.state.error_message}</Modal.Body>
+      <Modal.Body className="display-linebreak">
+        {this.state.error_message}
+      </Modal.Body>
     </Modal>
   );
 
