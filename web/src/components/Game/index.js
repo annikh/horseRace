@@ -18,9 +18,10 @@ class Game extends Component {
       test: "",
       text: "",
       title: "",
-      error_hint: "",
+      error_hints: ["", "", ""],
       default_code: "",
-      required_output: ""
+      output_requirement: "",
+      code_requirement: ""
     }
   };
 
@@ -138,7 +139,7 @@ class Game extends Component {
 
   handleTaskStart(task, boardIndex = -1) {
     let currentTaskBody;
-    boardIndex == -1
+    boardIndex === -1
       ? (currentTaskBody = this.emptyTask.body)
       : (currentTaskBody = task.body);
     this.setState({
