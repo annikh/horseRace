@@ -30,14 +30,14 @@ def run_code():
 
     code_with_tests = code + '\n' + task["test"]
     
+    if (code_requirement not in code):
+        return jsonify(output='', error_message=error_hints[0])
+    
     with stdoutIO() as s:
         try:
             exec(code_with_tests, {})
-            if len(output_requirement) > 0:
-                if (code_requirement not in code):
-                    return jsonify(output=s.getvalue(), error_message=error_hints[0])
-                if output_requirement not in s.getvalue():
-                    return jsonify(output=s.getvalue(), error_message=error_hints[1])
+            if output_requirement not in s.getvalue():
+                return jsonify(output=s.getvalue(), error_message=error_hints[1])
         except AssertionError as error:
             return jsonify(output=s.getvalue(), error_message=error_hints[2])
         except IndentationError:
