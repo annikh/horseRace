@@ -43,7 +43,7 @@ def run_code():
         except IndentationError:
             return jsonify(output=s.getvalue(), error_message=str("Det ser ut til å være en feil med innrykkene dine"))
         except NameError:
-            return jsonify(output=s.getvalue(), error_hints[2])
+            return jsonify(output=s.getvalue(), error_message=error_hints[2])
         except TypeError:
             return jsonify(output=s.getvalue(), error_message=str("Kontrollér at du bruker riktige datatyper"))
         except SyntaxError:
