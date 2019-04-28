@@ -12,7 +12,8 @@ import * as ROUTES from "../../constants/routes";
 
 class Game extends Component {
   emptyTask = {
-    id: -1,
+    id: "",
+    boardIndex: -1,
     body: {
       difficulty: 0,
       test: "",
@@ -96,7 +97,6 @@ class Game extends Component {
   };
 
   runCode(submittedCode) {
-    console.log(this.state.currentTask.body);
     axios
       //.get("http://35.228.140.69/run", { bytte ut med riktig IP
       .get("http://localhost:5000/run", {
@@ -143,7 +143,11 @@ class Game extends Component {
       ? (currentTaskBody = this.emptyTask.body)
       : (currentTaskBody = task.body);
     this.setState({
-      currentTask: { id: boardIndex, body: currentTaskBody },
+      currentTask: {
+        id: task.id,
+        boardIndex: boardIndex,
+        body: currentTaskBody
+      },
       showCard: boardIndex >= 0
     });
     if (boardIndex >= 0) {
@@ -158,7 +162,7 @@ class Game extends Component {
   }
 
   handleTaskSolved(studentCode) {
-    const boardIndex = this.state.currentTask.id;
+    const boardIndex = this.state.currentTask.boardIndex;
     if (boardIndex > -1) {
       this.getImageUrl(boardIndex).then(url => {
         this.setState({
@@ -186,8 +190,9 @@ class Game extends Component {
   }
 
   updateStudentTaskInDB(studentCode) {
-    const taskId = parseInt(this.state.currentTask.id);
-    if (taskId >= 0) {
+    const boardIndex = parseInt(this.state.currentTask.boardIndex);
+    const taskId = this.state.currentTask.id;
+    if (boardIndex >= 0) {
       this.props.firebase
         .gamePlayer(this.state.gamePin, this.state.team, this.state.playerName)
         .child("tasks")
