@@ -14,9 +14,19 @@ def run_code():
     task = json.loads(request.args.get('task'))
     default_code = task['default_code']
     
+    error_hints = []
+    if 'error_hints' in task:
+        error_hints = task['error_hints']
+    while(len(error_hints) < 3):
+        error_hints.append("")
+    
     output_requirement = ''
     if 'output_requirement' in task:
         output_requirement = task['output_requirement']
+
+    code_requirement = ''
+    if 'code_requirement' in task:
+        code_requirement = task['code_requirement']
 
     code_with_tests = code + '\n' + task["test"]
     
@@ -24,18 +34,20 @@ def run_code():
         try:
             exec(code_with_tests, {})
             if len(output_requirement) > 0:
+                if (code_requirement not in code):
+                    return jsonify(output=s.getvalue(), error_message=error_hints[0])
                 if output_requirement not in s.getvalue():
-                    return jsonify(output=s.getvalue(), error_message=task["error_hint"])
+                    return jsonify(output=s.getvalue(), error_message=error_hints[1])
         except AssertionError as error:
-            return jsonify(output=s.getvalue(), error_message=str(error))
+            return jsonify(output=s.getvalue(), error_message=error_hints[2])
         except IndentationError:
             return jsonify(output=s.getvalue(), error_message=str("Det ser ut til å være en feil med innrykkene dine"))
-        except NameError:
-            return jsonify(output=s.getvalue(), error_message=task["error_hint"])
-        except TypeError:
-            return jsonify(output=s.getvalue(), error_message=str("Kontrollér at du bruker riktige datatyper"))
-        except SyntaxError:
-            return jsonify(output=s.getvalue(), error_message=str("Noe er ikke helt som det skal med syntaxen"))
+        except NameError as error:
+            return jsonify(output=s.getvalue(), error_message=str(error))
+        except TypeError as error:
+            return jsonify(output=s.getvalue(), error_message=str(error))
+        except SyntaxError as error:
+            return jsonify(output=s.getvalue(), error_message=str(error))
     return jsonify(output=s.getvalue(), error_message='', solved=True)
 
 
