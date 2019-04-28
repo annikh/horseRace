@@ -124,7 +124,7 @@ class TeacherGame extends Component {
     const tasks = this.state.game.teams[team].tasks;
     return (
       <span>
-        {Object.keys(playerTasks).length > 0 ? (
+        {playerTasks !== undefined && Object.keys(playerTasks).length > 0 ? (
           <ListGroup variant="dark" style={{ width: "100%" }}>
             {Object.keys(playerTasks).map((task, i) => (
               <ListGroup.Item
