@@ -25,7 +25,7 @@ class CreateGame extends Component {
       tasks: null,
       teams: {},
       chosenClass: false,
-      numberOfTeams: 1,
+      numberOfTeams: 0,
       figureChoices: {},
       figure: null,
       formValidated: false
@@ -62,7 +62,8 @@ class CreateGame extends Component {
     this.setState({
       classroomName: "",
       chosenClass: false,
-      figure: null
+      figure: null,
+      numberOfTeams: 0
     });
   }
 
@@ -185,7 +186,12 @@ class CreateGame extends Component {
             </Form.Label>
           </Col>
           <Col>
-            <Form.Control required as="select" onChange={this.handleChange}>
+            <Form.Control
+              required
+              as="select"
+              onChange={this.handleChange}
+              value={this.state.classroomName ? this.state.classroomName : ""}
+            >
               <option disabled={this.state.chosenClass} value="">
                 Velg...
               </option>
@@ -210,6 +216,9 @@ class CreateGame extends Component {
               required
               as="select"
               onChange={this.handleNumberOfTeams}
+              value={
+                this.state.numberOfTeams === 0 ? "" : this.state.numberOfTeams
+              }
             >
               <option disabled={this.state.numberOfTeams > 1} key={1} value="">
                 Velg..
@@ -244,6 +253,7 @@ class CreateGame extends Component {
               required
               as="select"
               onChange={this.handleFigureChoice}
+              value={this.state.figure === null ? "" : this.state.figure}
             >
               <option disabled={this.state.figure !== null} value="">
                 Velg...
