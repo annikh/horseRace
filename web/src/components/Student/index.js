@@ -19,24 +19,30 @@ class Student extends Component {
       value: "",
       nameList: null,
       gamePin: null,
-      buttonValue: "Enter"
+      buttonValue: "Enter",
+      inValidPIN: false
     };
   }
 
   handleEnterClassroomPin() {
-    const gamePin = this.state.value;
-    this.setState({ gamePin: gamePin });
+    const gamePin = this.state.value.trim();
     this.props.cookies.set("game_pin", gamePin);
-
     this.props.firebase.gamePlayerList(gamePin).on("value", snapshot => {
       const teams = snapshot.val();
       let players = {};
-      teams.forEach(team => {
-        let names = Object.keys(team.players);
-        let values = Object.values(team.players);
-        names.map((name, i) => (players[name] = values[i]));
-      });
-      this.setState({ nameList: players });
+      if (teams !== null) {
+        teams.forEach(team => {
+          let names = Object.keys(team.players);
+          let values = Object.values(team.players);
+          names.map((name, i) => (players[name] = values[i]));
+        });
+        this.setState({
+          nameList: players,
+          gamePin: gamePin,
+          inValidPIN: false
+        });
+      }
+      this.setState({ inValidPIN: true });
     });
   }
 
@@ -95,7 +101,10 @@ class Student extends Component {
         <Form.Control
           placeholder="Skriv inn PIN"
           onChange={this.handleChange}
+          type={this.state.validated}
+          isInvalid={this.state.inValidPIN}
         />
+        <Form.Control.Feedback type="invalid">Feil PIN</Form.Control.Feedback>
       </Col>
     );
   };
@@ -104,7 +113,7 @@ class Student extends Component {
     const nameList = this.state.nameList;
     return (
       <Col md="auto">
-        <Form.Control as="select" onChange={this.handleChange}>
+        <Form.Control required as="select" onChange={this.handleChange}>
           <option>Hva heter du?</option>
           {Object.keys(nameList).map(
             (player, i) =>
@@ -144,6 +153,11 @@ class Student extends Component {
             </Button>
           </Col>
         </Row>
+        {this.state.info && (
+          <Row>
+            <Col style={{ fontSize: "14px", color: "#bf1818" }}>Feil PIN..</Col>
+          </Row>
+        )}
       </Form>
     ) : (
       <Game

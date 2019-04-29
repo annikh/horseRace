@@ -60,7 +60,15 @@ class TeacherClassrooms extends Component {
     return (
       <ListGroup variant="flush" style={{ width: "80%" }}>
         {classroom.names.map((name, i) => (
-          <ListGroup.Item key={i} style={{ textAlign: "left" }} variant="light">
+          <ListGroup.Item
+            key={i}
+            style={{
+              backgroundColor: "transparent",
+              textAlign: "left",
+              color: "#333"
+            }}
+            variant="light"
+          >
             {name}
           </ListGroup.Item>
         ))}
@@ -113,9 +121,6 @@ class TeacherClassrooms extends Component {
                 {this.nameList(classrooms[selectedClassroom])}
               </Modal.Body>
               <Modal.Footer>
-                <Button variant="secondary" onClick={this.closeClassroom}>
-                  Close
-                </Button>
                 <Button variant="danger" onClick={this.deleteClassroom}>
                   Slett klasserom
                 </Button>
