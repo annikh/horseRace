@@ -26,11 +26,11 @@ class Student extends Component {
 
   handleEnterClassroomPin() {
     const gamePin = this.state.value.trim();
-    this.props.cookies.set("game_pin", gamePin);
     this.props.firebase.gamePlayerList(gamePin).on("value", snapshot => {
       const teams = snapshot.val();
       let players = {};
       if (teams !== null) {
+        this.props.cookies.set("game_pin", gamePin);
         teams.forEach(team => {
           let names = Object.keys(team.players);
           let values = Object.values(team.players);
