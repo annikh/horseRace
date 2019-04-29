@@ -1,12 +1,12 @@
 .img {
-  width: 150px;
-  height: 150px;
+  width: 130px;
+  height: 130px;
   padding: 0px;
 }
 
 .card {
-  width: 150px;
-  height: 150px;
+  width: 130px;
+  height: 130px;
   font-size: 15px;
   justify-content: center;
   padding: 0px;
@@ -51,8 +51,8 @@
 }
 
 .openedCard {
-  width: 600px !important;
-  height: 600px !important;
+  width: 520px !important;
+  height: 520px !important;
   color: black;
   margin: auto;
 }
