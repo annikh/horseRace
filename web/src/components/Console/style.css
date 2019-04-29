@@ -1,0 +1,9 @@
+.console {
+  background-color: #262722 !important;
+  color: #aaaaaa !important;
+  height: 15vh !important;
+  width: 100% !important;
+  border: none;
+  border-radius: 0;
+  -webkit-appearance: none;
+}

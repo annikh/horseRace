@@ -101,8 +101,12 @@ class GuessFigure extends Component {
       </Modal.Header>
       <Modal.Body>
         <Form>
-          <Form.Control as="input" onChange={this.handleGuessInput} />
-          <Button onClick={this.handleGuessSubmit}>Gjett</Button>
+          <Form.Group>
+            <Form.Control as="input" onChange={this.handleGuessInput} />
+          </Form.Group>
+          <Button variant="info" onClick={this.handleGuessSubmit}>
+            Gjett
+          </Button>
         </Form>
       </Modal.Body>
     </Modal>
@@ -144,26 +148,26 @@ class GuessFigure extends Component {
   );
 
   GuessButton = () => (
-    <Button variant="primary" onClick={this.showGuessModal}>
+    <Button className="btn-yellow" onClick={this.showGuessModal}>
       Gjett hva som er på bildet
     </Button>
   );
 
   render() {
     return (
-      <div>
+      <>
         <this.GuessButton />
         {!this.state.gameIsFinished ? (
-          <div>
+          <>
             <this.GuessModal />
             <this.WrongGuessModal />
-          </div>
+          </>
         ) : this.state.winnerTeam === this.state.gameTeam ? (
           <this.WinModal />
         ) : (
           <this.LoseModal />
         )}
-      </div>
+      </>
     );
   }
 }

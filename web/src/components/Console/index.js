@@ -1,11 +1,18 @@
 import React from "react";
-import { Form } from "react-bootstrap";
+import { Form, Row } from "react-bootstrap";
+import "./style.css";
 
-const Console = (props) => {
+const Console = props => {
   return (
-    <Form.Control as="textarea" readOnly style={{backgroundColor: '#262722', color: '#aaaaaa', height: "20vh", width: "80vh"}} value={"Output: " + props.output}/>
+    <Row>
+      <Form.Control
+        as="textarea"
+        readOnly
+        className="console"
+        value={"Output: " + props.output}
+      />
+    </Row>
   );
-}
+};
 
 export default Console;
-  

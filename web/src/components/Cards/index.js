@@ -182,13 +182,17 @@ class Cards extends Component {
   render() {
     const { cards } = this.state;
     return (
-      <span>
+      <>
         {Object.keys(cards).length > 0 && this.props.showCard ? (
-          <this.OpenedCard />
+          <Container
+            style={{ margin: "10px !important", padding: "0px !important" }}
+          >
+            <this.OpenedCard />
+          </Container>
         ) : (
           this.getBoard()
         )}
-      </span>
+      </>
     );
   }
 }
