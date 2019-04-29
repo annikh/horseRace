@@ -46,6 +46,10 @@ class Student extends Component {
     });
   }
 
+  componentWillUnmount() {
+    this.props.firebase.gamePlayerList(this.state.gamePin).off();
+  }
+
   handleEnterStudentName() {
     const name = this.state.value;
     const team = this.getTeamFromPlayerName(name);
@@ -82,8 +86,6 @@ class Student extends Component {
       .gamePlayer(gamePin, team, playerName)
       .child("isActive")
       .set(false);
-
-    this.props.firebase.gamePlayerList(gamePin).off();
 
     this.props.cookies.remove("game_name");
     this.props.cookies.remove("game_pin");
