@@ -2,15 +2,7 @@ import React, { Component } from "react";
 import axios from "axios";
 import { withFirebase } from "../Firebase";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  Container,
-  Row,
-  Col,
-  Modal,
-  Nav,
-  Navbar,
-  Button
-} from "react-bootstrap";
+import { Container, Row, Col, Modal, Navbar, Button } from "react-bootstrap";
 import { Redirect } from "react-router-dom";
 import Editor from "../Editor";
 import Cards from "../Cards";
@@ -175,7 +167,8 @@ class Game extends Component {
       this.getImageUrl(boardIndex).then(url => {
         this.setState({
           lastSolvedTask: { id: this.state.currentTask.id, url: url },
-          showCard: false
+          showCard: false,
+          currentTask: this.emptyTask
         });
         this.solveStudentTaskInDB(this.state.currentTask.id, studentCode, url);
         this.showSolvedModal();

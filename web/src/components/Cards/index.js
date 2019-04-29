@@ -50,7 +50,6 @@ class Cards extends Component {
 
   getCardClass(active, difficulty) {
     let classActive = active ? " card" : " card disabled";
-    let className = "";
     switch (difficulty) {
       case 1:
         return classActive + " easy";
