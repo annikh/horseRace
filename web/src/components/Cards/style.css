@@ -12,18 +12,41 @@
   padding: 0px;
   align-items: center;
   color: black;
+  cursor: pointer !important;
+}
+
+.easy {
+  background-color: #8dda77 !important;
+}
+
+.easy:hover {
+  background-color: #75cc5d !important;
+}
+
+.medium {
+  background-color: #f0ee8d !important;
+}
+
+.medium:hover {
+  background-color: #ccca67 !important;
+}
+
+.hard {
+  background-color: #e37171 !important;
+}
+
+.hard:hover {
+  background-color: #c95353 !important;
 }
 
 .card:hover {
-  filter: brightness(75%);
-  cursor: pointer;
+  filter: brightness(90%);
   color: black;
   border: none;
 }
 
 .card:active {
   filter: brightness(65%);
-  cursor: pointer;
   color: black;
   border: none;
 }
@@ -33,16 +56,11 @@
   height: 600px !important;
   color: black;
   margin: auto;
-  background-color: #8ecaff;
-}
-
-.openedCard:hover {
-  filter: brightness(100%);
 }
 
 .disabled {
+  background-color: rgb(139, 139, 139) !important;
   filter: brightness(75%);
   pointer-events: none;
   border: none;
-  color: inherit !important;
 }
