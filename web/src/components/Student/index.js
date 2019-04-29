@@ -20,7 +20,7 @@ class Student extends Component {
       nameList: null,
       gamePin: null,
       buttonValue: "Enter",
-      inValidPIN: false
+      invalidPIN: false
     };
   }
 
@@ -39,10 +39,11 @@ class Student extends Component {
         this.setState({
           nameList: players,
           gamePin: gamePin,
-          inValidPIN: false
+          invalidPIN: false
         });
+      } else {
+        this.setState({ invalidPIN: true });
       }
-      this.setState({ inValidPIN: true });
     });
   }
 
@@ -104,7 +105,7 @@ class Student extends Component {
           placeholder="Skriv inn PIN"
           onChange={this.handleChange}
           type={this.state.validated}
-          isInvalid={this.state.inValidPIN}
+          isInvalid={this.state.invalidPIN}
         />
         <Form.Control.Feedback type="invalid">Feil PIN</Form.Control.Feedback>
       </Col>
