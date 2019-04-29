@@ -116,7 +116,7 @@ class Game extends Component {
           error_message: response.data.error_message
         });
 
-        if (this.codeHasError()) this.showErrorModal();
+        if (this.codeHasError()) this.showErrorModal(submittedCode);
         this.taskIsSolved(response.data.solved)
           ? this.handleTaskSolved(submittedCode)
           : this.updateStudentTaskInDB(submittedCode);
@@ -225,7 +225,14 @@ class Game extends Component {
       .update(updates);
   }
 
-  showErrorModal() {
+  showErrorModal(studentCode) {
+    const taskId = this.state.currentTask.id;
+    this.props.firebase
+      .gamePlayer(this.state.gamePin, this.state.team, this.state.playerName)
+      .child("tasks")
+      .child(taskId)
+      .child("studentCode")
+      .set(studentCode);
     this.setState({
       showErrorModal: true,
       errorModalHeaderText: this.state.errorModalHeaders[
