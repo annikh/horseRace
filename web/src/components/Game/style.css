@@ -7,3 +7,31 @@
 .navbar-game {
   background-color: #399b5e !important;
 }
+
+.exitGame {
+  background-color: #107259;
+  border-color: #08503e;
+}
+
+.exitGame:hover {
+  background-color: #107259;
+  filter: brightness(75%);
+  border-color: #08503e;
+}
+
+.btn-yellow {
+  background-color: #f0ee8d !important;
+  border-color: #f0ee8d !important;
+  color: black;
+}
+
+.btn-yellow:hover {
+  background-color: #ccca67 !important;
+  border-color: #ccca67 !important;
+  color: black;
+}
+
+.studentGameNav {
+  background-color: #3dac67 !important;
+  align-items: center;
+}

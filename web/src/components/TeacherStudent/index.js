@@ -143,10 +143,14 @@ class TeacherStudent extends Component {
     return (
       <Container className="accountBody">
         <Row className="rowAccount">
-          <h2>Elev: {student}</h2>
+          <h2>{student}</h2>
         </Row>
         <Row className="rowAccount">
-          {Object.keys(games).length > 0 && this.getTasks()}
+          {Object.keys(games).length > 0 ? (
+            this.getTasks()
+          ) : (
+            <div>Finner ingen oppgaver løst av {this.state.student}</div>
+          )}
         </Row>
       </Container>
     );

@@ -12,6 +12,7 @@ class Cards extends Component {
     this.deactivateTaskInDB = this.deactivateTaskInDB.bind(this);
     this.reactivateTaskInDB = this.reactivateTaskInDB.bind(this);
     this.getBoard = this.getBoard.bind(this);
+    this.getCardClass = this.getCardClass.bind(this);
 
     this.state = {
       cards: [],
@@ -47,6 +48,21 @@ class Cards extends Component {
       .off();
   }
 
+  getCardClass(active, difficulty) {
+    let classActive = active ? " card" : " card disabled";
+    let className = "";
+    switch (difficulty) {
+      case 1:
+        return classActive + " easy";
+      case 2:
+        return classActive + " medium";
+      case 3:
+        return "hard " + classActive;
+      default:
+        return classActive;
+    }
+  }
+
   getBoard() {
     const { cards, solvedTasks } = this.state;
     let board = [];
@@ -64,16 +80,12 @@ class Cards extends Component {
         : row.push(
             <Button
               key={index}
-              className={cards[id].active ? "card" : "card disabled"}
-              style={{
-                backgroundColor: this.setCardColorByDiffictuly(
-                  cards[id].difficulty
-                )
-              }}
+              className={this.getCardClass(
+                cards[id].active,
+                cards[id].difficulty
+              )}
               onClick={() => this.handleCardOpen(id, cards[id], index)}
-            >
-              {cards[id].title}
-            </Button>
+            />
           );
       if ((index + 1) % 4 === 0) {
         board.push(
@@ -170,13 +182,17 @@ class Cards extends Component {
   render() {
     const { cards } = this.state;
     return (
-      <span>
+      <>
         {Object.keys(cards).length > 0 && this.props.showCard ? (
-          <this.OpenedCard />
+          <Container
+            style={{ margin: "10px !important", padding: "0px !important" }}
+          >
+            <this.OpenedCard />
+          </Container>
         ) : (
           this.getBoard()
         )}
-      </span>
+      </>
     );
   }
 }

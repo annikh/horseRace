@@ -13,11 +13,7 @@
   background-color: #4cc078;
   min-height: 100vh;
   min-width: 100%;
-  padding: 20px;
-}
-
-.studentGameNav {
-  justify-content: space-evenly
+  padding: 10px;
 }
 
 .btn-classPin {
@@ -27,6 +23,6 @@
 
 .btn-classPin:hover {
   background-color: rgb(49, 133, 82) !important;
-  border-color: rgb(49, 133, 82) !important;
+  border-color: #318552 !important;
   color: rgb(197, 197, 197) !important;
 }

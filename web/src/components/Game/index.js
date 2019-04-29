@@ -1,7 +1,16 @@
 import React, { Component } from "react";
 import axios from "axios";
 import { withFirebase } from "../Firebase";
-import { Container, Row, Col, Modal, Nav, Button } from "react-bootstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  Container,
+  Row,
+  Col,
+  Modal,
+  Nav,
+  Navbar,
+  Button
+} from "react-bootstrap";
 import { Redirect } from "react-router-dom";
 import Editor from "../Editor";
 import Cards from "../Cards";
@@ -175,7 +184,6 @@ class Game extends Component {
   }
 
   initiateStudentTaskInDB(taskId) {
-    console.log("set starttime");
     const taskStartTime = new Date().getTime();
     this.props.firebase
       .gamePlayer(this.state.gamePin, this.state.team, this.state.playerName)
@@ -262,66 +270,70 @@ class Game extends Component {
     <Container className="gameComponent">
       <this.ErrorModal />
       <this.SolvedModal />
-      <Row>
+      <Row style={{ margin: "auto" }}>
         <Col>
           <Editor
             onRunCode={this.runCode}
             defaultCode={this.state.currentTask.body.default_code}
           />
-          <br />
           <Console output={this.state.output} />
         </Col>
         <Col>
-          <Cards
-            lastSolvedTask={this.state.lastSolvedTask}
-            onCardSelect={this.handleTaskStart}
-            cookies={this.props.cookies}
-            showCard={this.state.showCard}
-          />
+          <Row>
+            <Cards
+              lastSolvedTask={this.state.lastSolvedTask}
+              onCardSelect={this.handleTaskStart}
+              cookies={this.props.cookies}
+              showCard={this.state.showCard}
+            />
+          </Row>
+          <Row>
+            <Col>
+              <GuessFigure
+                figure={this.state.figure}
+                solution={this.state.solution}
+                cookies={this.props.cookies}
+                onGameOver={this.props.onGameOver}
+              />
+            </Col>
+          </Row>
         </Col>
       </Row>
     </Container>
   );
 
   GameNavigation = () => (
-    <Nav className="studentGameNav">
-      <Nav.Item>
-        {this.state.exitGame ? (
-          <Redirect
-            to={{
-              pathname: ROUTES.STUDENT
-            }}
-          />
-        ) : (
-          <Button onClick={this.exitGame}>Avslutt spill</Button>
-        )}
-      </Nav.Item>
-      <Nav.Item>
-        <h3>Hei, {this.state.playerName} </h3>
-      </Nav.Item>
-      <Nav.Item>
-        <GuessFigure
-          figure={this.state.figure}
-          solution={this.state.solution}
-          cookies={this.props.cookies}
-          onGameOver={this.props.onGameOver}
+    <Navbar className="studentGameNav justify-content-between">
+      <h5 style={{ margin: "0px" }}>Hei, {this.state.playerName} </h5>
+      {this.state.exitGame ? (
+        <Redirect
+          to={{
+            pathname: ROUTES.STUDENT
+          }}
         />
-      </Nav.Item>
-    </Nav>
+      ) : (
+        <Button className="exitGame" onClick={this.exitGame}>
+          <FontAwesomeIcon icon="sign-out-alt" color="white" />
+          Avslutt spill
+        </Button>
+      )}
+    </Navbar>
   );
 
   render() {
     return (
-      <Container className="studentGame">
+      <>
         <this.GameNavigation />
-        {this.state.gamePin && !this.state.gameIsActive ? (
-          <Row style={{ justifyContent: "center" }}>
-            Venter på at spillet skal starte..
-          </Row>
-        ) : (
-          <this.GamePlayElements />
-        )}
-      </Container>
+        <Container className="studentGame">
+          {this.state.gamePin && !this.state.gameIsActive ? (
+            <Row style={{ justifyContent: "center" }}>
+              Venter på at spillet skal starte..
+            </Row>
+          ) : (
+            <this.GamePlayElements />
+          )}
+        </Container>
+      </>
     );
   }
 }

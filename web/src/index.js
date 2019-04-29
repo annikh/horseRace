@@ -13,9 +13,10 @@ import {
   faUser,
   faPlay,
   faClock,
-  faCheck
+  faCheck,
+  faSignOutAlt
 } from "@fortawesome/free-solid-svg-icons";
-library.add(faUser, faPlay, faClock, faCheck);
+library.add(faUser, faPlay, faClock, faCheck, faSignOutAlt);
 
 ReactDOM.render(
   <CookiesProvider>

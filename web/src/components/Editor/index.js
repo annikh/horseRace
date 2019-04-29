@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import AceEditor from "react-ace";
-import { Button } from "react-bootstrap";
+import { Button, Row } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import "brace/mode/python";
 import "brace/theme/monokai";
+import "./style.css";
 
 class Editor extends Component {
   constructor(props, context) {
@@ -35,28 +36,33 @@ class Editor extends Component {
 
   render() {
     return (
-      <div>
-        <AceEditor
-          mode="python"
-          theme="monokai"
-          onChange={this.handleChange}
-          width={"80vh"}
-          height={"60vh"}
-          fontSize={14}
-          showPrintMargin={true}
-          showGutter={true}
-          highlightActiveLine={true}
-          editorProps={{ $blockScrolling: true }}
-          value={this.state.aceEditorValue}
-          setOptions={{
-            showLineNumbers: true,
-            tabSize: 2
-          }}
-        />
-        <Button variant="success" onClick={this.handleRunClick}>
-          <FontAwesomeIcon icon="play" /> Run
-        </Button>
-      </div>
+      <>
+        <Row>
+          <AceEditor
+            mode="python"
+            theme="monokai"
+            onChange={this.handleChange}
+            width={"100%"}
+            height={"50vh"}
+            fontSize={14}
+            showPrintMargin={true}
+            showGutter={true}
+            highlightActiveLine={true}
+            editorProps={{ $blockScrolling: true }}
+            value={this.state.aceEditorValue}
+            setOptions={{
+              showLineNumbers: true,
+              tabSize: 2
+            }}
+          />
+        </Row>
+        <Row>
+          <Button className="runButton" size="lg" onClick={this.handleRunClick}>
+            <FontAwesomeIcon icon="play" />
+            <span style={{ paddingLeft: "5px" }}>Run</span>
+          </Button>
+        </Row>
+      </>
     );
   }
 }
