@@ -20,7 +20,8 @@ class Student extends Component {
       nameList: null,
       gamePin: null,
       buttonValue: "Enter",
-      invalidPIN: false
+      invalidPIN: false,
+      invalidName: false
     };
   }
 
@@ -53,14 +54,19 @@ class Student extends Component {
 
   handleEnterStudentName() {
     const name = this.state.value;
-    const team = this.getTeamFromPlayerName(name);
-    const { cookies } = this.props;
-    cookies.set("game_name", name);
-    cookies.set("game_team", team);
-    this.props.firebase
-      .gamePlayer(this.state.gamePin, team, name)
-      .child("isActive")
-      .set(true);
+    if (name !== this.state.gamePin) {
+      const team = this.getTeamFromPlayerName(name);
+      const { cookies } = this.props;
+      cookies.set("game_name", name);
+      cookies.set("game_team", team);
+      this.setState({ invalidName: false });
+      this.props.firebase
+        .gamePlayer(this.state.gamePin, team, name)
+        .child("isActive")
+        .set(true);
+    } else {
+      this.setState({ invalidName: true });
+    }
   }
 
   getTeamFromPlayerName(name) {
@@ -116,7 +122,12 @@ class Student extends Component {
     const nameList = this.state.nameList;
     return (
       <Col md="auto">
-        <Form.Control required as="select" onChange={this.handleChange}>
+        <Form.Control
+          required
+          as="select"
+          onChange={this.handleChange}
+          isInvalid={this.state.invalidName}
+        >
           <option>Hva heter du?</option>
           {Object.keys(nameList).map(
             (player, i) =>
@@ -127,6 +138,9 @@ class Student extends Component {
               )
           )}
         </Form.Control>
+        <Form.Control.Feedback type="invalid">
+          Velg et navn fra listen
+        </Form.Control.Feedback>
       </Col>
     );
   };
