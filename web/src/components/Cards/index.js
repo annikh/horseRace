@@ -95,7 +95,7 @@ class Cards extends Component {
           );
       if ((index + 1) % 4 === 0) {
         board.push(
-          <ButtonGroup key={index} className="boardRow" block>
+          <ButtonGroup key={index} className="boardRow">
             {row}
           </ButtonGroup>
         );
@@ -107,7 +107,7 @@ class Cards extends Component {
         style={{ margin: "10px !important", padding: "0px !important" }}
       >
         <Row style={{ display: "inline-flex" }}>
-          <Col justify-content-center>{board}</Col>
+          <Col>{board}</Col>
         </Row>
       </Container>
     );
