@@ -20,14 +20,14 @@
 }
 
 .btn-yellow {
-  background-color: #f0ee8d !important;
-  border-color: #f0ee8d !important;
+  background-color: #ffb24f !important;
+  border-color: #ffb24f !important;
   color: black;
 }
 
 .btn-yellow:hover {
-  background-color: #ccca67 !important;
-  border-color: #ccca67 !important;
+  background-color: #da9132 !important;
+  border-color: #da9132 !important;
   color: black;
 }
 
