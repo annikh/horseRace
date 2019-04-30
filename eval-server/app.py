@@ -20,18 +20,19 @@ def run_code():
     while(len(error_hints) < 3):
         error_hints.append("")
     
-    output_requirement = ''
+    output_requirement = ""
     if 'output_requirement' in task:
         output_requirement = task['output_requirement']
 
-    code_requirement = ''
-    if 'code_requirement' in task:
-        code_requirement = task['code_requirement']
+    code_requirements = []
+    if 'code_requirements' in task:
+        code_requirements = task['code_requirements']
 
     code_with_tests = code + '\n' + task["test"]
     
-    if (code_requirement not in code):
-        return jsonify(output='', error_message=error_hints[0])
+    for code_requirement in code_requirements:
+        if (code_requirement not in code):
+            return jsonify(output='', error_message=error_hints[0])
     
     with stdoutIO() as s:
         try:
@@ -41,7 +42,7 @@ def run_code():
         except AssertionError as error:
             return jsonify(output=s.getvalue(), error_message=error_hints[2])
         except IndentationError:
-            return jsonify(output=s.getvalue(), error_message=str("Det ser ut til å være en feil med innrykkene dine"))
+            return jsonify(output=s.getvalue(), error_message=str("IdentationError: Det ser ut til å være en feil med innrykkene dine"))
         except NameError as error:
             return jsonify(output=s.getvalue(), error_message=str(error))
         except TypeError as error:
