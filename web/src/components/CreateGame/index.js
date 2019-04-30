@@ -43,7 +43,10 @@ class CreateGame extends Component {
   }
 
   addGame() {
-    let newGamePin = shortid.generate();
+    let newGamePin = shortid
+      .generate()
+      .toLowerCase()
+      .replace(/[-_]/g, "");
     const teams = this.updateTeams();
     while (!this.isValidPin(newGamePin)) {
       newGamePin = shortid.generate();
