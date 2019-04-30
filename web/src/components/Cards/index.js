@@ -30,12 +30,13 @@ class Cards extends Component {
       .on("value", snapshot => {
         const cards = snapshot.val();
         let solvedTasks = {};
-        Object.keys(cards).forEach(card => {
+        Object.keys(cards).forEach((card, index) => {
           if (cards[card].solved) {
             solvedTasks[card] = cards[card];
           }
           if (this.props.cookies.get("current_card") === card) {
             this.setState({ selectedCard: { id: card, body: cards[card] } });
+            this.handleCardOpen(card, cards[card], index);
           }
         });
         this.setState({
