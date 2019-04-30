@@ -16,11 +16,11 @@ class Cards extends Component {
 
     this.state = {
       cards: [],
-      showCard: false,
       selectedCard: null,
       solvedTasks: {},
       gameTeam: this.props.cookies.get("game_team"),
-      gamePin: this.props.cookies.get("game_pin")
+      gamePin: this.props.cookies.get("game_pin"),
+      playerName: this.props.cookies.get("game_name")
     };
   }
 
@@ -33,6 +33,9 @@ class Cards extends Component {
         Object.keys(cards).forEach(card => {
           if (cards[card].solved) {
             solvedTasks[card] = cards[card];
+          }
+          if (this.props.cookies.get("current_card") === card) {
+            this.setState({ selectedCard: { id: card, body: cards[card] } });
           }
         });
         this.setState({
@@ -117,17 +120,18 @@ class Cards extends Component {
 
   handleCardClose() {
     this.reactivateTaskInDB(this.state.selectedCard.id);
-    this.setState({ showCard: false });
-    this.props.onCardSelect(this.state.selectedCard);
+    this.props.onCardSelect(null);
+    this.props.cookies.remove("current_card");
+    this.setState({ selectedCard: null });
   }
 
   handleCardOpen(key, card, index) {
     this.props.onCardSelect({ id: key, body: card }, index);
     this.deactivateTaskInDB(key);
     this.setState({
-      selectedCard: { id: key, body: card },
-      showCard: true
+      selectedCard: { id: key, body: card }
     });
+    this.props.cookies.set("current_card", key);
   }
 
   deactivateTaskInDB(taskId) {
@@ -180,17 +184,23 @@ class Cards extends Component {
 
   render() {
     const { cards } = this.state;
+    const showCard = this.props.cookies.get("current_card");
     return (
       <>
-        {Object.keys(cards).length > 0 && this.props.showCard ? (
-          <Container
-            style={{ margin: "10px !important", padding: "0px !important" }}
-          >
-            <this.OpenedCard />
-          </Container>
-        ) : (
-          this.getBoard()
-        )}
+        {Object.keys(cards).length > 0 &&
+          (this.state.selectedCard !== null &&
+          showCard === this.state.selectedCard.id ? (
+            <Container
+              style={{
+                margin: "10px !important",
+                padding: "0px !important"
+              }}
+            >
+              <this.OpenedCard />
+            </Container>
+          ) : (
+            this.getBoard()
+          ))}
       </>
     );
   }
