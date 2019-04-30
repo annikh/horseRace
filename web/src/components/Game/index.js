@@ -165,12 +165,12 @@ class Game extends Component {
     const boardIndex = this.state.currentTask.boardIndex;
     if (boardIndex > -1) {
       this.getImageUrl(boardIndex).then(url => {
+        this.solveStudentTaskInDB(this.state.currentTask.id, studentCode, url);
         this.setState({
           lastSolvedTask: { id: this.state.currentTask.id, url: url },
           showCard: false,
           currentTask: this.emptyTask
         });
-        this.solveStudentTaskInDB(this.state.currentTask.id, studentCode, url);
         this.showSolvedModal();
       });
     }
