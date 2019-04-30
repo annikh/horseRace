@@ -63,3 +63,9 @@
   pointer-events: none;
   border: none;
 }
+
+.boardRow {
+  padding: 0px;
+  margin: 0px;
+  display: -webkit-box !important;
+}
