@@ -185,12 +185,12 @@ class Cards extends Component {
 
   render() {
     const { cards } = this.state;
-    const showCard = this.props.cookies.get("current_card");
+    const cookieCardId = this.props.cookies.get("current_card");
     return (
       <>
         {Object.keys(cards).length > 0 &&
           (this.state.selectedCard !== null &&
-          showCard === this.state.selectedCard.id ? (
+          cookieCardId === this.state.selectedCard.id ? (
             <Container
               style={{
                 margin: "10px !important",
