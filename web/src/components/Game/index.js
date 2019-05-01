@@ -33,8 +33,8 @@ class Game extends Component {
 
     this.closeErrorModal = this.closeErrorModal.bind(this);
     this.closeSolvedModal = this.closeSolvedModal.bind(this);
+    this.showSolvedModal = this.showSolvedModal.bind(this);
     this.runCode = this.runCode.bind(this);
-    this.handleTaskStart = this.handleTaskStart.bind(this);
     this.pictureSolved = this.pictureSolved.bind(this);
     this.boardFinished = this.boardFinished.bind(this);
     this.setWinner = this.setWinner.bind(this);
