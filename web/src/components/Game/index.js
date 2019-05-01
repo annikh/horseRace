@@ -219,7 +219,7 @@ class Game extends Component {
             .child("boardFinished")
             .set(true);
         }
-        if (allFinished === 2) {
+        if (allFinished === 2 || allFinished === teams.length) {
           this.setWinner();
         }
       });
