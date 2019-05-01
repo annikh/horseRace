@@ -24,7 +24,7 @@ class TeacherStudent extends Component {
     const {
       match: { params }
     } = this.props;
-    this.props.firebase.games().on("value", snapshot => {
+    this.props.firebase.games().once("value", snapshot => {
       const allGames = snapshot.val();
       let games = {};
       Object.keys(allGames).forEach(pin => {
@@ -40,10 +40,6 @@ class TeacherStudent extends Component {
         student: params.student
       });
     });
-  }
-
-  componentWillUnmount() {
-    this.props.firebase.games().off();
   }
 
   getTasks() {
