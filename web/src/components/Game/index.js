@@ -41,6 +41,7 @@ class Game extends Component {
     this.taskPoint = this.taskPoint.bind(this);
     this.checkIfBoardFinished = this.checkIfBoardFinished.bind(this);
     this.handleExitOnGameOver = this.handleExitOnGameOver.bind(this);
+    this.handleTaskChosen = this.handleTaskChosen.bind(this);
 
     this.state = {
       exitGame: false,
@@ -55,7 +56,6 @@ class Game extends Component {
       figure: "",
       solution: "",
       currentTask: this.emptyTask,
-      lastSolvedTask: { id: this.emptyTask.id, url: "" },
       output: "",
       error_message: "",
       showErrorModal: false,
@@ -165,20 +165,15 @@ class Game extends Component {
     }
   }
 
-  handleTaskStart(task, boardIndex = -1) {
-    let currentTaskBody;
-    boardIndex === -1
-      ? (currentTaskBody = this.emptyTask.body)
-      : (currentTaskBody = task.body);
-    this.setState({
-      currentTask: {
+  handleTaskChosen(task, boardIndex = -1) {
+    let currentTask = this.emptyTask;
+
+    if (task != null) {
+      currentTask = {
         id: task.id,
         boardIndex: boardIndex,
-        body: currentTaskBody
-      },
-      showCard: boardIndex >= 0
-    });
-    if (boardIndex >= 0) {
+        body: task.body
+      };
       this.props.firebase
         .gamePlayer(
           this.state.gamePin,
@@ -191,6 +186,10 @@ class Game extends Component {
           if (!snapshot.exists()) this.initiateStudentTaskInDB(task.id);
         });
     }
+
+    this.setState({
+      currentTask: currentTask
+    });
   }
 
   boardFinished() {
@@ -294,8 +293,6 @@ class Game extends Component {
         this.solveStudentTaskInDB(this.state.currentTask.id, studentCode, url);
         this.checkIfBoardFinished();
         this.setState({
-          lastSolvedTask: { id: this.state.currentTask.id, url: url },
-          showCard: false,
           currentTask: this.emptyTask
         });
       });
@@ -374,6 +371,7 @@ class Game extends Component {
 
   closeSolvedModal() {
     this.setState({ showSolvedModal: false });
+    this.props.cookies.remove("current_card");
   }
 
   SolvedModal = () => (
@@ -433,10 +431,8 @@ class Game extends Component {
         <Col>
           <Row>
             <Cards
-              lastSolvedTask={this.state.lastSolvedTask}
-              onCardSelect={this.handleTaskStart}
+              onCardSelect={this.handleTaskChosen}
               cookies={this.props.cookies}
-              showCard={this.state.showCard}
             />
           </Row>
           <Row>
