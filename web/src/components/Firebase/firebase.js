@@ -103,6 +103,20 @@ class Firebase {
       .child("teams")
       .child(team);
   };
+  gameTeamPoints = (pin, team) => {
+    return this.db
+      .ref("games")
+      .child(pin)
+      .child("teams")
+      .child(team)
+      .child("points");
+  };
+  gameTeams = pin => {
+    return this.db
+      .ref("games")
+      .child(pin)
+      .child("teams");
+  };
   gameFigure = pin => {
     return this.db
       .ref("games")
