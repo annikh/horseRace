@@ -70,7 +70,7 @@ class Podium extends Component {
                   <div className="podium0" />
                 </Col>
                 <Col className="podiums">
-                  {this.getNames(2)}
+                  {this.state.teams.length > 2 && this.getNames(2)}
                   <div className="podium2" />
                 </Col>
               </Row>
