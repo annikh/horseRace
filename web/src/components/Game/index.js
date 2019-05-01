@@ -220,7 +220,7 @@ class Game extends Component {
             .child("boardFinished")
             .set(true);
         }
-        if (allFinished === 1) {
+        if (allFinished === 2) {
           this.setWinner();
         }
       });
