@@ -199,11 +199,9 @@ class Game extends Component {
         const teams = snapshot.val();
         const teamPoints = this.state.team.points;
         let ratingPoints = 3;
-        let allFinished = 0;
         teams.forEach(team => {
           if (team.boardFinished) {
             ratingPoints -= 1;
-            allFinished += 1;
           }
         });
         if (ratingPoints > 0) {
@@ -219,7 +217,7 @@ class Game extends Component {
             .child("boardFinished")
             .set(true);
         }
-        if (allFinished === 2 || allFinished === teams.length) {
+        if (ratingPoints === 1 || ratingPoints === teams.length) {
           this.setWinner();
         }
       });
