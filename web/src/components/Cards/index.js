@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { withFirebase } from "../Firebase";
+import parse from "html-react-parser";
 import {
   Button,
   ButtonGroup,
@@ -183,7 +184,7 @@ class Cards extends Component {
       <Card.Body>
         <Card.Title>{this.state.selectedCard.body.title}</Card.Title>
         <Card.Text className="display-linebreak">
-          {this.state.selectedCard.body.text}
+          {parse(this.state.selectedCard.body.text)}
         </Card.Text>
         <Button variant="info" onClick={this.handleCardClose} block>
           Lukk

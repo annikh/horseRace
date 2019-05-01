@@ -9,6 +9,7 @@
     "axios": "^0.18.0",
     "bootstrap": "^4.3.1",
     "firebase": "^5.8.4",
+    "html-react-parser": "^0.7.0",
     "i": "^0.3.6",
     "npm": "^6.8.0",
     "react": "^16.8.2",
