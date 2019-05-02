@@ -97,6 +97,7 @@ class Student extends Component {
     this.props.cookies.remove("game_name");
     this.props.cookies.remove("game_pin");
     this.props.cookies.remove("game_team");
+    this.props.cookies.remove("current_card");
 
     this.setState({
       gamePin: null,
