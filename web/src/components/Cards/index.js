@@ -130,10 +130,10 @@ class Cards extends Component {
   }
 
   handleCardClose() {
-    this.reactivateTaskInDB(this.state.selectedCard.id);
     this.props.onCardSelect(null);
-    this.props.cookies.remove("current_card");
     this.setState({ selectedCard: null });
+    this.props.cookies.remove("current_card");
+    this.reactivateTaskInDB(this.state.selectedCard.id);
   }
 
   handleCardOpen(key, card, index) {
