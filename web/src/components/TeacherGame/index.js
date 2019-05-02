@@ -115,7 +115,6 @@ class TeacherGame extends Component {
       );
       teamList = [];
     });
-
     return <Container>{fullList}</Container>;
   }
 
