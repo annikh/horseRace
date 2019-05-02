@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { AuthUserContext, withAuthorization } from "../Session";
 import { Container, Row, Card } from "react-bootstrap";
+import parse from "html-react-parser";
 import { withFirebase } from "../Firebase";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./style.css";
@@ -107,7 +108,9 @@ class TeacherStudent extends Component {
           </Card.Title>
           <Card.Text>
             <strong className="blockLeft">Oppgave:</strong>
-            <span className="display-linebreak">{tasks[taskId].text}</span>
+            <span className="display-linebreak">
+              {parse(tasks[taskId].text)}
+            </span>
             <br />
             <strong className="blockLeft">Løsning:</strong>
             <span className="display-linebreak">{task.studentCode}</span>
