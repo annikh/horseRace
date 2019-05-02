@@ -35,3 +35,6 @@ If you want to deactivate the virtual environment
 ### `gcloud init`
 
 ### `gcloud app deploy app.yaml`
+
+To see error logs for deployed app
+https://console.cloud.google.com/errors
