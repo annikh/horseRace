@@ -8,7 +8,6 @@ To create a new virtual environment, named "env":
 
 ### `virtualenv env`
 
-
 ## Running the server
 
 Activate the virtual environment
@@ -26,3 +25,13 @@ Now you can start the server
 If you want to deactivate the virtual environment
 
 ### `deactivate`
+
+## Deploying the server
+
+### `gcloud auth application-default login`
+
+### `gcloud config set project python-eval-239407`
+
+### `gcloud init`
+
+### `gcloud app deploy app.yaml`
