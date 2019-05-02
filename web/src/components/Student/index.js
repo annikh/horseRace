@@ -177,11 +177,7 @@ class Student extends Component {
         )}
       </Form>
     ) : (
-      <Game
-        cookies={cookies}
-        onExit={this.handleExitGame}
-        onGameOver={this.handleExitGame}
-      />
+      <Game cookies={cookies} onExit={this.handleExitGame} />
     );
   }
 }

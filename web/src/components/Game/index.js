@@ -6,6 +6,7 @@ import { Container, Row, Col, Modal, Navbar, Button } from "react-bootstrap";
 import { Redirect } from "react-router-dom";
 import Editor from "../Editor";
 import Cards from "../Cards";
+import Podium from "../Podium";
 import Console from "../Console";
 import GuessFigure from "../GuessFigure";
 import "./style.css";
@@ -32,15 +33,26 @@ class Game extends Component {
 
     this.closeErrorModal = this.closeErrorModal.bind(this);
     this.closeSolvedModal = this.closeSolvedModal.bind(this);
+    this.showSolvedModal = this.showSolvedModal.bind(this);
     this.runCode = this.runCode.bind(this);
+    this.pictureSolved = this.pictureSolved.bind(this);
+    this.boardFinished = this.boardFinished.bind(this);
+    this.setWinner = this.setWinner.bind(this);
+    this.taskPoint = this.taskPoint.bind(this);
+    this.checkIfBoardFinished = this.checkIfBoardFinished.bind(this);
+    this.handleExitOnGameOver = this.handleExitOnGameOver.bind(this);
     this.handleTaskChosen = this.handleTaskChosen.bind(this);
 
     this.state = {
       exitGame: false,
       gameIsActive: false,
+      gameIsFinished: false,
+      showCard: false,
+      team: {},
+      winnerTeam: "",
       gamePin: this.props.cookies.get("game_pin"),
       playerName: this.props.cookies.get("game_name"),
-      team: this.props.cookies.get("game_team"),
+      teamId: this.props.cookies.get("game_team"),
       figure: "",
       solution: "",
       currentTask: this.emptyTask,
@@ -63,6 +75,21 @@ class Game extends Component {
     this.props.firebase.gameState(this.state.gamePin).on("value", snapshot => {
       this.setState({ gameIsActive: snapshot.val() });
     });
+    this.props.firebase
+      .gameFinished(this.state.gamePin)
+      .on("value", snapshot => {
+        this.setState({ gameIsFinished: snapshot.val() });
+      });
+    this.props.firebase
+      .gameTeam(this.state.gamePin, this.state.teamId)
+      .on("value", snapshot => {
+        this.setState({ team: snapshot.val() });
+      });
+    this.props.firebase
+      .gameWinningTeam(this.state.gamePin)
+      .on("value", snapshot => {
+        this.setState({ winnerTeam: snapshot.val() });
+      });
 
     let figure = "";
 
@@ -82,6 +109,9 @@ class Game extends Component {
 
   componentWillUnmount() {
     this.props.firebase.gameState(this.state.gamePin).off();
+    this.props.firebase.gameWinningTeam(this.state.gamePin).off();
+    this.props.firebase.gameFinished(this.state.gamePin).off();
+    this.props.firebase.gameTeam(this.state.gamePin, this.state.teamId).off();
   }
 
   exitGame = () => {
@@ -89,7 +119,7 @@ class Game extends Component {
       exitGame: true,
       gamePin: null,
       playerName: null,
-      team: 0
+      teamId: -1
     });
 
     this.props.onExit();
@@ -145,7 +175,11 @@ class Game extends Component {
         body: task.body
       };
       this.props.firebase
-        .gamePlayer(this.state.gamePin, this.state.team, this.state.playerName)
+        .gamePlayer(
+          this.state.gamePin,
+          this.state.teamId,
+          this.state.playerName
+        )
         .child("tasks")
         .child(task.id)
         .once("value", snapshot => {
@@ -158,12 +192,104 @@ class Game extends Component {
     });
   }
 
+  boardFinished() {
+    this.props.firebase
+      .gameTeams(this.state.gamePin)
+      .once("value", snapshot => {
+        const teams = snapshot.val();
+        const teamPoints = this.state.team.points;
+        let ratingPoints = 3;
+        teams.forEach(team => {
+          if (team.boardFinished) {
+            ratingPoints -= 1;
+          }
+        });
+        if (ratingPoints > 0) {
+          this.props.firebase
+            .gameTeamPoints(this.state.gamePin, this.state.teamId)
+            .set(teamPoints + ratingPoints);
+          this.props.firebase
+            .gameTeam(this.state.gamePin, this.state.teamId)
+            .child("boardRate")
+            .set(4 - ratingPoints);
+          this.props.firebase
+            .gameTeam(this.state.gamePin, this.state.teamId)
+            .child("boardFinished")
+            .set(true);
+        }
+        if (ratingPoints === 1 || ratingPoints === teams.length) {
+          this.setWinner();
+        }
+      });
+  }
+
+  checkIfBoardFinished() {
+    const { team } = this.state;
+    let taskSolved = 0;
+    Object.values(team.tasks).forEach(task => {
+      if (task.solved !== undefined) {
+        taskSolved++;
+      }
+    });
+    if (taskSolved === Object.keys(team.tasks).length) {
+      this.boardFinished();
+    } else {
+      this.taskPoint();
+    }
+  }
+
+  taskPoint() {
+    this.props.firebase
+      .gameTeams(this.state.gamePin)
+      .once("value", snapshot => {
+        const teams = snapshot.val();
+        this.props.firebase
+          .gameTeamPoints(this.state.gamePin, this.state.teamId)
+          .set(this.state.team.points + 1);
+      });
+    this.showSolvedModal();
+  }
+
+  pictureSolved() {
+    this.props.firebase
+      .gameTeams(this.state.gamePin)
+      .once("value", snapshot => {
+        const teams = snapshot.val();
+        let ratingPoints = 3;
+        teams.forEach(team => {
+          if (team.pictureSolved) {
+            ratingPoints -= 1;
+          }
+        });
+        if (ratingPoints > 0) {
+          this.props.firebase
+            .gameTeamPoints(this.state.gamePin, this.state.teamId)
+            .set(this.state.team.points + ratingPoints);
+          this.props.firebase
+            .gameTeam(this.state.gamePin, this.state.teamId)
+            .child("pictureRate")
+            .set(4 - ratingPoints);
+          this.props.firebase
+            .gameTeam(this.state.gamePin, this.state.teamId)
+            .child("pictureSolved")
+            .set(true);
+        }
+      });
+  }
+
+  setWinner() {
+    this.props.firebase.gameFinished(this.state.gamePin).set(true);
+    this.props.firebase
+      .gameWinningTeam(this.state.gamePin)
+      .set(this.state.teamId);
+  }
+
   handleTaskSolved(studentCode) {
     const boardIndex = this.state.currentTask.boardIndex;
     if (boardIndex > -1) {
       this.getImageUrl(boardIndex).then(url => {
         this.solveStudentTaskInDB(this.state.currentTask.id, studentCode, url);
-        this.showSolvedModal();
+        this.checkIfBoardFinished();
         this.setState({
           currentTask: this.emptyTask
         });
@@ -174,7 +300,7 @@ class Game extends Component {
   initiateStudentTaskInDB(taskId) {
     const taskStartTime = new Date().getTime();
     this.props.firebase
-      .gamePlayer(this.state.gamePin, this.state.team, this.state.playerName)
+      .gamePlayer(this.state.gamePin, this.state.teamId, this.state.playerName)
       .child("tasks")
       .child(taskId)
       .set({
@@ -189,7 +315,11 @@ class Game extends Component {
     const taskId = this.state.currentTask.id;
     if (boardIndex >= 0) {
       this.props.firebase
-        .gamePlayer(this.state.gamePin, this.state.team, this.state.playerName)
+        .gamePlayer(
+          this.state.gamePin,
+          this.state.teamId,
+          this.state.playerName
+        )
         .child("tasks")
         .child(taskId)
         .child("studentCode")
@@ -209,14 +339,14 @@ class Game extends Component {
     updates["/tasks/" + taskId + "/solved/"] = imageUrl;
 
     this.props.firebase
-      .gameTeam(this.state.gamePin, this.state.team)
+      .gameTeam(this.state.gamePin, this.state.teamId)
       .update(updates);
   }
 
   showErrorModal(studentCode) {
     const taskId = this.state.currentTask.id;
     this.props.firebase
-      .gamePlayer(this.state.gamePin, this.state.team, this.state.playerName)
+      .gamePlayer(this.state.gamePin, this.state.teamId, this.state.playerName)
       .child("tasks")
       .child(taskId)
       .child("studentCode")
@@ -262,10 +392,32 @@ class Game extends Component {
     </Modal>
   );
 
+  FinishedModal = () => (
+    <Modal
+      show={this.state.team.boardFinished && !this.state.gameIsFinished}
+      backdrop="static"
+    >
+      <Modal.Header>
+        <Modal.Title>Gratulerer!</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        Dere var nummer <strong>{this.state.team.boardRate}</strong> til å bli
+        ferdige med brettet, og får derfor{" "}
+        <strong>{4 - this.state.team.boardRate}</strong> bonuspoeng. <br />
+        Totalt fikk dere <strong>{this.state.team.points}</strong> poeng. Bra
+        jobba!
+        <br />
+        <br />
+        Resultatet kommer når 3 lag er ferdige med brettet.
+      </Modal.Body>
+    </Modal>
+  );
+
   GamePlayElements = () => (
     <Container className="gameComponent">
       <this.ErrorModal />
       <this.SolvedModal />
+      <this.FinishedModal />
       <Row style={{ margin: "auto" }}>
         <Col>
           <Editor
@@ -287,7 +439,8 @@ class Game extends Component {
                 figure={this.state.figure}
                 solution={this.state.solution}
                 cookies={this.props.cookies}
-                onGameOver={this.props.onGameOver}
+                pictureSolved={this.pictureSolved}
+                team={this.state.team}
               />
             </Col>
           </Row>
@@ -299,6 +452,7 @@ class Game extends Component {
   GameNavigation = () => (
     <Navbar className="studentGameNav justify-content-between">
       <h5 style={{ margin: "0px" }}>Hei, {this.state.playerName} </h5>
+      <h5 style={{ margin: "0px" }}>Team poeng:{this.state.team.points} </h5>
       {this.state.exitGame ? (
         <Redirect
           to={{
@@ -314,6 +468,11 @@ class Game extends Component {
     </Navbar>
   );
 
+  handleExitOnGameOver() {
+    this.props.onExit();
+    return <Redirect to={ROUTES.STUDENT} />;
+  }
+
   render() {
     return (
       <>
@@ -325,6 +484,12 @@ class Game extends Component {
             </Row>
           ) : (
             <this.GamePlayElements />
+          )}
+          {this.state.gameIsFinished && (
+            <Podium
+              handleExitOnGameOver={this.handleExitOnGameOver}
+              cookies={this.props.cookies}
+            />
           )}
         </Container>
       </>

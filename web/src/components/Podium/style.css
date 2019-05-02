@@ -1,0 +1,55 @@
+.trophyModal {
+  top: 40px;
+}
+
+.trophyModal .modal-content {
+  background-color: #fcffd2;
+}
+
+.trophyModal .modal-header {
+  border-color: #fcffd2;
+}
+
+.trophyModal .modal-title {
+  width: 100%;
+  text-align: center;
+  font-size: 32px;
+  padding-left: 25px;
+}
+
+.podium {
+  display: flex;
+  align-items: flex-end;
+  max-width: 650px;
+  margin: auto;
+}
+
+.podiums {
+  padding: 5px;
+  margin: 0px;
+  width: 200px !important;
+}
+
+.podium0 {
+  /* gold */
+  background-color: #ffd700;
+  height: 250px;
+  width: 200px;
+}
+.podium1 {
+  /* silver */
+  background-color: #c0c0c0;
+  height: 200px;
+  width: 200px;
+}
+.podium2 {
+  /* bronze */
+  background-color: #cd7f32;
+  height: 150px;
+  width: 200px;
+}
+
+.trophy {
+  height: 170px;
+  width: 200px;
+}

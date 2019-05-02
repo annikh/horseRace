@@ -114,7 +114,14 @@ class CreateGame extends Component {
     const { tasks, teams } = this.state;
     Object.keys(teams).forEach(name => {
       let team = teams[name].team;
-      if (!newTeams[team]) newTeams[team] = { players: {}, tasks: tasks };
+      if (!newTeams[team])
+        newTeams[team] = {
+          players: {},
+          tasks: tasks,
+          points: 0,
+          pictureSolved: false,
+          boardFinished: false
+        };
       let newPlayer = {
         isActive: false,
         tasks: null,
