@@ -8,6 +8,7 @@ import logging
 app = Flask(__name__)
 cors = CORS(app)
 
+
 @app.route('/run', methods=['GET'])
 def run_code():
     code = request.args.get('code')
@@ -71,4 +72,4 @@ def server_error(e):
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=int("5000"))
+    app.run()
