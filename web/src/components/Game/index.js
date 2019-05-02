@@ -99,7 +99,7 @@ class Game extends Component {
 
   runCode(submittedCode) {
     axios
-      .get("http://35.228.206.249/run", {
+      .get("https://python-eval-239407.appspot.com/run", {
         params: { code: submittedCode, task: this.state.currentTask.body }
       })
       .then(response => {

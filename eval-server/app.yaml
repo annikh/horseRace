@@ -1,5 +1,5 @@
 runtime: python37
 
 handlers:
-- url: /run
-  script: auto
+  - url: /run
+    script: auto
