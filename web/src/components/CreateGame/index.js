@@ -18,6 +18,7 @@ class CreateGame extends Component {
     this.handleNewTeam = this.handleNewTeam.bind(this);
     this.handleNumberOfTeams = this.handleNumberOfTeams.bind(this);
     this.handleFigureChoice = this.handleFigureChoice.bind(this);
+    this.handleTaskGroup = this.handleTaskGroup.bind(this);
 
     this.state = {
       loading: false,
@@ -28,7 +29,8 @@ class CreateGame extends Component {
       numberOfTeams: 0,
       figureChoices: {},
       figure: null,
-      formValidated: false
+      formValidated: false,
+      taskGroup: ""
     };
   }
 
@@ -66,7 +68,8 @@ class CreateGame extends Component {
       classroomName: "",
       chosenClass: false,
       figure: null,
-      numberOfTeams: 0
+      numberOfTeams: 0,
+      taskGroup: ""
     });
   }
 
@@ -98,6 +101,12 @@ class CreateGame extends Component {
       this.handleChange({ target: { value: this.state.classroomName } });
   }
 
+  handleTaskGroup(event) {
+    this.setState({
+      taskGroup: event.target.value
+    });
+  }
+
   handleChange(event) {
     const classroomName = event.target.value;
     const names = this.props.classrooms[classroomName]["names"];
@@ -111,13 +120,13 @@ class CreateGame extends Component {
 
   updateTeams() {
     let newTeams = {};
-    const { tasks, teams } = this.state;
+    const { tasks, taskGroup, teams } = this.state;
     Object.keys(teams).forEach(name => {
       let team = teams[name].team;
       if (!newTeams[team])
         newTeams[team] = {
           players: {},
-          tasks: tasks,
+          tasks: tasks[taskGroup],
           points: 0,
           pictureSolved: false,
           boardFinished: false
@@ -280,10 +289,38 @@ class CreateGame extends Component {
             </Form.Control.Feedback>
           </Col>
         </Row>
+        <Row>
+          <Col>
+            <Form.Label>Velg opgaver:</Form.Label>
+          </Col>
+          <Col>
+            <Form.Control
+              required
+              as="select"
+              onChange={this.handleTaskGroup}
+              value={this.state.taskGroup === "" ? "" : this.state.taskGroup}
+            >
+              <option disabled={this.state.taskGroup !== ""} value="">
+                Velg...
+              </option>
+              {this.state.tasks !== null &&
+                Object.keys(this.state.tasks).length > 0 &&
+                Object.keys(this.state.tasks).map((taskGroup, i) => (
+                  <option key={i} value={taskGroup}>
+                    {taskGroup}
+                  </option>
+                ))}
+            </Form.Control>
+            <Form.Control.Feedback type="invalid">
+              Vennligst velg oppgaver.
+            </Form.Control.Feedback>
+          </Col>
+        </Row>
         {this.state.classroomName !== "" &&
           this.state.teams !== {} &&
           this.state.chosenClass &&
-          this.state.numberOfTeams > 1 && (
+          this.state.numberOfTeams > 1 &&
+          this.state.taskGroup !== "" && (
             <PlayerList
               teams={this.state.teams}
               handleNewTeam={this.handleNewTeam}
