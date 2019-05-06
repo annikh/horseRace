@@ -45,7 +45,7 @@ class GuessFigure extends Component {
 
   handleGuessSubmit(event) {
     event.preventDefault();
-    this.props.solution === this.state.studentGuess
+    this.props.solution === this.state.studentGuess.toLowerCase()
       ? this.handleCorrectGuess()
       : this.showWrongGuessModal();
   }
