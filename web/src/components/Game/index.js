@@ -126,7 +126,10 @@ class Game extends Component {
   };
 
   runCode(submittedCode) {
-    axios
+    const pythonClient = axios.create();
+    pythonClient.defaults.timeout = 3000;
+
+    pythonClient
       .get("https://python-eval-239407.appspot.com/run", {
         params: { code: submittedCode, task: this.state.currentTask.body }
       })
@@ -143,6 +146,13 @@ class Game extends Component {
       })
       .catch(error => {
         console.log(error);
+        if (error.code === "ECONNABORTED") {
+          this.setState({
+            error_message:
+              "Woops, koden din tar lang tid å utføre. Kan det være du har laget en uendelig løkke?"
+          });
+          this.showErrorModal(submittedCode);
+        }
       });
   }
 
