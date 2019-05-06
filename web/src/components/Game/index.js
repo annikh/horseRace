@@ -122,6 +122,15 @@ class Game extends Component {
       teamId: -1
     });
 
+    const team = this.props.cookies.get("game_team");
+    const playerName = this.props.cookies.get("game_name");
+    const gamePin = this.props.cookies.get("game_pin");
+
+    this.props.firebase
+      .gamePlayer(gamePin, team, playerName)
+      .child("isActive")
+      .set(false);
+
     this.props.onExit();
   };
 
