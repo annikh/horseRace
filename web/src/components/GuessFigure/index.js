@@ -19,7 +19,7 @@ class GuessFigure extends Component {
       showGuessModal: false,
       showWrongGuessModal: false,
       studentGuess: "",
-      disableButton: false
+      showGuessButton: true
     };
   }
 
@@ -28,7 +28,7 @@ class GuessFigure extends Component {
       .gameTeam(this.state.gamePin, this.state.gameTeam)
       .child("pictureSolved")
       .on("value", snapshot => {
-        this.setState({ disableButton: snapshot.val() });
+        this.setState({ showGuessButton: !snapshot.val() });
       });
   }
 
@@ -150,11 +150,7 @@ class GuessFigure extends Component {
   );
 
   GuessButton = () => (
-    <Button
-      className="btn-yellow"
-      onClick={this.showGuessModal}
-      disabled={this.state.disableButton}
-    >
+    <Button className="btn-yellow" onClick={this.showGuessModal}>
       Gjett hva som er på bildet
     </Button>
   );
@@ -162,7 +158,7 @@ class GuessFigure extends Component {
   render() {
     return (
       <>
-        <this.GuessButton />
+        {this.state.showGuessButton && <this.GuessButton />}
         <>
           <this.GuessModal />
           <this.WrongGuessModal />
