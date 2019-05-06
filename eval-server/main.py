@@ -4,6 +4,8 @@ import sys
 from io import StringIO
 import contextlib
 import logging
+import time
+import signal
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -43,7 +45,7 @@ def run_code():
         except AssertionError as error:
             return jsonify(output=s.getvalue(), error_message=error_hints[2])
         except IndentationError:
-            return jsonify(output=s.getvalue(), error_message=str("IdentationError: Det ser ut til å være en feil med innrykkene dine"))
+            return jsonify(output=s.getvalue(), error_message="IdentationError: Det ser ut til å være en feil med innrykkene dine")
         except NameError as error:
             return jsonify(output=s.getvalue(), error_message=str(error))
         except TypeError as error:
