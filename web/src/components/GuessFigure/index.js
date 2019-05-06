@@ -97,11 +97,11 @@ class GuessFigure extends Component {
         <Modal.Title>Hva tror du det er på bildet?</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form>
+        <Form onSubmit={this.handleGuessSubmit}>
           <Form.Group>
             <Form.Control as="input" onChange={this.handleGuessInput} />
           </Form.Group>
-          <Button variant="info" onClick={this.handleGuessSubmit}>
+          <Button variant="info" type="submit">
             Gjett
           </Button>
         </Form>
