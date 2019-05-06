@@ -4,9 +4,30 @@ import sys
 from io import StringIO
 import contextlib
 import logging
+import time
+import signal
 
 app = Flask(__name__)
 cors = CORS(app)
+
+
+class Timeout():
+    """Timeout class using ALARM signal."""
+    class Timeout(Exception):
+        pass
+ 
+    def __init__(self, sec):
+        self.sec = sec
+ 
+    def __enter__(self):
+        signal.signal(signal.SIGALRM, self.raise_timeout)
+        signal.alarm(self.sec)
+ 
+    def __exit__(self, *args):
+        signal.alarm(0)    # disable alarm
+ 
+    def raise_timeout(self, *args):
+        raise Timeout.Timeout()
 
 
 @app.route('/run', methods=['GET'])
@@ -37,13 +58,16 @@ def run_code():
     
     with stdoutIO() as s:
         try:
-            exec(code_with_tests, {})
-            if output_requirement not in s.getvalue():
-                return jsonify(output=s.getvalue(), error_message=error_hints[1])
+            with Timeout(3):
+                exec(code_with_tests, {})
+                if output_requirement not in s.getvalue():
+                    return jsonify(output=s.getvalue(), error_message=error_hints[1])
+        except Timeout.Timeout:
+            return jsonify(output='', error_message="Woops, koden din tar lang tid å utføre. Kan det være du har laget en uendelig løkke?")
         except AssertionError as error:
             return jsonify(output=s.getvalue(), error_message=error_hints[2])
         except IndentationError:
-            return jsonify(output=s.getvalue(), error_message=str("IdentationError: Det ser ut til å være en feil med innrykkene dine"))
+            return jsonify(output=s.getvalue(), error_message="IdentationError: Det ser ut til å være en feil med innrykkene dine")
         except NameError as error:
             return jsonify(output=s.getvalue(), error_message=str(error))
         except TypeError as error:
