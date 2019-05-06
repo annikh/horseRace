@@ -126,7 +126,10 @@ class Game extends Component {
   };
 
   runCode(submittedCode) {
-    axios
+    const pythonClient = axios.create();
+    pythonClient.defaults.timeout = 3000;
+
+    pythonClient
       .get("https://python-eval-239407.appspot.com/run", {
         params: { code: submittedCode, task: this.state.currentTask.body }
       })
@@ -141,8 +144,15 @@ class Game extends Component {
           ? this.handleTaskSolved(submittedCode)
           : this.updateStudentTaskInDB(submittedCode);
       })
-      .catch(function(error) {
+      .catch(error => {
         console.log(error);
+        if (error.code === "ECONNABORTED") {
+          this.setState({
+            error_message:
+              "Woops, koden din tar lang tid å utføre. Kan det være du har laget en uendelig løkke?"
+          });
+          this.showErrorModal(submittedCode);
+        }
       });
   }
 
@@ -240,13 +250,8 @@ class Game extends Component {
 
   taskPoint() {
     this.props.firebase
-      .gameTeams(this.state.gamePin)
-      .once("value", snapshot => {
-        const teams = snapshot.val();
-        this.props.firebase
-          .gameTeamPoints(this.state.gamePin, this.state.teamId)
-          .set(this.state.team.points + 1);
-      });
+      .gameTeamPoints(this.state.gamePin, this.state.teamId)
+      .set(this.state.team.points + 1);
     this.showSolvedModal();
   }
 
@@ -345,12 +350,18 @@ class Game extends Component {
 
   showErrorModal(studentCode) {
     const taskId = this.state.currentTask.id;
-    this.props.firebase
-      .gamePlayer(this.state.gamePin, this.state.teamId, this.state.playerName)
-      .child("tasks")
-      .child(taskId)
-      .child("studentCode")
-      .set(studentCode);
+    if (taskId !== this.emptyTask.id) {
+      this.props.firebase
+        .gamePlayer(
+          this.state.gamePin,
+          this.state.teamId,
+          this.state.playerName
+        )
+        .child("tasks")
+        .child(taskId)
+        .child("studentCode")
+        .set(studentCode);
+    }
     this.setState({
       showErrorModal: true,
       errorModalHeaderText: this.state.errorModalHeaders[
