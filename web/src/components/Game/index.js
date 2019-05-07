@@ -143,7 +143,7 @@ class Game extends Component {
         if (error.code === "ECONNABORTED") {
           this.setState({
             error_message:
-              "Woops, koden din tar lang tid å utføre. Kan det være du har laget en uendelig løkke?"
+              "Woops, koden din tar lang tid å utføre.\nKan det være du har laget en uendelig løkke?"
           });
           this.showErrorModal(submittedCode);
         }
