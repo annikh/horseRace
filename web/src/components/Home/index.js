@@ -31,7 +31,7 @@ const Home = () => {
               style={{ textDecoration: "none" }}
             >
               <Button
-                className="btn-submit"
+                className="btn-orange"
                 variant="outline-light"
                 size="lg"
                 block

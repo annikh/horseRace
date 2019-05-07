@@ -107,15 +107,7 @@ class Cards extends Component {
         row = [];
       }
     });
-    return (
-      <Container
-        style={{ margin: "10px !important", padding: "0px !important" }}
-      >
-        <Row style={{ display: "inline-flex" }}>
-          <Col>{board}</Col>
-        </Row>
-      </Container>
-    );
+    return <>{board}</>;
   }
 
   taskIsSolved(taskId, solvedTasks) {
@@ -183,9 +175,7 @@ class Cards extends Component {
     >
       <Card.Body>
         <Card.Title>{this.state.selectedCard.body.title}</Card.Title>
-        <Card.Text className="display-linebreak">
-          {parse(this.state.selectedCard.body.text)}
-        </Card.Text>
+        <Card.Text>{parse(this.state.selectedCard.body.text)}</Card.Text>
         <Button variant="info" onClick={this.handleCardClose} block>
           Lukk
         </Button>
@@ -201,14 +191,7 @@ class Cards extends Component {
         {Object.keys(cards).length > 0 &&
           (this.state.selectedCard !== null &&
           cookieCardId === this.state.selectedCard.id ? (
-            <Container
-              style={{
-                margin: "10px !important",
-                padding: "0px !important"
-              }}
-            >
-              <this.OpenedCard />
-            </Container>
+            <this.OpenedCard />
           ) : (
             this.getBoard()
           ))}

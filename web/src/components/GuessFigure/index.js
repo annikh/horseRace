@@ -149,15 +149,12 @@ class GuessFigure extends Component {
     </Modal>
   );
 
-  GuessButton = () => (
-    <Button
-      className="btn-yellow"
-      onClick={this.showGuessModal}
-      disabled={this.state.disableButton}
-    >
-      Gjett hva som er på bildet
-    </Button>
-  );
+  GuessButton = () =>
+    !this.state.disableButton && (
+      <Button className="btn-guess" onClick={this.showGuessModal}>
+        Gjett hva som er på bildet!
+      </Button>
+    );
 
   render() {
     return (
