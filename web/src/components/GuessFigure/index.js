@@ -19,7 +19,7 @@ class GuessFigure extends Component {
       showGuessModal: false,
       showWrongGuessModal: false,
       studentGuess: "",
-      disableButton: false
+      showGuessButton: true
     };
   }
 
@@ -28,7 +28,7 @@ class GuessFigure extends Component {
       .gameTeam(this.state.gamePin, this.state.gameTeam)
       .child("pictureSolved")
       .on("value", snapshot => {
-        this.setState({ disableButton: snapshot.val() });
+        this.setState({ showGuessButton: !snapshot.val() });
       });
   }
 
@@ -45,7 +45,7 @@ class GuessFigure extends Component {
 
   handleGuessSubmit(event) {
     event.preventDefault();
-    this.props.solution === this.state.studentGuess
+    this.props.solution === this.state.studentGuess.toLowerCase()
       ? this.handleCorrectGuess()
       : this.showWrongGuessModal();
   }
@@ -97,11 +97,11 @@ class GuessFigure extends Component {
         <Modal.Title>Hva tror du det er på bildet?</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form>
+        <Form onSubmit={this.handleGuessSubmit}>
           <Form.Group>
             <Form.Control as="input" onChange={this.handleGuessInput} />
           </Form.Group>
-          <Button variant="info" onClick={this.handleGuessSubmit}>
+          <Button variant="info" type="submit">
             Gjett
           </Button>
         </Form>
@@ -149,17 +149,16 @@ class GuessFigure extends Component {
     </Modal>
   );
 
-  GuessButton = () =>
-    !this.state.disableButton && (
-      <Button className="btn-guess" onClick={this.showGuessModal}>
-        Gjett hva som er på bildet!
-      </Button>
-    );
+  GuessButton = () => (
+    <Button className="btn-guess" onClick={this.showGuessModal}>
+      Gjett hva som er på bildet
+    </Button>
+  );
 
   render() {
     return (
       <>
-        <this.GuessButton />
+        {this.state.showGuessButton && <this.GuessButton />}
         <>
           <this.GuessModal />
           <this.WrongGuessModal />

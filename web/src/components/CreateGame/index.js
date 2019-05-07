@@ -4,17 +4,12 @@ import { Button, Form, Row, Col } from "react-bootstrap";
 import Game from "../../objects/Game";
 import PlayerList from "./playerList";
 import { withFirebase } from "../Firebase";
-import shortid from "shortid";
 
 class CreateGame extends Component {
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.addGame = this.addGame.bind(this);
-    this.isValidPin = this.isValidPin.bind(this);
-    this.createTeams = this.createTeams.bind(this);
-    this.updateTeams = this.updateTeams.bind(this);
     this.handleNewTeam = this.handleNewTeam.bind(this);
     this.handleNumberOfTeams = this.handleNumberOfTeams.bind(this);
     this.handleFigureChoice = this.handleFigureChoice.bind(this);
@@ -45,14 +40,8 @@ class CreateGame extends Component {
   }
 
   addGame() {
-    let newGamePin = shortid
-      .generate()
-      .toLowerCase()
-      .replace(/[-_]/g, "");
+    let newGamePin = Math.floor(100000 + Math.random() * 900000);
     const teams = this.updateTeams();
-    while (!this.isValidPin(newGamePin)) {
-      newGamePin = shortid.generate();
-    }
     let authUser = this.context;
     const game = new Game(
       false,
@@ -71,15 +60,6 @@ class CreateGame extends Component {
       numberOfTeams: 0,
       taskGroup: ""
     });
-  }
-
-  isValidPin(pin) {
-    for (var key in this.state.games) {
-      if (this.state.games[key].pin === pin) {
-        return false;
-      }
-    }
-    return true;
   }
 
   handleSubmit(event) {

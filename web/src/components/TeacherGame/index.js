@@ -97,6 +97,7 @@ class TeacherGame extends Component {
     const teams = game.teams;
     let fullList = [];
     let teamList = [];
+    let noPlayers = true;
     let completedTasks = 0;
     Object.keys(teams).forEach((team, key) => {
       Object.keys(teams[team].tasks).forEach(task => {
@@ -141,6 +142,7 @@ class TeacherGame extends Component {
           }
         }
       });
+      if (teamList.length > 0) noPlayers = false;
 
       fullList.push(
         <>
@@ -177,6 +179,13 @@ class TeacherGame extends Component {
       teamList = [];
       completedTasks = 0;
     });
+
+    if (noPlayers)
+      return (
+        <Row>
+          <Col>Venter på spillere.. Start spillet når spillerne er klare.</Col>
+        </Row>
+      );
     return <Container>{fullList}</Container>;
   }
 
@@ -284,7 +293,7 @@ class TeacherGame extends Component {
       );
     else {
       return (
-        <Col className="left">
+        <Col>
           <Button className="startGame btn-orange" onClick={this.startGame}>
             Start spillet!
           </Button>
