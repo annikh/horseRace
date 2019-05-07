@@ -15,7 +15,7 @@ const Navigation = () => (
           <Nav.Item>
             <Link to={ROUTES.TEACHER_ACCOUNT} className="link">
               <FontAwesomeIcon icon="user" color="black" />
-              {authUser.email}
+              <span style={{ marginLeft: "5px" }}>{authUser.email}</span>
             </Link>
           </Nav.Item>
           <Nav.Item>
