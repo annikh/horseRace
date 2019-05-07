@@ -147,7 +147,7 @@ class TeacherGame extends Component {
             <Col>
               <span>
                 <strong>
-                  TEAM <span>{team}</span>
+                  TEAM <span>{parseInt(team) + 1}</span>
                 </strong>
               </span>
             </Col>
