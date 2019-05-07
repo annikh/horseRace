@@ -25,15 +25,15 @@ class Student extends Component {
     };
   }
 
-  componentDidMount() {
-    const gamePin = this.props.cookies.get("game_pin");
+  // componentDidMount() {
+  //   const gamePin = this.props.cookies.get("game_pin");
 
-    if (gamePin !== undefined) {
-      this.setState({
-        gamePin: gamePin
-      });
-    }
-  }
+  //   if (gamePin !== undefined) {
+  //     this.setState({
+  //       gamePin: gamePin
+  //     });
+  //   }
+  // }
 
   handleEnterClassroomPin() {
     const gamePin = this.state.value.trim();
@@ -56,10 +56,6 @@ class Student extends Component {
         this.setState({ invalidPIN: true });
       }
     });
-  }
-
-  componentWillUnmount() {
-    this.props.firebase.gamePlayerList(this.state.gamePin).off();
   }
 
   handleEnterStudentName() {
@@ -98,7 +94,9 @@ class Student extends Component {
   }
 
   handleExitGame() {
-    this.props.firebase.gamePlayerList(this.state.gamePin).off();
+    this.props.firebase
+      .gamePlayerList(this.props.cookies.get("game_name"))
+      .off();
 
     this.props.cookies.remove("game_name");
     this.props.cookies.remove("game_pin");
