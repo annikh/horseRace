@@ -13,21 +13,6 @@ import "./style.css";
 import * as ROUTES from "../../constants/routes";
 
 class Game extends Component {
-  emptyTask = {
-    id: "",
-    boardIndex: -1,
-    body: {
-      difficulty: 0,
-      test: "",
-      text: "",
-      title: "",
-      error_hints: ["", "", ""],
-      default_code: "",
-      output_requirement: "",
-      code_requirement: ""
-    }
-  };
-
   constructor(props) {
     super(props);
 
@@ -55,7 +40,7 @@ class Game extends Component {
       teamId: this.props.cookies.get("game_team"),
       figure: "",
       solution: "",
-      currentTask: this.emptyTask,
+      currentTask: null,
       output: "",
       error_message: "",
       showErrorModal: false,
@@ -170,7 +155,7 @@ class Game extends Component {
   }
 
   taskIsSolved(solved) {
-    return this.state.currentTask.id !== this.emptyTask.id && solved;
+    return this.state.currentTask !== null && solved;
   }
 
   async getImageUrl(key) {
@@ -184,15 +169,8 @@ class Game extends Component {
     }
   }
 
-  handleTaskChosen(task, boardIndex = -1) {
-    let currentTask = this.emptyTask;
-
-    if (task != null) {
-      currentTask = {
-        id: task.id,
-        boardIndex: boardIndex,
-        body: task.body
-      };
+  handleTaskChosen(task) {
+    if (task !== null) {
       this.props.firebase
         .gamePlayer(
           this.state.gamePin,
@@ -205,9 +183,8 @@ class Game extends Component {
           if (!snapshot.exists()) this.initiateStudentTaskInDB(task.id);
         });
     }
-
     this.setState({
-      currentTask: currentTask
+      currentTask: task
     });
   }
 
@@ -299,13 +276,12 @@ class Game extends Component {
   }
 
   handleTaskSolved(studentCode) {
-    const boardIndex = this.state.currentTask.boardIndex;
-    if (boardIndex > -1) {
-      this.getImageUrl(boardIndex).then(url => {
+    if (this.state.currentTask !== null) {
+      this.getImageUrl(this.state.currentTask.boardIndex).then(url => {
         this.solveStudentTaskInDB(this.state.currentTask.id, studentCode, url);
         this.checkIfBoardFinished();
         this.setState({
-          currentTask: this.emptyTask
+          currentTask: null
         });
       });
     }
@@ -325,9 +301,7 @@ class Game extends Component {
   }
 
   updateStudentTaskInDB(studentCode) {
-    const boardIndex = parseInt(this.state.currentTask.boardIndex);
-    const taskId = this.state.currentTask.id;
-    if (boardIndex >= 0) {
+    if (this.state.currentTask !== null) {
       this.props.firebase
         .gamePlayer(
           this.state.gamePin,
@@ -335,7 +309,7 @@ class Game extends Component {
           this.state.playerName
         )
         .child("tasks")
-        .child(taskId)
+        .child(this.state.currentTask.id)
         .child("studentCode")
         .set(studentCode);
     }
@@ -358,8 +332,7 @@ class Game extends Component {
   }
 
   showErrorModal(studentCode) {
-    const taskId = this.state.currentTask.id;
-    if (taskId !== this.emptyTask.id) {
+    if (this.state.currentTask !== null) {
       this.props.firebase
         .gamePlayer(
           this.state.gamePin,
@@ -367,7 +340,7 @@ class Game extends Component {
           this.state.playerName
         )
         .child("tasks")
-        .child(taskId)
+        .child(this.state.currentTask.id)
         .child("studentCode")
         .set(studentCode);
     }
@@ -442,7 +415,11 @@ class Game extends Component {
         <Col>
           <Editor
             onRunCode={this.runCode}
-            defaultCode={this.state.currentTask.body.default_code}
+            defaultCode={
+              this.state.currentTask === null
+                ? ""
+                : this.state.currentTask.body.default_code
+            }
           />
           <Console output={this.state.output} />
         </Col>

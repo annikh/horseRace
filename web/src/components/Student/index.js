@@ -18,7 +18,7 @@ class Student extends Component {
     this.state = {
       value: "",
       nameList: null,
-      gamePin: null,
+      gamePin: this.props.cookies.get("game_pin"),
       buttonValue: "Enter",
       invalidPIN: false,
       invalidName: false
@@ -54,12 +54,15 @@ class Student extends Component {
 
   handleEnterStudentName() {
     const name = this.state.value;
+
     if (name !== this.state.gamePin) {
       const team = this.getTeamFromPlayerName(name);
-      const { cookies } = this.props;
-      cookies.set("game_name", name);
-      cookies.set("game_team", team);
+
+      this.props.cookies.set("game_name", name);
+      this.props.cookies.set("game_team", team);
+
       this.setState({ invalidName: false });
+
       this.props.firebase
         .gamePlayer(this.state.gamePin, team, name)
         .child("isActive")
@@ -85,6 +88,8 @@ class Student extends Component {
   }
 
   handleExitGame() {
+    this.props.firebase.gamePlayerList(this.state.gamePin).off();
+
     this.props.cookies.remove("game_name");
     this.props.cookies.remove("game_pin");
     this.props.cookies.remove("game_team");
