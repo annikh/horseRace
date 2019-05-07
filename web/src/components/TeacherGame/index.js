@@ -173,7 +173,7 @@ class TeacherGame extends Component {
       teamList = [];
       completedTasks = 0;
     });
-    return <Container>{fullList}</Container>;
+    return <Container style={{ minWidth: "90%" }}>{fullList}</Container>;
   }
 
   taskList(team, player) {
