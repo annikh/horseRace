@@ -25,16 +25,6 @@ class Student extends Component {
     };
   }
 
-  // componentDidMount() {
-  //   const gamePin = this.props.cookies.get("game_pin");
-
-  //   if (gamePin !== undefined) {
-  //     this.setState({
-  //       gamePin: gamePin
-  //     });
-  //   }
-  // }
-
   handleEnterClassroomPin() {
     const gamePin = this.state.value.trim();
     this.props.firebase.gamePlayerList(gamePin).on("value", snapshot => {
