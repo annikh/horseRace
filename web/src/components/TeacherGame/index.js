@@ -82,6 +82,7 @@ class TeacherGame extends Component {
     const teams = game.teams;
     let fullList = [];
     let teamList = [];
+    let noPlayers = true;
     Object.keys(teams).forEach((team, key) => {
       Object.keys(teams[team].players).forEach((player, i) => {
         if (teams[team].players[player].isActive) {
@@ -107,6 +108,7 @@ class TeacherGame extends Component {
           );
         }
       });
+      if (teamList.length > 0) noPlayers = false;
 
       fullList.push(
         <Row className="rowAccount" key={key}>
@@ -115,6 +117,13 @@ class TeacherGame extends Component {
       );
       teamList = [];
     });
+
+    if (noPlayers)
+      return (
+        <Row>
+          <Col>Venter på spillere.. Start spillet når spillerne er klare.</Col>
+        </Row>
+      );
     return <Container>{fullList}</Container>;
   }
 
