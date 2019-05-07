@@ -2,6 +2,7 @@
   width: 130px;
   height: 130px;
   padding: 0px;
+  margin: 0px;
 }
 
 .card {
@@ -12,6 +13,7 @@
   padding: 0px;
   align-items: center;
   color: black;
+  margin: 0px !important;
 }
 
 .easy {
@@ -68,4 +70,9 @@
   padding: 0px;
   margin: 0px;
   display: -webkit-box !important;
+}
+
+.fit-content {
+  width: fit-content;
+  height: 0px !important;
 }
