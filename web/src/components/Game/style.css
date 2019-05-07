@@ -2,36 +2,66 @@
   background-color: #4cc078;
   min-width: 100%;
   min-height: 100vh;
-}
-
-.navbar-game {
-  background-color: #399b5e !important;
-}
-
-.exitGame {
-  background-color: #107259;
-  border-color: #08503e;
-}
-
-.exitGame:hover {
-  background-color: #107259;
-  filter: brightness(75%);
-  border-color: #08503e;
-}
-
-.btn-yellow {
-  background-color: #ffb24f !important;
-  border-color: #ffb24f !important;
-  color: black;
-}
-
-.btn-yellow:hover {
-  background-color: #da9132 !important;
-  border-color: #da9132 !important;
-  color: black;
+  padding: 20px;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
 }
 
 .studentGameNav {
-  background-color: #3dac67 !important;
+  background-color: #439663 !important;
   align-items: center;
+  box-shadow: 1px 1px #1a331a;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  color: white;
+}
+
+.board {
+  background-color: #60a570;
+  padding: 10px;
+  box-shadow: 1px 1px #5f8c69;
+}
+
+.editor {
+  background-color: rgb(59, 59, 59);
+  box-shadow: 1px 1px;
+  height: fit-content;
+}
+
+.score {
+  box-shadow: 1px 1px #255c3a;
+  border: 1px solid #255c3a;
+  padding: 10px 20px 10px 20px;
+}
+
+.center {
+  justify-content: center;
+}
+
+.exitGame {
+  background-color: #3b3b3b;
+  border-color: #1f1f1f;
+  border-radius: 0%;
+  box-shadow: 1px 1px black;
+}
+
+.exitGame:hover {
+  background-color: #3b3b3b;
+  filter: brightness(65%);
+  border-color: #1f1f1f;
+}
+
+.btn-guess {
+  background-color: #107259 !important;
+  border-color: #08503e;
+  color: white !important;
+  border-radius: 0px;
+  padding-bottom: 10px;
+  padding-top: 10px;
+  width: 400px;
+  box-shadow: 1px 1px #105f4b;
+}
+
+.btn-guess:hover {
+  background-color: #107259;
+  filter: brightness(75%);
+  border-color: #08503e;
 }
