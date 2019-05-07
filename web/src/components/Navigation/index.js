@@ -30,7 +30,7 @@ const Navigation = () => (
           </Nav.Item>
           <Nav.Item>
             <Link to={ROUTES.TEACHER_STUDENTS} className="link">
-              Studenter
+              Elever
             </Link>
           </Nav.Item>
           <Nav.Item>
