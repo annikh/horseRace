@@ -140,7 +140,9 @@ class TeacherGame extends Component {
         <>
           <Row
             className="teamHeader"
-            style={{ backgroundColor: this.setBackgroundColor(team) }}
+            style={{
+              backgroundColor: this.setBackgroundColor(team)
+            }}
           >
             <Col>
               <span>
