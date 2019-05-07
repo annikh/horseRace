@@ -18,7 +18,7 @@ class Student extends Component {
     this.state = {
       value: "",
       nameList: null,
-      gamePin: this.props.cookies.get("game_pin"),
+      gamePin: null,
       buttonValue: "Enter",
       invalidPIN: false,
       invalidName: false
