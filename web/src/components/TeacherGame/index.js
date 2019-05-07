@@ -107,7 +107,7 @@ class TeacherGame extends Component {
       Object.keys(teams[team].players).forEach((player, i) => {
         if (game.isActive) {
           teamList.push(
-            <Col key={i}>
+            <Col key={i} style={{ width: "fit-content", padding: "0px" }}>
               <Card className="player">
                 <Card.Body>
                   <Card.Title>{player}</Card.Title>
@@ -128,12 +128,6 @@ class TeacherGame extends Component {
                 <Card className="player">
                   <Card.Body>
                     <Card.Title>{player}</Card.Title>
-                    {game.isActive || game.isFinished ? (
-                      <Card.Text tag="div">
-                        <strong>Oppgaver</strong>
-                        {this.taskList(team, player)}
-                      </Card.Text>
-                    ) : null}
                   </Card.Body>
                 </Card>
               </Col>

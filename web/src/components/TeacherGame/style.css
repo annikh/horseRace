@@ -8,6 +8,7 @@
   text-decoration: none;
   color: black;
   display: inline-table;
+  margin: 5px !important;
 }
 
 .teamHeader {

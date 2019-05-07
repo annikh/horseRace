@@ -51,7 +51,7 @@
 .btn-orange {
   background-color: #ff8c0f !important;
   border-color: #ff8c0f !important;
-  box-shadow: 1px 1px #945e0d;
+  box-shadow: 1px 1px #b5720c;
 }
 
 .btn-orange:hover {
@@ -90,6 +90,7 @@
 .modal-content {
   background-color: #d9f3d9;
   border-color: #baebba;
+  border-radius: 0%;
 }
 
 .modal-header {
