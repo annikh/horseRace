@@ -322,6 +322,7 @@ class TeacherGame extends Component {
                 <strong>Oppgave:</strong> <br />
                 {parse(game.teams[this.state.team].tasks[task.id].text)}
                 <br />
+                <br />
                 <strong>Løsningskode:</strong> <br />
                 <span className="display-linebreak">
                   {task.task.studentCode}
