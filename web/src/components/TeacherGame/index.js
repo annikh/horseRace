@@ -293,7 +293,7 @@ class TeacherGame extends Component {
       );
     else {
       return (
-        <Col className="left">
+        <Col>
           <Button className="startGame btn-orange" onClick={this.startGame}>
             Start spillet!
           </Button>
