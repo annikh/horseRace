@@ -175,9 +175,7 @@ class Cards extends Component {
     >
       <Card.Body>
         <Card.Title>{this.state.selectedCard.body.title}</Card.Title>
-        <Card.Text className="display-linebreak">
-          {parse(this.state.selectedCard.body.text)}
-        </Card.Text>
+        <Card.Text>{parse(this.state.selectedCard.body.text)}</Card.Text>
         <Button variant="info" onClick={this.handleCardClose} block>
           Lukk
         </Button>
