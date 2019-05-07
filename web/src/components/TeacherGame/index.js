@@ -108,7 +108,7 @@ class TeacherGame extends Component {
       Object.keys(teams[team].players).forEach((player, i) => {
         if (game.isActive) {
           teamList.push(
-            <Col key={i}>
+            <Col key={i} style={{ width: "fit-content", padding: "0px" }}>
               <Card className="player">
                 <Card.Body>
                   <Card.Title>{player}</Card.Title>
@@ -129,12 +129,6 @@ class TeacherGame extends Component {
                 <Card className="player">
                   <Card.Body>
                     <Card.Title>{player}</Card.Title>
-                    {game.isActive || game.isFinished ? (
-                      <Card.Text tag="div">
-                        <strong>Oppgaver</strong>
-                        {this.taskList(team, player)}
-                      </Card.Text>
-                    ) : null}
                   </Card.Body>
                 </Card>
               </Col>
@@ -148,12 +142,14 @@ class TeacherGame extends Component {
         <>
           <Row
             className="teamHeader"
-            style={{ backgroundColor: this.setBackgroundColor(team) }}
+            style={{
+              backgroundColor: this.setBackgroundColor(team)
+            }}
           >
             <Col>
               <span>
                 <strong>
-                  TEAM <span>{team}</span>
+                  TEAM <span>{parseInt(team) + 1}</span>
                 </strong>
               </span>
             </Col>
@@ -186,7 +182,7 @@ class TeacherGame extends Component {
           <Col>Venter på spillere.. Start spillet når spillerne er klare.</Col>
         </Row>
       );
-    return <Container>{fullList}</Container>;
+    return <Container style={{ minWidth: "90%" }}>{fullList}</Container>;
   }
 
   taskList(team, player) {
@@ -334,6 +330,7 @@ class TeacherGame extends Component {
                 <br />
                 <strong>Oppgave:</strong> <br />
                 {parse(game.teams[this.state.team].tasks[task.id].text)}
+                <br />
                 <br />
                 <strong>Løsningskode:</strong> <br />
                 <span className="display-linebreak">

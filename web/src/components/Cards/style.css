@@ -18,6 +18,7 @@
 
 .easy {
   background-color: #8dda77 !important;
+  box-shadow: 1px 1px #62a84f;
 }
 
 .easy:hover {
@@ -26,6 +27,7 @@
 
 .medium {
   background-color: #f0ee8d !important;
+  box-shadow: 1px 1px #c2c06c;
 }
 
 .medium:hover {
@@ -34,6 +36,7 @@
 
 .hard {
   background-color: #e37171 !important;
+  box-shadow: 1px 1px #be5555;
 }
 
 .hard:hover {

@@ -19,7 +19,20 @@
 
 .btn-class {
   background-color: #4cc078 !important;
-  border-color: #4cc078 !important;
+  border-color: #3dad68 !important;
+  box-shadow: 1px 1px #277d48;
+}
+
+.btn {
+  border-radius: 0% !important;
+}
+
+.list-group-item {
+  border-radius: 0% !important;
+}
+
+.form-control {
+  border-radius: 0% !important;
 }
 
 .btn-class:hover {
@@ -40,16 +53,15 @@
 }
 
 .btn-orange {
-  background-color: #ff8c0f !important;
-  border-color: #ff8c0f !important;
-  cursor: pointer;
+  background-color: #ff9729 !important;
+  border-color: #ff9729 !important;
+  box-shadow: 1px 1px #b5720c;
 }
 
 .btn-orange:hover {
   background-color: rgb(182, 105, 22) !important;
   border-color: rgb(182, 105, 22) !important;
   color: rgb(197, 197, 197) !important;
-  cursor: pointer;
 }
 
 .btn-green {
@@ -82,6 +94,7 @@
 .modal-content {
   background-color: #d9f3d9;
   border-color: #baebba;
+  border-radius: 0%;
 }
 
 .modal-header {
