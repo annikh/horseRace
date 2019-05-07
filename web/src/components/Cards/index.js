@@ -31,13 +31,13 @@ class Cards extends Component {
       .on("value", snapshot => {
         const cards = snapshot.val();
         let solvedTasks = {};
-        Object.keys(cards).forEach((card, index) => {
-          if (cards[card].solved) {
-            solvedTasks[card] = cards[card];
+        Object.keys(cards).forEach((cardKey, index) => {
+          if (cards[cardKey].solved) {
+            solvedTasks[cardKey] = cards[cardKey];
           }
-          if (this.props.cookies.get("current_card") === card) {
-            this.setState({ selectedCard: { id: card, body: cards[card] } });
-            this.handleCardOpen(card, cards[card], index);
+          let card = { id: cardKey, boardIndex: index, body: cards[cardKey] };
+          if (this.props.cookies.get("current_card") === cardKey) {
+            this.handleCardOpen(card);
           }
         });
         this.setState({
@@ -71,12 +71,12 @@ class Cards extends Component {
     const { cards, solvedTasks } = this.state;
     let board = [];
     let row = [];
-    Object.keys(cards).forEach((id, index) => {
-      this.taskIsSolved(id, solvedTasks)
+    Object.keys(cards).forEach((cardKey, index) => {
+      cardKey in solvedTasks
         ? row.push(
             <img
               key={index}
-              src={solvedTasks[id].solved}
+              src={solvedTasks[cardKey].solved}
               className="img"
               alt=""
             />
@@ -85,10 +85,16 @@ class Cards extends Component {
             <Button
               key={index}
               className={this.getCardClass(
-                cards[id].active,
-                cards[id].difficulty
+                cards[cardKey].active,
+                cards[cardKey].difficulty
               )}
-              onClick={() => this.handleCardOpen(id, cards[id], index)}
+              onClick={() =>
+                this.handleCardOpen({
+                  id: cardKey,
+                  boardIndex: index,
+                  body: cards[cardKey]
+                })
+              }
             />
           );
       if ((index + 1) % 4 === 0) {
@@ -103,31 +109,20 @@ class Cards extends Component {
     return <>{board}</>;
   }
 
-  taskIsSolved(taskId, solvedTasks) {
-    return taskId in solvedTasks;
-  }
-
-  objectIsEmpty(obj) {
-    for (var key in obj) {
-      if (obj.hasOwnProperty(key)) return false;
-    }
-    return true;
-  }
-
   handleCardClose() {
-    this.props.onCardSelect(null);
-    this.setState({ selectedCard: null });
     this.props.cookies.remove("current_card");
+    this.props.onCardSelect(null);
     this.reactivateTaskInDB(this.state.selectedCard.id);
+    this.setState({ selectedCard: null });
   }
 
-  handleCardOpen(key, card, index) {
-    this.props.onCardSelect({ id: key, body: card }, index);
-    this.deactivateTaskInDB(key);
+  handleCardOpen(card) {
+    this.props.cookies.set("current_card", card.id);
+    this.props.onCardSelect(card);
+    this.deactivateTaskInDB(card.id);
     this.setState({
-      selectedCard: { id: key, body: card }
+      selectedCard: card
     });
-    this.props.cookies.set("current_card", key);
   }
 
   deactivateTaskInDB(taskId) {

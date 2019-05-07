@@ -17,26 +17,12 @@ def run_code():
     task = json.loads(request.args.get('task'))
     default_code = task['default_code']
     
-    error_hints = []
-    if 'error_hints' in task:
-        error_hints = task['error_hints']
-    while(len(error_hints) < 3):
-        error_hints.append("")
-    
-    output_requirement = ""
-    if 'output_requirement' in task:
-        output_requirement = task['output_requirement']
-
-    code_requirements = []
-    if 'code_requirements' in task:
-        code_requirements = task['code_requirements']
+    error_hints = task['error_hints']
+    output_requirement = task['output_requirement']
+    code_requirements = task['code_requirements']
 
     code_with_tests = code + '\n' + task["test"]
-    
-    for code_requirement in code_requirements:
-        if (code_requirement not in code):
-            return jsonify(output='', error_message=error_hints[0])
-    
+        
     with stdoutIO() as s:
         try:
             exec(code_with_tests, {})
@@ -54,6 +40,10 @@ def run_code():
             return jsonify(output=s.getvalue(), error_message=str(error))
         except IndexError as error:
             return jsonify(output=s.getvalue(), error_message=str(error))
+        finally:
+            for code_requirement in code_requirements:
+                if (code_requirement not in code):
+                    return jsonify(output='', error_message=error_hints[0])
     return jsonify(output=s.getvalue(), error_message='', solved=True)
 
 

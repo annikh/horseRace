@@ -31,12 +31,12 @@ class Student extends Component {
       const teams = snapshot.val();
       let players = {};
       if (teams !== null) {
-        this.props.cookies.set("game_pin", gamePin);
         teams.forEach(team => {
           let names = Object.keys(team.players);
           let values = Object.values(team.players);
           names.map((name, i) => (players[name] = values[i]));
         });
+        this.props.cookies.set("game_pin", gamePin);
         this.setState({
           nameList: players,
           gamePin: gamePin,
@@ -48,18 +48,17 @@ class Student extends Component {
     });
   }
 
-  componentWillUnmount() {
-    this.props.firebase.gamePlayerList(this.state.gamePin).off();
-  }
-
   handleEnterStudentName() {
     const name = this.state.value;
+
     if (name !== this.state.gamePin) {
       const team = this.getTeamFromPlayerName(name);
-      const { cookies } = this.props;
-      cookies.set("game_name", name);
-      cookies.set("game_team", team);
+
+      this.props.cookies.set("game_name", name);
+      this.props.cookies.set("game_team", team);
+
       this.setState({ invalidName: false });
+
       this.props.firebase
         .gamePlayer(this.state.gamePin, team, name)
         .child("isActive")
@@ -85,6 +84,10 @@ class Student extends Component {
   }
 
   handleExitGame() {
+    this.props.firebase
+      .gamePlayerList(this.props.cookies.get("game_name"))
+      .off();
+
     this.props.cookies.remove("game_name");
     this.props.cookies.remove("game_pin");
     this.props.cookies.remove("game_team");
