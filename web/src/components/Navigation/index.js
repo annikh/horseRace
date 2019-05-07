@@ -24,7 +24,7 @@ const Navigation = () => (
             </Link>
           </Nav.Item>
           <Nav.Item>
-            <Link to={ROUTES.TEACHER_CLASSROOMS} className="link">
+            <Link to={ROUTES.TEACHER} className="link">
               Klasserom
             </Link>
           </Nav.Item>

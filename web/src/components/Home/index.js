@@ -26,10 +26,7 @@ const Home = () => {
             </Link>
           </Col>
           <Col xs lg="3">
-            <Link
-              to={ROUTES.TEACHER_ACCOUNT}
-              style={{ textDecoration: "none" }}
-            >
+            <Link to={ROUTES.TEACHER} style={{ textDecoration: "none" }}>
               <Button
                 className="btn-submit"
                 variant="outline-light"

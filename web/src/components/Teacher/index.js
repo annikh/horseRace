@@ -14,12 +14,8 @@ const Teacher = () => (
   <div>
     <Navigation />
     <Route exact path={ROUTES.TEACHER_GAMES} component={TeacherGames} />
-    <Route path={ROUTES.TEACHER_ACCOUNT} component={Account} />
-    <Route
-      exact
-      path={ROUTES.TEACHER_CLASSROOMS}
-      component={TeacherClassrooms}
-    />
+    <Route exact path={ROUTES.TEACHER_ACCOUNT} component={Account} />
+    <Route exact path={ROUTES.TEACHER} component={TeacherClassrooms} />
     <Route
       exact
       path={ROUTES.TEACHER_GAMES + "/:game_pin"}
