@@ -49,9 +49,9 @@ class TeacherGames extends Component {
   setGameStateColor = status => {
     switch (status) {
       case "inProgress":
-        return "#CBE9EF"; // blue
+        return "#B3E5EF"; // blue
       case "isFinished":
-        return "#CEEAD5"; //green
+        return "#84E09B"; //green
       default:
         return "#FFF1C6"; //isReady = yellow
     }
@@ -85,13 +85,13 @@ class TeacherGames extends Component {
               </Col>
               <Col>
                 <svg height="51" width="51">
-                  <circle cx="25" cy="25" r="10" fill="#CBE9EF" />
+                  <circle cx="25" cy="25" r="10" fill="#B3E5EF" />
                 </svg>{" "}
                 Spill pågår
               </Col>
               <Col>
                 <svg height="51" width="51">
-                  <circle cx="25" cy="25" r="10" fill="#CEEAD5" />
+                  <circle cx="25" cy="25" r="10" fill="#84E09B" />
                 </svg>
                 Ferdig spill
               </Col>

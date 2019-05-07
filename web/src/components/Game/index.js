@@ -412,7 +412,7 @@ class Game extends Component {
       <this.SolvedModal />
       <this.FinishedModal />
       <Row style={{ margin: "auto" }}>
-        <Col>
+        <Col className="editor">
           <Editor
             onRunCode={this.runCode}
             defaultCode={
@@ -423,12 +423,14 @@ class Game extends Component {
           />
           <Console output={this.state.output} />
         </Col>
-        <Col>
-          <Row>
-            <Cards
-              onCardSelect={this.handleTaskChosen}
-              cookies={this.props.cookies}
-            />
+        <Col style={{ display: "inline-table" }}>
+          <Row className="center">
+            <div className="board">
+              <Cards
+                onCardSelect={this.handleTaskChosen}
+                cookies={this.props.cookies}
+              />
+            </div>
           </Row>
           <Row>
             <Col>
@@ -448,8 +450,16 @@ class Game extends Component {
 
   GameNavigation = () => (
     <Navbar className="studentGameNav justify-content-between">
-      <h5 style={{ margin: "0px" }}>Hei, {this.state.playerName} </h5>
-      <h5 style={{ margin: "0px" }}>Team poeng:{this.state.team.points} </h5>
+      <span>
+        <h5 style={{ margin: "0px" }}>
+          Hei, <span>{this.state.playerName}</span>{" "}
+        </h5>
+      </span>
+      <span className="score">
+        <h5 style={{ margin: "0px" }}>
+          Poeng: <span>{this.state.team.points}</span>{" "}
+        </h5>
+      </span>
       {this.state.exitGame ? (
         <Redirect
           to={{

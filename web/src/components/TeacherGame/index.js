@@ -8,6 +8,8 @@ import {
   ListGroup,
   Modal
 } from "react-bootstrap";
+import Moment from "react-moment";
+import parse from "html-react-parser";
 import { withFirebase } from "../Firebase";
 import { AuthUserContext, withAuthorization } from "../Session";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -77,23 +79,37 @@ class TeacherGame extends Component {
     }
   };
 
+  setBackgroundClass = difficulty => {
+    switch (difficulty) {
+      case 1:
+        return "easy taskList";
+      case 2:
+        return "medium taskList";
+      case 3:
+        return "hard taskList";
+      default:
+        return "taskList";
+    }
+  };
+
   playerList() {
     const { game } = this.state;
     const teams = game.teams;
     let fullList = [];
     let teamList = [];
     let noPlayers = true;
+    let completedTasks = 0;
     Object.keys(teams).forEach((team, key) => {
+      Object.keys(teams[team].tasks).forEach(task => {
+        if (teams[team].tasks[task].solved !== undefined) {
+          completedTasks += 1;
+        }
+      });
       Object.keys(teams[team].players).forEach((player, i) => {
-        if (teams[team].players[player].isActive) {
+        if (game.isActive) {
           teamList.push(
             <Col key={i}>
-              <Card
-                className="player"
-                style={{
-                  backgroundColor: this.setBackgroundColor(team)
-                }}
-              >
+              <Card className="player">
                 <Card.Body>
                   <Card.Title>{player}</Card.Title>
                   {game.isActive || game.isFinished ? (
@@ -106,16 +122,62 @@ class TeacherGame extends Component {
               </Card>
             </Col>
           );
+        } else {
+          if (teams[team].players[player].isActive) {
+            teamList.push(
+              <Col key={i}>
+                <Card className="player">
+                  <Card.Body>
+                    <Card.Title>{player}</Card.Title>
+                    {game.isActive || game.isFinished ? (
+                      <Card.Text tag="div">
+                        <strong>Oppgaver</strong>
+                        {this.taskList(team, player)}
+                      </Card.Text>
+                    ) : null}
+                  </Card.Body>
+                </Card>
+              </Col>
+            );
+          }
         }
       });
       if (teamList.length > 0) noPlayers = false;
 
       fullList.push(
-        <Row className="rowAccount" key={key}>
-          {teamList}
-        </Row>
+        <>
+          <Row
+            className="teamHeader"
+            style={{ backgroundColor: this.setBackgroundColor(team) }}
+          >
+            <Col>
+              <span>
+                <strong>
+                  TEAM <span>{team}</span>
+                </strong>
+              </span>
+            </Col>
+            <Col>
+              <span>
+                Poeng:{" "}
+                <span>
+                  <strong>{teams[team].points}</strong>
+                </span>
+              </span>
+            </Col>
+            <Col>
+              <span>
+                <strong>{completedTasks}/16</strong>
+              </span>
+            </Col>
+          </Row>
+          <Row className="rowAccount" key={key}>
+            {teamList}
+          </Row>
+        </>
       );
       teamList = [];
+      completedTasks = 0;
     });
 
     if (noPlayers)
@@ -137,23 +199,27 @@ class TeacherGame extends Component {
             {Object.keys(playerTasks).map((task, i) => (
               <ListGroup.Item
                 key={i}
-                className="taskList"
                 action
-                variant="dark"
+                className={this.setBackgroundClass(tasks[task].difficulty)}
                 onClick={() =>
                   this.handleShow({ id: task, task: playerTasks[task] }, team)
                 }
               >
-                <Container>
-                  <Row>
-                    <Col>{tasks[task].title}</Col>
-                    <Col>{tasks[task].difficulty}</Col>
+                <span
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    padding: "5px 10px 5px 10px"
+                  }}
+                >
+                  <span>{tasks[task].title}</span>
+                  <span>
                     {this.timeStamp(
                       playerTasks[task].startTime,
                       playerTasks[task].endTime
                     )}
-                  </Row>
-                </Container>
+                  </span>
+                </span>
               </ListGroup.Item>
             ))}
           </ListGroup>
@@ -169,7 +235,7 @@ class TeacherGame extends Component {
 
   timeStamp = (startTime, endTime) => {
     return (
-      <Col style={{ padding: "2px" }}>
+      <div style={{ padding: "2px" }}>
         {endTime ? (
           <span>
             <FontAwesomeIcon icon="check" color="black" />
@@ -181,14 +247,10 @@ class TeacherGame extends Component {
         ) : (
           <span>
             <FontAwesomeIcon icon="clock" color="black" />{" "}
-            {new Intl.DateTimeFormat("en-GB", {
-              hour: "2-digit",
-              minute: "2-digit",
-              second: "2-digit"
-            }).format(startTime)}
+            <Moment interval={15000} date={startTime} durationFromNow />
           </span>
         )}
-      </Col>
+      </div>
     );
   };
 
@@ -253,7 +315,11 @@ class TeacherGame extends Component {
           <Row className="rowAccount">{this.gameStatus(game)}</Row>
           {this.playerList()}
           {task && (
-            <Modal show={show_task} onHide={this.handleClose}>
+            <Modal
+              className="studentTask"
+              show={show_task}
+              onHide={this.handleClose}
+            >
               <Modal.Header closeButton>
                 <Modal.Title>
                   {game.teams[this.state.team].tasks[task.id].title}
@@ -266,6 +332,8 @@ class TeacherGame extends Component {
                 <strong>Tid brukt:</strong>{" "}
                 {this.timeStamp(task.task.startTime, task.task.endTime)}
                 <br />
+                <strong>Oppgave:</strong> <br />
+                {parse(game.teams[this.state.team].tasks[task.id].text)}
                 <br />
                 <strong>Løsningskode:</strong> <br />
                 <span className="display-linebreak">
