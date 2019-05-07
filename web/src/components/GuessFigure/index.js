@@ -141,7 +141,7 @@ class GuessFigure extends Component {
           <span>
             Noen andre har tatt poengene for å gjette bildet først..
             <br />
-            Men dere kan fortsatt vinne bonuspoeng for å løse hele brettet
+            Men dere kan fortsatt vinne bonuspoeng ved å løse hele brettet
             først! Stå på!
           </span>
         )}

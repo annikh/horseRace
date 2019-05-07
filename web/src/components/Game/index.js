@@ -243,6 +243,10 @@ class Game extends Component {
 
   pictureSolved() {
     this.props.firebase
+      .gameTeam(this.state.gamePin, this.state.teamId)
+      .child("pictureSolved")
+      .set(true);
+    this.props.firebase
       .gameTeams(this.state.gamePin)
       .once("value", snapshot => {
         const teams = snapshot.val();
@@ -260,10 +264,6 @@ class Game extends Component {
             .gameTeam(this.state.gamePin, this.state.teamId)
             .child("pictureRate")
             .set(4 - ratingPoints);
-          this.props.firebase
-            .gameTeam(this.state.gamePin, this.state.teamId)
-            .child("pictureSolved")
-            .set(true);
         }
       });
   }
