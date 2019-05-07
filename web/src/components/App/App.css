@@ -22,6 +22,14 @@
   border-color: #4cc078 !important;
 }
 
+.btn {
+  border-radius: 0%;
+}
+
+.form-control {
+  border-radius: 0% !important;
+}
+
 .btn-class:hover {
   background-color: #3c9b60 !important;
   border-color: #3c9b60 !important;
