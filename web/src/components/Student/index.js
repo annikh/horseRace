@@ -25,18 +25,28 @@ class Student extends Component {
     };
   }
 
+  componentDidMount() {
+    const gamePin = this.props.cookies.get("game_pin");
+
+    if (gamePin !== undefined) {
+      this.setState({
+        gamePin: gamePin
+      });
+    }
+  }
+
   handleEnterClassroomPin() {
     const gamePin = this.state.value.trim();
     this.props.firebase.gamePlayerList(gamePin).on("value", snapshot => {
       const teams = snapshot.val();
       let players = {};
       if (teams !== null) {
-        this.props.cookies.set("game_pin", gamePin);
         teams.forEach(team => {
           let names = Object.keys(team.players);
           let values = Object.values(team.players);
           names.map((name, i) => (players[name] = values[i]));
         });
+        this.props.cookies.set("game_pin", gamePin);
         this.setState({
           nameList: players,
           gamePin: gamePin,
