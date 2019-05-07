@@ -1,14 +1,7 @@
 import React, { Component } from "react";
 import { withFirebase } from "../Firebase";
 import parse from "html-react-parser";
-import {
-  Button,
-  ButtonGroup,
-  Card,
-  Container,
-  Row,
-  Col
-} from "react-bootstrap";
+import { Button, ButtonGroup, Card } from "react-bootstrap";
 import * as COLORS from "../../constants/colors";
 import "./style.css";
 
