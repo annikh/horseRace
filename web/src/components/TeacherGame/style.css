@@ -1,10 +1,24 @@
 .player {
-  background-color: rgb(245, 157, 57);
-  width: 23rem;
+  width: 20rem;
+  background-color: #ffe1a9;
+  border: 1px solid #eab248;
+  box-shadow: 1px 1px #eab248;
+  border-radius: 0%;
   margin: 5px;
   text-decoration: none;
   color: black;
   display: inline-table;
+}
+
+.teamHeader {
+  display: flex;
+  justify-content: center;
+  border: 1px solid #d89f34;
+  box-shadow: 1px 1px #c28d2b;
+}
+
+.studentTask .modal-content {
+  width: fit-content;
 }
 
 .card {
@@ -13,7 +27,7 @@
 
 .taskList {
   padding: 0px;
-  justify-content: space-around;
+  color: black;
 }
 
 .card:hover {
