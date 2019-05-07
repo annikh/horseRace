@@ -19,7 +19,8 @@
 
 .btn-class {
   background-color: #4cc078 !important;
-  border-color: #4cc078 !important;
+  border-color: #3dad68 !important;
+  box-shadow: 1px 1px #277d48;
 }
 
 .btn {
@@ -50,14 +51,13 @@
 .btn-orange {
   background-color: #ff8c0f !important;
   border-color: #ff8c0f !important;
-  cursor: pointer;
+  box-shadow: 1px 1px #945e0d;
 }
 
 .btn-orange:hover {
   background-color: rgb(182, 105, 22) !important;
   border-color: rgb(182, 105, 22) !important;
   color: rgb(197, 197, 197) !important;
-  cursor: pointer;
 }
 
 .btn-green {
