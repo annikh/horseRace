@@ -110,11 +110,19 @@ class Game extends Component {
     const team = this.props.cookies.get("game_team");
     const playerName = this.props.cookies.get("game_name");
     const gamePin = this.props.cookies.get("game_pin");
+    const currentCardID = this.props.cookies.get("current_card");
 
     this.props.firebase
       .gamePlayer(gamePin, team, playerName)
       .child("isActive")
       .set(false);
+
+    if (currentCardID !== undefined) {
+      this.props.firebase
+        .gameTask(gamePin, team, currentCardID)
+        .child("active")
+        .set(true);
+    }
 
     this.props.onExit();
   };

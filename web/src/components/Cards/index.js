@@ -37,7 +37,7 @@ class Cards extends Component {
           }
           let card = { id: cardKey, boardIndex: index, body: cards[cardKey] };
           if (this.props.cookies.get("current_card") === cardKey) {
-            this.handleCardOpen(card);
+            // this.handleCardOpen(card);
           }
         });
         this.setState({
