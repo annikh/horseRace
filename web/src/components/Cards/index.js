@@ -163,7 +163,9 @@ class Cards extends Component {
     >
       <Card.Body>
         <Card.Title>{this.state.selectedCard.body.title}</Card.Title>
-        <Card.Text>{parse(this.state.selectedCard.body.text)}</Card.Text>
+        <Card.Text style={{ textAlign: "left" }}>
+          {parse(this.state.selectedCard.body.text)}
+        </Card.Text>
         <Button variant="info" onClick={this.handleCardClose} block>
           Lukk
         </Button>
