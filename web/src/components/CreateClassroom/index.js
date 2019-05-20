@@ -21,7 +21,11 @@ class CreateClassroom extends Component {
 
   addClassroom(user_id) {
     let names = [];
-    this.state.names.split(/\n/).map(name => names.push(name));
+    this.state.names.split(/\n/).map(name => {
+      if (name.trim().length > 0) {
+        names.push(name);
+      }
+    });
     const classroom = new Classroom(null, names);
     this.props.firebase
       .addClassroom(user_id, this.state.classname)
