@@ -285,6 +285,7 @@ class Game extends Component {
 
   handleTaskSolved(studentCode) {
     if (this.state.currentTask !== null) {
+      this.props.cookies.set("current_card", this.state.currentTask.id);
       this.getImageUrl(this.state.currentTask.boardIndex).then(url => {
         this.solveStudentTaskInDB(this.state.currentTask.id, studentCode, url);
         this.checkIfBoardFinished();

@@ -180,7 +180,8 @@ class Cards extends Component {
     return (
       <>
         {Object.keys(cards).length > 0 &&
-          (this.state.selectedCard !== null ? (
+          (this.state.selectedCard !== null &&
+          cookieCardId === this.state.selectedCard.id ? (
             <this.OpenedCard />
           ) : (
             this.getBoard()
