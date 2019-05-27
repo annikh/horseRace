@@ -68,7 +68,7 @@ class SignUpFormBase extends Component {
                 value={username}
                 onChange={this.onChange}
                 type="text"
-                placeholder="Full Name"
+                placeholder="Fullt navn"
               />
             </Col>
             <Col>
@@ -77,7 +77,7 @@ class SignUpFormBase extends Component {
                 value={email}
                 onChange={this.onChange}
                 type="text"
-                placeholder="Email Address"
+                placeholder="E-post"
               />
             </Col>
           </Row>
@@ -88,7 +88,7 @@ class SignUpFormBase extends Component {
                 value={passwordOne}
                 onChange={this.onChange}
                 type="password"
-                placeholder="Password"
+                placeholder="Passord"
               />
             </Col>
             <Col>
@@ -97,7 +97,7 @@ class SignUpFormBase extends Component {
                 value={passwordTwo}
                 onChange={this.onChange}
                 type="password"
-                placeholder="Confirm Password"
+                placeholder="Bekreft passord"
               />
             </Col>
           </Row>
